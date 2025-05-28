@@ -1,0 +1,12 @@
+[package]
+name = "scnr2_generate"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+
+[dependencies]
+log = "0.4.25"
+regex-syntax = "0.8.5"
