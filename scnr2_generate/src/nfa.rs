@@ -3,7 +3,7 @@
 //! The NFA is created from the high-level intermediate representation (HIR) of the regex syntax.
 //! Furthermore, it provides methods to support the conversion of the NFA into a
 //! DFA (Deterministic Finite Automaton), like 'epsilon closure' and 'subset construction'.
-use crate::Result;
+use crate::{Result, pattern::Pattern};
 use regex_syntax::hir::{Hir, HirKind, Look};
 
 #[derive(Debug)]
@@ -30,6 +30,8 @@ pub struct NfaState {
     pub id: usize,
     /// The set of transitions from this state.
     pub transitions: Vec<NfaTransition>,
+    /// The terminal type of the state and the pattern if it is an accepting state.
+    pub accept_data: Option<Pattern>,
 }
 
 /// Represents a transition in the NFA.
@@ -50,7 +52,7 @@ impl NfaState {
     pub fn new(id: usize) -> Self {
         NfaState {
             id,
-            transitions: Vec::new(),
+            ..Default::default()
         }
     }
 
@@ -110,6 +112,41 @@ impl Nfa {
         let mut me: Self = Default::default();
         me.add_state(NfaState::new(0));
         me
+    }
+
+    /// Builds an NFA from a regex pattern.
+    /// # Arguments
+    /// * `pattern` - A string slice that holds the regex pattern.
+    /// * `terminal` - The terminal type of the NFA.
+    /// # Returns
+    /// An `Nfa` that represents the NFA of the regex pattern.
+    pub fn build(pattern: &Pattern) -> Result<Self> {
+        let hir = regex_syntax::parse(&pattern.pattern)?;
+        match Nfa::try_from(hir) {
+            Ok(mut nfa) => {
+                // Set the terminal type and pattern for the end state
+                if let Some(end_state) = nfa.states.get_mut(nfa.end_state) {
+                    end_state.accept_data = Some(pattern.clone());
+                }
+                nfa.set_pattern(&pattern.pattern);
+                Ok(nfa)
+            }
+            Err(e) => Err(e),
+        }
+    }
+
+    /// Builds an NFA from a collection of regex patterns.
+    /// # Arguments
+    /// * `patterns` - A vector of string slices that hold the regex patterns and their terminal types.
+    /// # Returns
+    /// An `Nfa` that represents the NFA of the regex patterns.
+    pub fn build_from_patterns(patterns: &[Pattern]) -> Result<Self> {
+        let mut nfa = Nfa::new();
+        for pattern in patterns {
+            let nfa2 = Nfa::build(&pattern)?;
+            nfa.alternation(nfa2);
+        }
+        Ok(nfa)
     }
 
     /// Sets the pattern for the NFA.
@@ -356,7 +393,6 @@ impl TryFrom<Hir> for Nfa {
     /// An `Nfa` that represents the NFA of the regex syntax.
     fn try_from(hir: Hir) -> Result<Self> {
         let mut nfa = Nfa::new();
-        nfa.set_pattern(&hir.to_string());
         match hir.kind() {
             HirKind::Empty => Ok(nfa),
             HirKind::Look(look) => match look {
@@ -484,5 +520,55 @@ mod tests {
         assert_eq!(nfa.start_state, 0);
         assert_eq!(nfa.end_state, 1);
         assert!(!nfa.is_empty());
+    }
+
+    #[test]
+    // Test building an NFA from a regex pattern
+    fn test_nfa_build() {
+        let pattern = r"\d{4}-\d{2}-\d{2}";
+        let terminal = 1;
+        let pattern = Pattern::new(pattern.to_string(), terminal);
+        let nfa = Nfa::build(&pattern).unwrap();
+        assert_eq!(nfa.pattern, pattern.pattern);
+        assert!(!nfa.is_empty());
+        assert_eq!(nfa.start_state, 0);
+        assert_eq!(nfa.end_state, 19);
+        assert_eq!(nfa.states.len(), 20);
+    }
+
+    #[test]
+    // Test building an NFA from multiple regex patterns
+    fn test_nfa_build_from_patterns() {
+        let patterns = vec![
+            Pattern::new(r"\d{4}-\d{2}-\d{2}".to_string(), 1),
+            Pattern::new(r"\w+".to_string(), 2),
+        ];
+        let nfa = Nfa::build_from_patterns(&patterns).unwrap();
+        assert!(!nfa.is_empty());
+        assert_eq!(nfa.states.len(), 28);
+        assert_eq!(
+            nfa.states[19].accept_data,
+            Some(Pattern {
+                pattern: r"\d{4}-\d{2}-\d{2}".to_string(),
+                terminal_type: 1,
+                lookahead: None
+            })
+        );
+        assert_eq!(
+            nfa.states[25].accept_data,
+            Some(Pattern {
+                pattern: r"\w+".to_string(),
+                terminal_type: 2,
+                lookahead: None
+            })
+        );
+        // There should be one accepting state for each pattern
+        assert_eq!(
+            nfa.states
+                .iter()
+                .filter(|s| s.accept_data.is_some())
+                .count(),
+            patterns.len()
+        );
     }
 }
