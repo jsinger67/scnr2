@@ -8,3 +8,8 @@ categories.workspace = true
 license.workspace = true
 
 [dependencies]
+scnr2_generate = { version = "0.1.0", path = "../scnr2_generate" }
+
+[lib]
+bench = false
+proc-macro = true

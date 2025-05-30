@@ -1,6 +1,11 @@
 {
     "cSpell.words": [
+        "bfnt",
+        "codegen",
+        "daaf",
         "hirs",
+        "lookaheads",
+        "nfas",
         "rstest",
         "scnr"
     ]

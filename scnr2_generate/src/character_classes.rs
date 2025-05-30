@@ -90,6 +90,101 @@ impl CharacterClass {
         // Add the interval to the class
         self.intervals.push(interval_index);
     }
+
+    pub(crate) fn generate(&self) -> proc_macro2::TokenStream {
+        match &self.characters {
+            regex_syntax::hir::HirKind::Empty => {
+                quote::quote! {
+                    |_c| {
+                        // An empty Hir matches everything.
+                        true
+                    }
+                }
+            }
+            regex_syntax::hir::HirKind::Literal(literal) => {
+                // Literals here are separated into single characters.
+                let bytes = literal.0.clone();
+                // We convert the first 4 bytes to a u32.
+                // If the literal is smaller than 4 bytes, take will ensure we only take the bytes
+                // that exist.
+                let lit: u32 = bytes
+                    .iter()
+                    .take(4)
+                    .fold(0, |acc, &b| (acc << 8) | b as u32);
+                let c = char::from_u32(lit).unwrap_or('\0');
+                quote::quote! {
+                     &[#c..=#c]
+                }
+            }
+            regex_syntax::hir::HirKind::Class(class) => match class {
+                regex_syntax::hir::Class::Unicode(class_unicode) => {
+                    let ranges = class_unicode.ranges().iter().fold(
+                        proc_macro2::TokenStream::new(),
+                        |mut acc, r| {
+                            if !acc.is_empty() {
+                                acc.extend(quote::quote! {
+                                    ,
+                                });
+                            }
+                            let start: char = r.start();
+                            let end: char = r.end();
+                            if start == end {
+                                acc.extend(quote::quote! {
+                                    #start..=#start
+                                });
+                            } else {
+                                acc.extend(quote::quote! {
+                                    #start..=#end
+                                });
+                            }
+                            acc
+                        },
+                    );
+                    quote::quote! {
+                        {
+                            &[
+                                #ranges
+                            ]
+                        }
+                    }
+                }
+                regex_syntax::hir::Class::Bytes(class_bytes) => {
+                    let ranges = class_bytes.ranges().iter().fold(
+                        proc_macro2::TokenStream::new(),
+                        |mut acc, r| {
+                            if !acc.is_empty() {
+                                acc.extend(quote::quote! {
+                                    ,
+                                });
+                            }
+                            let start: char = r.start().into();
+                            let end: char = r.end().into();
+                            if start == end {
+                                acc.extend(quote::quote! {
+                                    #start..=#start
+                                });
+                            } else {
+                                acc.extend(quote::quote! {
+                                    #start..=#end
+                                });
+                            }
+                            acc
+                        },
+                    );
+                    quote::quote! {
+                        |c| {
+                            &[
+                                #ranges
+                            ]
+                        }
+                    }
+                }
+            },
+            _ => {
+                panic!("Unsupported Hir kind: {:?}", self.characters)
+            }
+        }
+    }
 }
 
 /// Represents a set of character classes
@@ -253,6 +348,42 @@ impl CharacterClasses {
                 "No disjoint character class found for HirKind: {:?}",
                 hir_kind
             );
+        }
+    }
+
+    pub(crate) fn generate(&self, name: &str) -> proc_macro2::TokenStream {
+        let name = syn::Ident::new(name, proc_macro2::Span::call_site()); // Convert name to an Ident
+        let mut match_functions = Vec::new();
+        for cc in &self.classes {
+            match_functions.push(cc.generate());
+        }
+        quote::quote! {
+            #[allow(clippy::manual_is_ascii_check, dead_code)]
+            pub(crate) fn #name(char_class: usize, c: char) -> bool {
+                use std::cmp::Ordering;
+
+                // Define a table of closures for each char_class
+                static CHAR_CLASS_TABLE: &[&[std::ops::RangeInclusive<char>]] = &[
+                                #(
+                                    #match_functions,
+                                )*
+                ];
+
+                // Check if char_class is within bounds
+                if let Some(ranges) = CHAR_CLASS_TABLE.get(char_class) {
+                    ranges.binary_search_by(|range| {
+                        if c < *range.start() {
+                            Ordering::Greater
+                        } else if c > *range.end() {
+                            Ordering::Less
+                        } else {
+                            Ordering::Equal
+                        }
+                    }).is_ok()
+                } else {
+                    false
+                }
+            }
         }
     }
 }

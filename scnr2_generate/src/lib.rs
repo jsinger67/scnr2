@@ -11,6 +11,9 @@ pub type Result<T> = std::result::Result<T, crate::Error>;
 /// and utilities for SCNR2 generation.
 mod character_classes;
 
+/// The codegen module contains the code generation logic for SCNR2.
+pub mod generate;
+
 /// The nfa module contains the NFA implementation.
 mod nfa;
 
@@ -19,3 +22,12 @@ mod parser;
 
 /// The pattern module contains the pattern matching implementation.
 mod pattern;
+
+/// The code formatter module contains the logic to format Rust code.
+mod rust_code_formatter;
+
+/// The scanner data module.
+mod scanner_data;
+
+/// The scanner mode module contains the scanner mode's implementation.
+mod scanner_mode;

@@ -401,7 +401,7 @@ impl Nfa {
         self.states.iter().find(|s| s.id == state)
     }
 
-    fn collect_character_classes(&self, character_classes: &mut CharacterClasses) {
+    pub fn collect_character_classes(&self, character_classes: &mut CharacterClasses) {
         // Collects all character classes from the NFA states and adds them to the
         // `CharacterClasses` data structure.
         for state in &self.states {
