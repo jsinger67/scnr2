@@ -3,7 +3,13 @@
 //! The NFA is created from the high-level intermediate representation (HIR) of the regex syntax.
 //! Furthermore, it provides methods to support the conversion of the NFA into a
 //! DFA (Deterministic Finite Automaton), like 'epsilon closure' and 'subset construction'.
-use crate::{Result, pattern::Pattern};
+use std::ops::RangeInclusive;
+
+use crate::{
+    Result,
+    character_classes::CharacterClasses,
+    pattern::{Lookahead, Pattern},
+};
 use regex_syntax::hir::{Hir, HirKind, Look};
 
 #[derive(Debug)]
@@ -34,15 +40,25 @@ pub struct NfaState {
     pub accept_data: Option<Pattern>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+/// The Possible types of character classes that can be used in the NFA transitions.
+pub enum CharacterClassType {
+    /// A character class extracted from the regex syntax.
+    /// It can be `Hir::Class(...)` for a character class or `Hir::Literal(...)` for a literal.
+    /// Before calculating disjoint character classes, the `HirKind` is used.
+    HirKind(HirKind),
+    /// An elementary, non-overlapping character range.
+    /// After calculating disjoint character classes, this is used.
+    Range(RangeInclusive<char>),
+}
+
 /// Represents a transition in the NFA.
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct NfaTransition {
     /// The characters that triggers the transition.
     /// If `None`, it represents an epsilon transition.
-    /// If `Some`, it contains a high-level intermediate representation (HIR) of the characters.
-    /// These are `Some(Hir::Class(...))` for a character class or `Some(Hir::Literal(...))` for
-    /// a literal.
-    pub symbol: Option<Hir>,
+    /// If `Some`, it contains a specific character class.
+    pub character_class: Option<CharacterClassType>,
     /// The target state of the transition.
     pub target: usize,
 }
@@ -75,19 +91,26 @@ impl NfaState {
 
     /// Returns the epsilon transitions of this state.
     fn epsilon_transitions(&self) -> impl Iterator<Item = &NfaTransition> {
-        self.transitions.iter().filter(|t| t.symbol.is_none())
+        self.transitions
+            .iter()
+            .filter(|t| t.character_class.is_none())
     }
 
     /// Returns the transitions of this state that have a symbol.
     fn transitions(&self) -> impl Iterator<Item = &NfaTransition> {
-        self.transitions.iter().filter(|t| t.symbol.is_some())
+        self.transitions
+            .iter()
+            .filter(|t| t.character_class.is_some())
     }
 }
 
 impl NfaTransition {
     /// Creates a new NFA transition with the given symbol and target state.
-    fn new(symbol: Option<Hir>, target: usize) -> Self {
-        NfaTransition { symbol, target }
+    fn new(character_class: Option<CharacterClassType>, target: usize) -> Self {
+        NfaTransition {
+            character_class,
+            target,
+        }
     }
 }
 
@@ -143,7 +166,7 @@ impl Nfa {
     pub fn build_from_patterns(patterns: &[Pattern]) -> Result<Self> {
         let mut nfa = Nfa::new();
         for pattern in patterns {
-            let nfa2 = Nfa::build(&pattern)?;
+            let nfa2 = Nfa::build(pattern)?;
             nfa.alternation(nfa2);
         }
         Ok(nfa)
@@ -152,17 +175,12 @@ impl Nfa {
     /// Sets the pattern for the NFA.
     /// # Arguments
     /// * `pattern` - A string slice that holds the regex pattern.
-    pub fn set_pattern(&mut self, pattern: &str) {
+    fn set_pattern(&mut self, pattern: &str) {
         self.pattern = pattern.to_string();
     }
 
-    /// Returns the end state of the NFA.
-    pub fn end_state(&self) -> usize {
-        self.end_state
-    }
-
     /// Adds a state to the NFA.
-    pub fn add_state(&mut self, state: NfaState) {
+    fn add_state(&mut self, state: NfaState) {
         self.states.push(state);
     }
 
@@ -180,16 +198,6 @@ impl Nfa {
         self.start_state += offset;
         self.end_state += offset;
         (self.start_state, self.end_state)
-    }
-
-    /// Returns the number of the highest state.
-    /// If no states are present, it returns 0.
-    /// It is used during multi-pattern NFA construction.
-    fn highest_state_number(&self) -> usize {
-        self.states
-            .iter()
-            .max_by(|x, y| x.id.cmp(&y.id))
-            .map_or(0, |s| s.id)
     }
 
     /// Concatenates the current NFA with another NFA.
@@ -311,7 +319,10 @@ impl Nfa {
 
     fn add_transition(&mut self, from_state: usize, hir: Hir, to_state: usize) {
         if let Some(state) = self.states.get_mut(from_state) {
-            state.add_transition(NfaTransition::new(Some(hir), to_state));
+            state.add_transition(NfaTransition::new(
+                Some(CharacterClassType::HirKind(hir.kind().clone())),
+                to_state,
+            ));
         } else {
             panic!("State {} does not exist in the NFA.", from_state);
         }
@@ -362,10 +373,18 @@ impl Nfa {
         for state in states {
             if let Some(state) = self.find_state(*state) {
                 for transition in state.transitions() {
-                    if let Some(symbol) = transition.symbol.as_ref() {
-                        if symbol == char_class {
-                            // If the transition matches the character class, add the target state
-                            move_set.push(transition.target);
+                    if let Some(symbol) = transition.character_class.as_ref() {
+                        if let CharacterClassType::HirKind(hir_kind) = symbol {
+                            // If the transition matches the character class, check if it matches
+                            // the given character class.
+                            if hir_kind == char_class.kind() {
+                                move_set.push(transition.target);
+                            }
+                        } else if let CharacterClassType::Range(range) = symbol {
+                            panic!(
+                                "Character class ranges are not supported in NFA move_set: {:?}",
+                                range
+                            );
                         }
                     }
                 }
@@ -380,6 +399,96 @@ impl Nfa {
 
     fn find_state(&self, state: usize) -> Option<&NfaState> {
         self.states.iter().find(|s| s.id == state)
+    }
+
+    fn collect_character_classes(&self, character_classes: &mut CharacterClasses) {
+        // Collects all character classes from the NFA states and adds them to the
+        // `CharacterClasses` data structure.
+        for state in &self.states {
+            for transition in state.transitions() {
+                // The unwrap is save here because we only collect transitions that have a symbol.
+                let symbol = transition.character_class.as_ref().unwrap();
+                if let CharacterClassType::HirKind(hir_kind) = symbol {
+                    // Collect the character class from the HIR kind.
+                    character_classes.add_hir(hir_kind.clone());
+                } else if let CharacterClassType::Range(range) = symbol {
+                    // When this assertion fails, it means that the transitions of this NFA have
+                    // already been converted to disjoint character classes.
+                    panic!(
+                        "Ranges are not supported in collect_character_classes: {:?}",
+                        range
+                    );
+                }
+            }
+            // If the state is an accepting state, collect the character classes from the
+            // lookahead pattern, if it exists.
+            if let Some(pattern) = &state.accept_data {
+                match &pattern.lookahead {
+                    Lookahead::Positive(lookahead_nfa) | Lookahead::Negative(lookahead_nfa) => {
+                        for state in &lookahead_nfa.states {
+                            for transition in state.transitions() {
+                                // The unwrap is save here because we only collect transitions
+                                // that have a symbol.
+                                let symbol = transition.character_class.as_ref().unwrap();
+                                if let CharacterClassType::HirKind(hir_kind) = symbol {
+                                    // Collect the character class from the HIR kind.
+                                    character_classes.add_hir(hir_kind.clone());
+                                } else if let CharacterClassType::Range(range) = symbol {
+                                    // When this assertion fails, it means that the transitions
+                                    // of this NFA have already been converted to disjoint
+                                    // character classes.
+                                    panic!(
+                                        "Ranges are not supported in collect_character_classes: {:?}",
+                                        range
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    _ => (),
+                }
+            }
+        }
+    }
+
+    /// Converts the NFA transitions from `HirKind` to disjoint character classes.
+    pub fn convert_to_disjoint_character_classes(&mut self, character_classes: &CharacterClasses) {
+        // Replace the transitions in the NFA with the disjoint character classes.
+        for state in &mut self.states {
+            state.transitions.retain(|t| t.character_class.is_some());
+            // Take all transitions from the state and convert each of them to possibly multiple
+            // disjoint character classes.
+            let old_transitions = std::mem::take(&mut state.transitions);
+            state.transitions = old_transitions
+                .into_iter()
+                .flat_map(|transition| {
+                    if let Some(symbol) = &transition.character_class {
+                        if let CharacterClassType::HirKind(hir_kind) = symbol {
+                            // Convert the HIR kind to disjoint character classes.
+                            character_classes
+                                .get_disjoint_classes(hir_kind)
+                                .iter()
+                                .map(|disjoint_class| {
+                                    NfaTransition::new(
+                                        Some(CharacterClassType::Range(
+                                            character_classes.intervals[*disjoint_class].clone(),
+                                        )),
+                                        transition.target,
+                                    )
+                                })
+                                .collect::<Vec<_>>()
+                        } else {
+                            panic!(
+                                "Character class ranges are not supported in NFA transitions: {:?}",
+                                symbol
+                            );
+                        }
+                    } else {
+                        vec![transition] // Keep epsilon transitions as they are.
+                    }
+                })
+                .collect();
+        }
     }
 }
 
@@ -434,7 +543,7 @@ impl TryFrom<Hir> for Nfa {
                 }
             },
             HirKind::Literal(literal) => {
-                let mut start_state = nfa.end_state();
+                let mut start_state = nfa.end_state;
                 let chars = std::str::from_utf8(&literal.0)?;
                 chars.char_indices().for_each(|(_, c)| {
                     let end_state = nfa.new_state();
@@ -447,7 +556,7 @@ impl TryFrom<Hir> for Nfa {
                 Ok(nfa)
             }
             HirKind::Class(_) => {
-                let start_state = nfa.end_state();
+                let start_state = nfa.end_state;
                 let end_state = nfa.new_state();
                 nfa.set_end_state(end_state);
                 nfa.add_transition(start_state, hir.clone(), end_state);
@@ -509,6 +618,8 @@ fn char_to_bytes(c: char) -> Vec<u8> {
 
 #[cfg(test)]
 mod tests {
+    use crate::pattern::Lookahead;
+
     use super::*;
 
     #[test]
@@ -537,6 +648,44 @@ mod tests {
     }
 
     #[test]
+    // Test building an NFA with positive lookahead
+    fn test_nfa_build_with_positive_lookahead() {
+        let pattern = r"\d{4}-\d{2}-\d{2}";
+        let terminal = 1;
+        let lookahead = Lookahead::positive(r"\w+".to_string()).unwrap();
+        let pattern = Pattern::new(pattern.to_string(), terminal).with_lookahead(lookahead);
+        let nfa = Nfa::build(&pattern).unwrap();
+        assert!(!nfa.is_empty());
+        assert_eq!(nfa.states.len(), 20);
+        assert_eq!(nfa.start_state, 0);
+        assert_eq!(nfa.end_state, 19);
+        assert!(nfa.states[19].accept_data.is_some());
+        assert!(matches!(
+            nfa.states[19].accept_data.as_ref().unwrap().lookahead,
+            Lookahead::Positive(_)
+        ));
+    }
+
+    #[test]
+    // Test building an NFA with negative lookahead
+    fn test_nfa_build_with_negative_lookahead() {
+        let pattern = r"\d{4}-\d{2}-\d{2}";
+        let terminal = 1;
+        let lookahead = Lookahead::negative(r"\w+".to_string()).unwrap();
+        let pattern = Pattern::new(pattern.to_string(), terminal).with_lookahead(lookahead);
+        let nfa = Nfa::build(&pattern).unwrap();
+        assert!(!nfa.is_empty());
+        assert_eq!(nfa.states.len(), 20);
+        assert_eq!(nfa.start_state, 0);
+        assert_eq!(nfa.end_state, 19);
+        assert!(nfa.states[19].accept_data.is_some());
+        assert!(matches!(
+            nfa.states[19].accept_data.as_ref().unwrap().lookahead,
+            Lookahead::Negative(_)
+        ));
+    }
+
+    #[test]
     // Test building an NFA from multiple regex patterns
     fn test_nfa_build_from_patterns() {
         let patterns = vec![
@@ -551,7 +700,7 @@ mod tests {
             Some(Pattern {
                 pattern: r"\d{4}-\d{2}-\d{2}".to_string(),
                 terminal_type: 1,
-                lookahead: None
+                lookahead: Lookahead::None
             })
         );
         assert_eq!(
@@ -559,7 +708,7 @@ mod tests {
             Some(Pattern {
                 pattern: r"\w+".to_string(),
                 terminal_type: 2,
-                lookahead: None
+                lookahead: Lookahead::None
             })
         );
         // There should be one accepting state for each pattern
