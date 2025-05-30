@@ -1,3 +1,7 @@
+#[cfg(test)]
+#[macro_use]
+extern crate rstest;
+
 pub type Error = Box<dyn std::error::Error>;
 
 /// The result type for the `scrn` crate.

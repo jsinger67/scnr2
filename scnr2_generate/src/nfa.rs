@@ -618,7 +618,7 @@ fn char_to_bytes(c: char) -> Vec<u8> {
 
 #[cfg(test)]
 mod tests {
-    use crate::pattern::Lookahead;
+    use crate::{parser::parse_regex, pattern::Lookahead};
 
     use super::*;
 
@@ -719,5 +719,85 @@ mod tests {
                 .count(),
             patterns.len()
         );
+    }
+
+    #[rstest]
+    #[case::c1(
+            // regex
+            r"[a-f][0-9a-f]",
+            // elementary_intervals
+            &[
+                '0'..='9',
+                'a'..='f',
+            ])]
+    #[case::c2(
+            // regex
+            r"[a-f]",
+            // elementary_intervals
+            &[
+                'a'..='f'
+            ])]
+    #[case::c3(
+            // regex
+            r"[0-9]+(_[0-9]+)*\.[0-9]+(_[0-9]+)*[eE][+-]?[0-9]+(_[0-9]+)*",
+            // elementary_intervals
+            &[
+                '+'..='+',
+                '-'..='-',
+                '.'..='.',
+                '0'..='9',
+                'E'..='E',
+                '_'..='_',
+                'e'..='e'
+            ])]
+    #[case::c4(
+            // regex
+            r"[\s--\r\n]+",
+            // elementary_intervals
+            &[
+                '\t'..='\t',
+                '\u{b}'..='\u{c}',
+                ' '..=' ',
+                '\u{85}'..='\u{85}',
+                '\u{a0}'..='\u{a0}',
+                '\u{1680}'..='\u{1680}',
+                '\u{2000}'..='\u{200a}',
+                '\u{2028}'..='\u{2029}',
+                '\u{202f}'..='\u{202f}',
+                '\u{205f}'..='\u{205f}',
+                '\u{3000}'..='\u{3000}'
+            ])]
+    #[case::c5(
+            // regex
+            r"\+=|-=|\*=|/=|%=|&=|\\|=|\^=|<<=|>>=|<<<=|>>>=",
+            // elementary_intervals
+            &[
+                '%'..='%',
+                '&'..='&',
+                '*'..='*',
+                '+'..='+',
+                '-'..='-',
+                '/'..='/',
+                '<'..='<',
+                '='..='=',
+                '>'..='>',
+                '\\'..='\\',
+                '^'..='^'
+            ])]
+    fn test_create_disjoint_character_classes(
+        #[case] regex: &'static str,
+        #[case] elementary_intervals: &[std::ops::RangeInclusive<char>],
+    ) {
+        let mut character_classes = CharacterClasses::new();
+        let hir = parse_regex(regex).unwrap();
+        let mut nfa: Nfa = hir.try_into().unwrap();
+        nfa.collect_character_classes(&mut character_classes);
+        character_classes.create_disjoint_character_classes();
+        nfa.convert_to_disjoint_character_classes(&character_classes);
+
+        eprintln!("==========================");
+        eprintln!("Character Class Registry:\n{:?}", character_classes);
+
+        assert_eq!(character_classes.intervals, elementary_intervals);
     }
 }

@@ -84,7 +84,7 @@ impl CharacterClass {
         // It is normally not expected to fail, but it is a good sanity check.
         debug_assert!(!self.intervals.iter().any(|i| {
             // Check if the interval index is already present in the intervals
-            i == &self.intervals[interval_index]
+            *i == interval_index
         }));
 
         // Add the interval to the class
@@ -133,7 +133,7 @@ impl CharacterClasses {
     /// Creates disjoint character classes from the NFA states and lookahead patterns.
     /// This function collects all character classes from the NFA states and lookahead patterns,
     /// then generates disjoint intervals for each character class.
-    fn create_disjoint_character_classes(&mut self) {
+    pub(crate) fn create_disjoint_character_classes(&mut self) {
         // Step 1: Collect all boundary points
         // The boundaries are collected in a BTreeSet to ensure they are unique and sorted.
         let mut boundaries = std::collections::BTreeSet::new();

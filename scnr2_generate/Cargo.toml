@@ -10,3 +10,6 @@ license.workspace = true
 [dependencies]
 log = "0.4.25"
 regex-syntax = "0.8.5"
+
+[dev-dependencies]
+rstest = "0.25.0"
