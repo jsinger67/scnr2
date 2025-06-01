@@ -8,7 +8,8 @@ use std::ops::RangeInclusive;
 use crate::{
     Result,
     character_classes::CharacterClasses,
-    pattern::{Lookahead, Pattern},
+    ids::{CharClassID, DisjointCharClassID, NfaStateID, StateIDBase},
+    pattern::{AutomatonType, Lookahead, Pattern},
 };
 use regex_syntax::hir::{Hir, HirKind, Look};
 
@@ -33,10 +34,10 @@ macro_rules! unsupported {
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct NfaState {
     /// The unique identifier for the state.
-    pub id: usize,
+    pub id: NfaStateID,
     /// The set of transitions from this state.
     pub transitions: Vec<NfaTransition>,
-    /// The terminal type of the state and the pattern if it is an accepting state.
+    /// The terminal type, the priority and the pattern if it is an accepting state.
     pub accept_data: Option<Pattern>,
 }
 
@@ -47,9 +48,10 @@ pub enum CharacterClassType {
     /// It can be `Hir::Class(...)` for a character class or `Hir::Literal(...)` for a literal.
     /// Before calculating disjoint character classes, the `HirKind` is used.
     HirKind(HirKind),
-    /// An elementary, non-overlapping character range.
+    /// An elementary, non-overlapping character range in the form of a range of characters plus
+    /// the index of the elementary interval in the character class.
     /// After calculating disjoint character classes, this is used.
-    Range(RangeInclusive<char>),
+    Range((RangeInclusive<char>, DisjointCharClassID)),
 }
 
 /// Represents a transition in the NFA.
@@ -60,13 +62,13 @@ pub struct NfaTransition {
     /// If `Some`, it contains a specific character class.
     pub character_class: Option<CharacterClassType>,
     /// The target state of the transition.
-    pub target: usize,
+    pub target: NfaStateID,
 }
 
 impl NfaState {
     /// Creates a new NFA state with the given ID.
-    pub fn new(id: usize) -> Self {
-        NfaState {
+    pub fn new(id: NfaStateID) -> Self {
+        Self {
             id,
             ..Default::default()
         }
@@ -78,7 +80,7 @@ impl NfaState {
     }
 
     /// Apply an offset to every state number.
-    fn offset(&mut self, offset: usize) {
+    fn offset(&mut self, offset: StateIDBase) {
         self.id += offset;
         for transition in self.transitions.iter_mut() {
             transition.target += offset;
@@ -106,7 +108,7 @@ impl NfaState {
 
 impl NfaTransition {
     /// Creates a new NFA transition with the given symbol and target state.
-    fn new(character_class: Option<CharacterClassType>, target: usize) -> Self {
+    fn new(character_class: Option<CharacterClassType>, target: NfaStateID) -> Self {
         NfaTransition {
             character_class,
             target,
@@ -122,18 +124,18 @@ pub struct Nfa {
     /// The set of states in the NFA.
     pub states: Vec<NfaState>,
     /// The start state of the NFA. This value changes during the NFA construction.
-    pub start_state: usize,
+    pub start_state: NfaStateID,
     /// The end state of the NFA.
     /// This value changes during the NFA construction.
     /// It is an accepting state after the NFA is fully constructed.
-    pub end_state: usize,
+    pub end_state: NfaStateID,
 }
 
 impl Nfa {
-    /// Creates a new NFA with the given start and end states.
+    /// Creates a new NFA with a start state.
     pub fn new() -> Self {
         let mut me: Self = Default::default();
-        me.add_state(NfaState::new(0));
+        me.add_state(NfaState::default());
         me
     }
 
@@ -148,7 +150,7 @@ impl Nfa {
         match Nfa::try_from(hir) {
             Ok(mut nfa) => {
                 // Set the terminal type and pattern for the end state
-                if let Some(end_state) = nfa.states.get_mut(nfa.end_state) {
+                if let Some(end_state) = nfa.states.get_mut(nfa.end_state.as_usize()) {
                     end_state.accept_data = Some(pattern.clone());
                 }
                 nfa.set_pattern(&pattern.pattern);
@@ -160,12 +162,16 @@ impl Nfa {
 
     /// Builds an NFA from a collection of regex patterns.
     /// # Arguments
-    /// * `patterns` - A vector of string slices that hold the regex patterns and their terminal types.
+    /// * `patterns` - A vector of string slices that hold the regex patterns and their terminal
+    ///   types. The patterns are expected to be in the order of their priority, where earlier
+    ///   patterns are preferred over later ones, i.e. the first seen patterns are preferred.
+    ///   This way the user can define its own priorities for the patterns.
     /// # Returns
     /// An `Nfa` that represents the NFA of the regex patterns.
     pub fn build_from_patterns(patterns: &[Pattern]) -> Result<Self> {
         let mut nfa = Nfa::new();
-        for pattern in patterns {
+        for (priority, pattern) in patterns.iter().enumerate() {
+            let pattern = &pattern.clone().with_priority(priority);
             let nfa2 = Nfa::build(pattern)?;
             nfa.alternation(nfa2);
         }
@@ -184,14 +190,14 @@ impl Nfa {
         self.states.push(state);
     }
 
-    fn new_state(&mut self) -> usize {
-        let state = self.states.len();
+    fn new_state(&mut self) -> NfaStateID {
+        let state = NfaStateID::new(self.states.len() as StateIDBase);
         self.add_state(NfaState::new(state));
         state
     }
 
     /// Apply an offset to every state number.
-    fn shift_ids(&mut self, offset: usize) -> (usize, usize) {
+    fn shift_ids(&mut self, offset: StateIDBase) -> (NfaStateID, NfaStateID) {
         for state in self.states.iter_mut() {
             state.offset(offset);
         }
@@ -212,7 +218,7 @@ impl Nfa {
         }
 
         // Apply an offset to the state numbers of the given NFA
-        let (nfa_start_state, nfa_end_state) = nfa.shift_ids(self.states.len());
+        let (nfa_start_state, nfa_end_state) = nfa.shift_ids(self.states.len() as StateIDBase);
         // Move the states of the given NFA to the current NFA
         self.append(nfa);
 
@@ -236,7 +242,7 @@ impl Nfa {
         }
 
         // Apply an offset to the state numbers of the given NFA
-        let (nfa_start_state, nfa_end_state) = nfa.shift_ids(self.states.len());
+        let (nfa_start_state, nfa_end_state) = nfa.shift_ids(self.states.len() as StateIDBase);
 
         // Move the states of given the NFA to the current NFA
         self.append(nfa);
@@ -304,21 +310,26 @@ impl Nfa {
     fn append(&mut self, mut nfa: Nfa) {
         self.states.append(nfa.states.as_mut());
         // Check the index constraints
-        debug_assert!(self.states.iter().enumerate().all(|(i, s)| s.id == i));
+        debug_assert!(
+            self.states
+                .iter()
+                .enumerate()
+                .all(|(i, s)| s.id.as_usize() == i)
+        );
     }
 
     /// Sets the start state of the NFA.
-    fn set_start_state(&mut self, start_state: usize) {
+    fn set_start_state(&mut self, start_state: NfaStateID) {
         self.start_state = start_state;
     }
 
     /// Sets the end state of the NFA.
-    fn set_end_state(&mut self, end_state: usize) {
+    fn set_end_state(&mut self, end_state: NfaStateID) {
         self.end_state = end_state;
     }
 
-    fn add_transition(&mut self, from_state: usize, hir: Hir, to_state: usize) {
-        if let Some(state) = self.states.get_mut(from_state) {
+    fn add_transition(&mut self, from_state: NfaStateID, hir: Hir, to_state: NfaStateID) {
+        if let Some(state) = self.states.get_mut(from_state.as_usize()) {
             state.add_transition(NfaTransition::new(
                 Some(CharacterClassType::HirKind(hir.kind().clone())),
                 to_state,
@@ -328,8 +339,8 @@ impl Nfa {
         }
     }
 
-    fn add_epsilon_transition(&mut self, from_state: usize, to_state: usize) {
-        if let Some(state) = self.states.get_mut(from_state) {
+    fn add_epsilon_transition(&mut self, from_state: NfaStateID, to_state: NfaStateID) {
+        if let Some(state) = self.states.get_mut(from_state.as_usize()) {
             state.add_transition(NfaTransition::new(None, to_state));
         } else {
             panic!("State {} does not exist in the NFA.", from_state);
@@ -337,14 +348,14 @@ impl Nfa {
     }
 
     fn is_empty(&self) -> bool {
-        self.start_state == 0
-            && self.end_state == 0
+        self.start_state == NfaStateID::default()
+            && self.end_state == NfaStateID::default()
             && self.states.len() == 1
             && self.states[0].is_empty()
     }
 
     /// Calculate the epsilon closure of a state.
-    fn epsilon_closure(&self, state: usize) -> Vec<usize> {
+    pub(crate) fn epsilon_closure(&self, state: NfaStateID) -> Vec<NfaStateID> {
         // The state itself is always part of the ε-closure
         let mut closure = vec![state];
         let mut i = 0;
@@ -366,9 +377,40 @@ impl Nfa {
         closure
     }
 
+    pub(crate) fn get_match_transitions(
+        &self,
+        start_states: impl Iterator<Item = NfaStateID>,
+    ) -> Vec<(DisjointCharClassID, NfaStateID)> {
+        let mut target_states = Vec::new();
+        for state in start_states {
+            for state in self.states[state].transitions() {
+                match &state.character_class {
+                    // If the transition has a character class, add it to the target states.
+                    Some(CharacterClassType::Range((_, char_class_id))) => {
+                        target_states.push((*char_class_id, state.target));
+                    }
+                    Some(CharacterClassType::HirKind(hir_kind)) => {
+                        // If this panic occurs, it means that the NFA has not been converted to
+                        // disjoint character classes yet.
+                        panic!(
+                            "HirKind character classes are not supported in NFA transitions: {:?}",
+                            hir_kind
+                        );
+                    }
+                    None => (),
+                }
+            }
+        }
+        // Sort and dedup the target states by target state.
+        // Constraint is necessary be able to hold the priority of the patterns.
+        target_states.sort_by_key(|t| t.1);
+        target_states.dedup();
+        target_states
+    }
+
     /// Calculate move(T, a) for a set of states T and a character class a.
     /// This is the set of states that can be reached from T by matching a.
-    pub(crate) fn move_set(&self, states: &[usize], char_class: &Hir) -> Vec<usize> {
+    pub(crate) fn move_set(&self, states: &[NfaStateID], char_class: &Hir) -> Vec<NfaStateID> {
         let mut move_set = Vec::new();
         for state in states {
             if let Some(state) = self.find_state(*state) {
@@ -397,7 +439,7 @@ impl Nfa {
         move_set
     }
 
-    fn find_state(&self, state: usize) -> Option<&NfaState> {
+    fn find_state(&self, state: NfaStateID) -> Option<&NfaState> {
         self.states.iter().find(|s| s.id == state)
     }
 
@@ -425,24 +467,30 @@ impl Nfa {
             if let Some(pattern) = &state.accept_data {
                 match &pattern.lookahead {
                     Lookahead::Positive(lookahead_nfa) | Lookahead::Negative(lookahead_nfa) => {
-                        for state in &lookahead_nfa.states {
-                            for transition in state.transitions() {
-                                // The unwrap is save here because we only collect transitions
-                                // that have a symbol.
-                                let symbol = transition.character_class.as_ref().unwrap();
-                                if let CharacterClassType::HirKind(hir_kind) = symbol {
-                                    // Collect the character class from the HIR kind.
-                                    character_classes.add_hir(hir_kind.clone());
-                                } else if let CharacterClassType::Range(range) = symbol {
-                                    // When this assertion fails, it means that the transitions
-                                    // of this NFA have already been converted to disjoint
-                                    // character classes.
-                                    panic!(
-                                        "Ranges are not supported in collect_character_classes: {:?}",
-                                        range
-                                    );
+                        match lookahead_nfa {
+                            AutomatonType::Nfa(lookahead_nfa) => {
+                                // Collect character classes from the lookahead NFA.
+                                for state in &lookahead_nfa.states {
+                                    for transition in state.transitions() {
+                                        // The unwrap is save here because we only collect transitions
+                                        // that have a symbol.
+                                        let symbol = transition.character_class.as_ref().unwrap();
+                                        if let CharacterClassType::HirKind(hir_kind) = symbol {
+                                            // Collect the character class from the HIR kind.
+                                            character_classes.add_hir(hir_kind.clone());
+                                        } else if let CharacterClassType::Range(range) = symbol {
+                                            // When this assertion fails, it means that the transitions
+                                            // of this NFA have already been converted to disjoint
+                                            // character classes.
+                                            panic!(
+                                                "Ranges are not supported in collect_character_classes: {:?}",
+                                                range
+                                            );
+                                        }
+                                    }
                                 }
                             }
+                            _ => panic!("Lookahead is not an NFA: {:?}", lookahead_nfa),
                         }
                     }
                     _ => (),
@@ -470,9 +518,10 @@ impl Nfa {
                                 .iter()
                                 .map(|disjoint_class| {
                                     NfaTransition::new(
-                                        Some(CharacterClassType::Range(
+                                        Some(CharacterClassType::Range((
                                             character_classes.intervals[*disjoint_class].clone(),
-                                        )),
+                                            *disjoint_class,
+                                        ))),
                                         transition.target,
                                     )
                                 })
@@ -628,8 +677,8 @@ mod tests {
         let nfa: Nfa = Nfa::try_from(hir).unwrap();
         // assert_eq!(nfa.pattern, r"\d");
         assert_eq!(nfa.states.len(), 2);
-        assert_eq!(nfa.start_state, 0);
-        assert_eq!(nfa.end_state, 1);
+        assert_eq!(nfa.start_state, 0.into());
+        assert_eq!(nfa.end_state, 1.into());
         assert!(!nfa.is_empty());
     }
 
@@ -638,12 +687,12 @@ mod tests {
     fn test_nfa_build() {
         let pattern = r"\d{4}-\d{2}-\d{2}";
         let terminal = 1;
-        let pattern = Pattern::new(pattern.to_string(), terminal);
+        let pattern = Pattern::new(pattern.to_string(), terminal.into());
         let nfa = Nfa::build(&pattern).unwrap();
         assert_eq!(nfa.pattern, pattern.pattern);
         assert!(!nfa.is_empty());
-        assert_eq!(nfa.start_state, 0);
-        assert_eq!(nfa.end_state, 19);
+        assert_eq!(nfa.start_state, 0.into());
+        assert_eq!(nfa.end_state, 19.into());
         assert_eq!(nfa.states.len(), 20);
     }
 
@@ -653,12 +702,12 @@ mod tests {
         let pattern = r"\d{4}-\d{2}-\d{2}";
         let terminal = 1;
         let lookahead = Lookahead::positive(r"\w+".to_string()).unwrap();
-        let pattern = Pattern::new(pattern.to_string(), terminal).with_lookahead(lookahead);
+        let pattern = Pattern::new(pattern.to_string(), terminal.into()).with_lookahead(lookahead);
         let nfa = Nfa::build(&pattern).unwrap();
         assert!(!nfa.is_empty());
         assert_eq!(nfa.states.len(), 20);
-        assert_eq!(nfa.start_state, 0);
-        assert_eq!(nfa.end_state, 19);
+        assert_eq!(nfa.start_state, 0.into());
+        assert_eq!(nfa.end_state, 19.into());
         assert!(nfa.states[19].accept_data.is_some());
         assert!(matches!(
             nfa.states[19].accept_data.as_ref().unwrap().lookahead,
@@ -672,12 +721,12 @@ mod tests {
         let pattern = r"\d{4}-\d{2}-\d{2}";
         let terminal = 1;
         let lookahead = Lookahead::negative(r"\w+".to_string()).unwrap();
-        let pattern = Pattern::new(pattern.to_string(), terminal).with_lookahead(lookahead);
+        let pattern = Pattern::new(pattern.to_string(), terminal.into()).with_lookahead(lookahead);
         let nfa = Nfa::build(&pattern).unwrap();
         assert!(!nfa.is_empty());
         assert_eq!(nfa.states.len(), 20);
-        assert_eq!(nfa.start_state, 0);
-        assert_eq!(nfa.end_state, 19);
+        assert_eq!(nfa.start_state, 0.into());
+        assert_eq!(nfa.end_state, 19.into());
         assert!(nfa.states[19].accept_data.is_some());
         assert!(matches!(
             nfa.states[19].accept_data.as_ref().unwrap().lookahead,
@@ -689,8 +738,8 @@ mod tests {
     // Test building an NFA from multiple regex patterns
     fn test_nfa_build_from_patterns() {
         let patterns = vec![
-            Pattern::new(r"\d{4}-\d{2}-\d{2}".to_string(), 1),
-            Pattern::new(r"\w+".to_string(), 2),
+            Pattern::new(r"\d{4}-\d{2}-\d{2}".to_string(), 1.into()),
+            Pattern::new(r"\w+".to_string(), 2.into()),
         ];
         let nfa = Nfa::build_from_patterns(&patterns).unwrap();
         assert!(!nfa.is_empty());
@@ -699,7 +748,8 @@ mod tests {
             nfa.states[19].accept_data,
             Some(Pattern {
                 pattern: r"\d{4}-\d{2}-\d{2}".to_string(),
-                terminal_type: 1,
+                terminal_type: 1.into(),
+                priority: 0,
                 lookahead: Lookahead::None
             })
         );
@@ -707,7 +757,8 @@ mod tests {
             nfa.states[25].accept_data,
             Some(Pattern {
                 pattern: r"\w+".to_string(),
-                terminal_type: 2,
+                terminal_type: 2.into(),
+                priority: 1,
                 lookahead: Lookahead::None
             })
         );

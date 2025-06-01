@@ -1,7 +1,12 @@
 //! A pattern as a data structure that is used during the construction of the NFA.
 //! It contains the pattern string and the associated metadata.
 //! Metadata includes the terminal type and a possibly empty lookahead constraint.
-use crate::{Result, nfa::Nfa};
+use crate::{
+    Result,
+    dfa::Dfa,
+    ids::{TerminalID, TerminalIDBase},
+    nfa::Nfa,
+};
 
 macro_rules! parse_ident {
     ($input:ident, $name:ident) => {
@@ -14,6 +19,15 @@ macro_rules! parse_ident {
     };
 }
 
+/// The type of the automaton, which can be either an NFA or a DFA.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum AutomatonType {
+    /// The NFA type of the automaton.
+    Nfa(Nfa),
+    /// The DFA type of the automaton.
+    Dfa(Dfa),
+}
+
 /// The lookahead constraint is used to ensure that the pattern matches only if it is followed by a
 /// specific regex pattern, a so called positive lookahead. It is also possible to demand that the
 /// pattern is not followed by a specific regex pattern. In this case the lookahead is negative.
@@ -24,10 +38,10 @@ pub enum Lookahead {
     None,
     /// A positive lookahead constraint that requires the pattern to be followed by a specific regex
     /// pattern.
-    Positive(Nfa),
+    Positive(AutomatonType),
     /// A negative lookahead constraint that requires the pattern to not be followed by a specific
     /// regex pattern.
-    Negative(Nfa),
+    Negative(AutomatonType),
 }
 
 impl Lookahead {
@@ -38,9 +52,9 @@ impl Lookahead {
     pub fn positive(pattern: String) -> Result<Self> {
         // Convert the string pattern into an NFA.
         // The `usize::MAX` is used to indicate that the pattern has no associated terminal type.
-        let nfa = Nfa::build(&Pattern::new(pattern, usize::MAX))
+        let nfa = Nfa::build(&Pattern::new(pattern, TerminalIDBase::MAX.into()))
             .map_err(|e| format!("Failed to create NFA from regex pattern: {}", e))?;
-        Ok(Lookahead::Positive(nfa))
+        Ok(Lookahead::Positive(AutomatonType::Nfa(nfa)))
     }
 
     /// Creates a new negative lookahead constraint with the given regex pattern.
@@ -50,9 +64,9 @@ impl Lookahead {
     pub fn negative(pattern: String) -> Result<Self> {
         // Convert the string pattern into an NFA.
         // The `usize::MAX` is used to indicate that the pattern has no associated terminal type.
-        let nfa = Nfa::build(&Pattern::new(pattern, usize::MAX))
+        let nfa = Nfa::build(&Pattern::new(pattern, TerminalIDBase::MAX.into()))
             .map_err(|e| format!("Failed to create NFA from regex pattern: {}", e))?;
-        Ok(Lookahead::Negative(nfa))
+        Ok(Lookahead::Negative(AutomatonType::Nfa(nfa)))
     }
 
     // /// Checks if the lookahead is empty, meaning it has no constraints.
@@ -133,8 +147,14 @@ impl syn::parse::Parse for Lookahead {
 /// A pattern is a data structure that is used during the construction of the NFA.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Pattern {
+    /// The pattern string that is used to match input tokens.
     pub pattern: String,
-    pub terminal_type: usize,
+    /// The terminal type associated with the pattern.
+    pub terminal_type: TerminalID,
+    /// The priority of the pattern, used to resolve conflicts between patterns.
+    /// Patterns with priority lower value are preferred over those with higher priority value.
+    pub priority: usize,
+    /// The lookahead constraint for the pattern, which can be positive, negative, or none.
     pub lookahead: Lookahead,
 }
 
@@ -144,10 +164,11 @@ impl Pattern {
     /// # Arguments
     /// * `pattern` - The pattern string.
     /// * `terminal_type` - The terminal type associated with the pattern.
-    pub fn new(pattern: String, terminal_type: usize) -> Self {
+    pub fn new(pattern: String, terminal_type: TerminalID) -> Self {
         Self {
             pattern,
             terminal_type,
+            priority: 0, // Default priority is 0.
             lookahead: Lookahead::None,
         }
     }
@@ -160,12 +181,13 @@ impl Pattern {
         self
     }
 
-    // /// Sets the lookahead constraint for the pattern.
-    // /// # Arguments
-    // /// * `lookahead` - The lookahead constraint to set.
-    // pub fn set_lookahead(&mut self, lookahead: Lookahead) {
-    //     self.lookahead = lookahead;
-    // }
+    /// Sets the priority of the pattern.
+    /// # Arguments
+    /// * `priority` - The priority to set.
+    pub fn with_priority(mut self, priority: usize) -> Self {
+        self.priority = priority;
+        self
+    }
 }
 
 /// This is used to create a pattern from a part of a macro input.
@@ -195,8 +217,8 @@ impl syn::parse::Parse for Pattern {
         let pattern = pattern.value();
         input.parse::<syn::Token![=>]>()?;
         let token_type: syn::LitInt = input.parse()?;
-        let token_type = token_type.base10_parse()?;
-        let mut pattern = Pattern::new(pattern, token_type);
+        let token_type: TerminalIDBase = token_type.base10_parse()?;
+        let mut pattern = Pattern::new(pattern, token_type.into());
         // Check if there is a lookahead and parse it.
         if input.peek(syn::Ident) {
             // The parse implementation of the Lookahead struct will check if the ident is

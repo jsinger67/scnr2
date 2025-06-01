@@ -3,6 +3,8 @@ use std::ops::RangeInclusive;
 
 use regex_syntax::hir::HirKind;
 
+use crate::ids::{CharClassIDBase, DisjointCharClassID};
+
 /// Represents a character class with its associated characters and properties.
 #[derive(Debug, Clone)]
 pub struct CharacterClass {
@@ -12,7 +14,7 @@ pub struct CharacterClass {
     /// A list of indices of elementary character ranges that define the characters in this class.
     /// This is the result of calculating disjoint character classes.
     /// Each index corresponds to an elementary interval in the `CharacterClasses` set.
-    pub intervals: Vec<usize>,
+    pub intervals: Vec<DisjointCharClassID>,
 }
 
 impl CharacterClass {
@@ -78,7 +80,7 @@ impl CharacterClass {
     }
 
     /// Adds a disjoint interval to the character class.
-    fn add_disjoint_interval(&mut self, interval_index: usize) {
+    fn add_disjoint_interval(&mut self, interval_index: DisjointCharClassID) {
         // Check that the interval is not already present
         // This is a debug assertion to ensure that we do not add the same interval twice.
         // It is normally not expected to fail, but it is a good sanity check.
@@ -330,14 +332,14 @@ impl CharacterClasses {
             for (idx, interval) in self.intervals.iter_mut().enumerate() {
                 // Check if the character class matches the interval
                 if class.contains_interval(interval) {
-                    class.add_disjoint_interval(idx);
+                    class.add_disjoint_interval((idx as CharClassIDBase).into());
                 }
             }
         }
     }
 
     /// Retrieves the disjoint character classes for a given `HirKind`.
-    pub(crate) fn get_disjoint_classes(&self, hir_kind: &HirKind) -> &Vec<usize> {
+    pub(crate) fn get_disjoint_classes(&self, hir_kind: &HirKind) -> &Vec<DisjointCharClassID> {
         // Find the character class that matches the given HirKind
         if let Some(class) = self.classes.iter().find(|c| c.characters == *hir_kind) {
             // Return the indices of the disjoint intervals for this class
