@@ -145,7 +145,7 @@ impl syn::parse::Parse for Lookahead {
 }
 
 /// A pattern is a data structure that is used during the construction of the NFA.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct Pattern {
     /// The pattern string that is used to match input tokens.
     pub pattern: String,

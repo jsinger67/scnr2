@@ -18,24 +18,6 @@ pub struct Dfa {
 }
 
 impl Dfa {
-    /// Creates a new empty DFA.
-    pub fn new() -> Self {
-        Default::default()
-    }
-
-    /// Adds a state to the DFA.
-    ///
-    /// # Arguments
-    /// * `state` - The state to add.
-    pub fn add_state(&mut self, state: DfaState) {
-        self.states.push(state);
-    }
-
-    /// Returns the number of states in the DFA.
-    pub fn len(&self) -> usize {
-        self.states.len()
-    }
-
     /// We use a subset construction algorithm to convert an NFA to a DFA.
     /// We also convert the NFA within a possible lookahead to a DFA.
     fn try_from_nfa(nfa: &Nfa) -> Result<Self> {
@@ -99,37 +81,39 @@ impl Dfa {
             let mut dfa_state = DfaState::new();
             // Update accepting states if the epsilon closure contains the end state
             for nfa_state in nfa_states {
-                match nfa.states[*nfa_state].accept_data.as_ref() {
-                    Some(accept_data) => {
-                        // If the NFA state is accepting, add the accept data to the DFA state.
-                        let mut accept_data = accept_data.clone();
-                        // TODO: Convert the Nfa from the pattern to a Dfa too.
-                        let lookahead = std::mem::take(&mut accept_data.lookahead);
-                        match lookahead {
-                            Lookahead::None => {}
-                            Lookahead::Positive(AutomatonType::Nfa(nfa)) => {
-                                // Convert the NFA lookahead to a DFA.
-                                let dfa_lookahead = Dfa::try_from(&nfa)?;
-                                accept_data.lookahead =
-                                    Lookahead::Positive(AutomatonType::Dfa(dfa_lookahead));
-                            }
-                            Lookahead::Negative(AutomatonType::Nfa(nfa)) => {
-                                // Convert the NFA lookahead to a DFA.
-                                let dfa_lookahead = Dfa::try_from(&nfa)?;
-                                accept_data.lookahead =
-                                    Lookahead::Negative(AutomatonType::Dfa(dfa_lookahead));
-                            }
-                            _ => {
-                                panic!(
-                                    "Unexpected lookahead type in DFA conversion: {:?}",
-                                    lookahead
-                                );
-                            }
+                if let Some(accept_data) = nfa.states[*nfa_state].accept_data.as_ref() {
+                    // If the NFA state is accepting, add the accept data to the DFA state.
+                    let mut accept_data = accept_data.clone();
+                    // Convert the Nfa of the pattern's lookahead to a Dfa too.
+                    let lookahead = std::mem::take(&mut accept_data.lookahead);
+                    match lookahead {
+                        Lookahead::None => {}
+                        Lookahead::Positive(AutomatonType::Nfa(nfa)) => {
+                            // Convert the NFA in the lookahead to a DFA.
+                            let dfa_lookahead = Dfa::try_from(&nfa)?;
+                            accept_data.lookahead =
+                                Lookahead::Positive(AutomatonType::Dfa(dfa_lookahead));
                         }
-                        // Add the terminal id to the accepting states.
-                        dfa_state.add_accept_data(accept_data.clone());
+                        Lookahead::Negative(AutomatonType::Nfa(nfa)) => {
+                            // Convert the NFA in the lookahead to a DFA.
+                            let dfa_lookahead = Dfa::try_from(&nfa)?;
+                            accept_data.lookahead =
+                                Lookahead::Negative(AutomatonType::Dfa(dfa_lookahead));
+                        }
+                        _ => {
+                            panic!(
+                                "Unexpected lookahead type in DFA conversion: {:?}",
+                                lookahead
+                            );
+                        }
                     }
-                    None => {}
+                    // Add the accept data to the accepting states.
+                    debug_assert!(
+                        dfa_state.accept_data.is_none(),
+                        "DFA state already has accept data: {:?}",
+                        dfa_state.accept_data
+                    );
+                    dfa_state.set_accept_data(accept_data.clone());
                 }
             }
             states.push(dfa_state);
@@ -155,7 +139,7 @@ impl TryFrom<&Nfa> for Dfa {
     /// * `nfa` - The NFA to convert.
     fn try_from(nfa: &Nfa) -> Result<Self> {
         // Conversion logic from NFA to DFA goes here.
-        Ok(Self::try_from_nfa(nfa)?)
+        Self::try_from_nfa(nfa)
     }
 }
 
@@ -166,9 +150,7 @@ pub struct DfaState {
     /// The set of transitions from this state.
     pub transitions: Vec<DfaTransition>,
     /// The terminal types, the priorities and patterns if it is an accepting state.
-    /// There can be multiple accepting patterns for a state.
-    /// If the state is not accepting, this vector is empty.
-    pub accept_data: Vec<Pattern>,
+    pub accept_data: Option<Pattern>,
 }
 
 impl DfaState {
@@ -185,12 +167,12 @@ impl DfaState {
         self.transitions.push(transition);
     }
 
-    /// Adds an accept data for this state.
+    /// Set the accept data for this state.
     ///
     /// # Arguments
     /// * `accept_data` - The pattern that represents the accept data for this state.
-    pub fn add_accept_data(&mut self, accept_data: Pattern) {
-        self.accept_data.push(accept_data);
+    pub fn set_accept_data(&mut self, accept_data: Pattern) {
+        self.accept_data = Some(accept_data);
     }
 }
 

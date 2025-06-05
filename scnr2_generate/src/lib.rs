@@ -32,9 +32,6 @@ mod parser;
 /// The pattern module contains the pattern matching implementation.
 mod pattern;
 
-/// The code formatter module contains the logic to format Rust code.
-mod rust_code_formatter;
-
 /// The scanner data module.
 mod scanner_data;
 

@@ -109,6 +109,22 @@ mod tests {
 
     use super::*;
 
+    use crate::Result;
+    use std::path::Path;
+
+    use std::process::Command;
+
+    /// Tries to format the source code of a given file.
+    fn try_format(path_to_file: &Path) -> Result<()> {
+        Command::new("rustfmt")
+            .args([path_to_file])
+            .status()
+            .map(|_| ())
+            .map_err(|e| {
+                std::io::Error::new(e.kind(), format!("Failed to format file: {}", e)).into()
+            })
+    }
+
     #[test]
     fn test_generate() {
         let input = quote::quote! {
@@ -154,8 +170,7 @@ mod tests {
         println!("Temporary file created at: {:?}", temp_file.path());
 
         // Format the file (if needed)
-        crate::rust_code_formatter::try_format(temp_file.path())
-            .expect("Failed to format the temporary file");
+        try_format(temp_file.path()).expect("Failed to format the temporary file");
 
         // Load the formatted code and convert possible \r\n to \n for easier comparison
         let formatted_code = std::fs::read_to_string(temp_file.path())

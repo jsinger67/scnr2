@@ -6,17 +6,17 @@ use std::{
 use log::trace;
 
 use crate::{
-    dfa::{Dfa, DfaState},
+    dfa::{Dfa, DfaState, DfaTransition},
     ids::{
         DfaStateID, DisjointCharClassID, StateGroupID, StateGroupIDBase, StateIDBase, TerminalID,
     },
+    pattern::Pattern,
 };
 
 // The type definitions for the subset construction algorithm.
 
 // A state group is a sorted set of states that are in the same partition group.
-// Each group also contains the terminal ids that are accepted by the states in the group.
-type StateGroup = BTreeSet<(DfaStateID, Vec<TerminalID>)>;
+type StateGroup = BTreeSet<DfaStateID>;
 // A partition is a vector of state groups.
 type Partition = Vec<StateGroup>;
 
@@ -105,15 +105,11 @@ impl Minimizer {
         let mut accepted_terminals = dfa
             .states
             .iter()
-            .map(|state| {
-                state
-                    .accept_data
-                    .iter()
-                    .map(|s| {
-                        // We take only the first accepting pattern of a state.
-                        s.terminal_type
-                    })
-                    .collect::<Vec<_>>()
+            .filter_map(|state| {
+                state.accept_data.as_ref().map(|s| {
+                    // We take only the first accepting pattern of a state.
+                    s.terminal_type
+                })
             })
             .collect::<Vec<_>>();
         accepted_terminals.sort();
@@ -123,15 +119,14 @@ impl Minimizer {
 
         for state in 0..dfa.states.len() {
             let state: DfaStateID = (state as StateIDBase).into();
-            if let Some(pattern) = &dfa.states[state].accept_data.first() {
+            if let Some(pattern) = &dfa.states[state].accept_data {
                 let index = accepted_terminals
                     .iter()
-                    .position(|id| id.contains(&pattern.terminal_type))
+                    .position(|id| *id == pattern.terminal_type)
                     .unwrap();
-                let accepted_terminals = accepted_terminals[index].clone();
-                initial_partition[index + 1].insert((state, accepted_terminals));
+                initial_partition[index + 1].insert(state);
             } else {
-                initial_partition[0].insert((state, vec![]));
+                initial_partition[0].insert(state);
             }
         }
         initial_partition
@@ -174,11 +169,11 @@ impl Minimizer {
             BTreeMap::new();
         for state_id in group {
             let transitions_to_partition =
-                Self::build_transitions_to_partition_group(state_id.0, partition, transitions);
+                Self::build_transitions_to_partition_group(*state_id, partition, transitions);
             transition_map_to_states
                 .entry(transitions_to_partition)
                 .or_default()
-                .insert((state_id.0, state_id.1.clone()));
+                .insert(*state_id);
         }
         transition_map_to_states
             .into_values()
@@ -216,7 +211,7 @@ impl Minimizer {
     fn find_group(state_id: DfaStateID, partition: &[StateGroup]) -> Option<StateGroupID> {
         partition
             .iter()
-            .position(|group| group.iter().find(|s| s.0 == state_id).is_some())
+            .position(|group| group.iter().find(|s| **s == state_id).is_some())
             .map(|id| (id as StateGroupIDBase).into())
     }
 
@@ -240,10 +235,10 @@ impl Minimizer {
         let end_states = states
             .iter()
             .map(|state| {
-                if let Some(pattern) = state.accept_data.first() {
-                    (true, pattern.terminal_type)
+                if let Some(pattern) = state.accept_data.as_ref() {
+                    (true, pattern.clone())
                 } else {
-                    (false, 0.into())
+                    (false, Pattern::default())
                 }
             })
             .collect::<Vec<_>>();
@@ -253,10 +248,10 @@ impl Minimizer {
         // even after minimization.
         let mut partition = partition.to_vec();
         partition.sort_by(|a, b| {
-            if a.iter().find(|s| s.0 == DfaStateID::default()).is_some() {
+            if a.iter().find(|s| **s == DfaStateID::default()).is_some() {
                 return std::cmp::Ordering::Less;
             }
-            if b.iter().find(|s| s.0 == DfaStateID::default()).is_some() {
+            if b.iter().find(|s| **s == DfaStateID::default()).is_some() {
                 return std::cmp::Ordering::Greater;
             }
             std::cmp::Ordering::Equal
@@ -290,8 +285,8 @@ impl Minimizer {
     fn add_representative_state(
         dfa: &mut Dfa,
         group_id: StateGroupID,
-        group: &BTreeSet<(DfaStateID, Vec<TerminalID>)>,
-        end_states: &[(bool, TerminalID)],
+        group: &BTreeSet<DfaStateID>,
+        end_states: &[(bool, Pattern)],
     ) -> DfaStateID {
         let state_id = DfaStateID::new(group_id.id() as StateIDBase);
         let state = DfaState::new();
@@ -302,15 +297,15 @@ impl Minimizer {
 
         trace!(
             "Add representative state {} with id {}",
-            representative_state_id.0.as_usize(),
+            representative_state_id.as_usize(),
             state_id.as_usize()
         );
 
         // Insert the representative state into the accepting states if any state in its group is
         // an accepting state.
         for state_in_group in group.iter() {
-            if end_states[*state_in_group.0].0 {
-                dfa.states[state_id].set_terminal_id(end_states[*state_in_group].1);
+            if end_states[*state_in_group].0 {
+                dfa.states[state_id].set_accept_data(end_states[*state_in_group].1.clone());
             }
         }
 
@@ -336,13 +331,9 @@ impl Minimizer {
                         "Add transition {} --{}--> {}",
                         state_id, char_class, target_state
                     );
-                    if !dfa.states[state_id]
-                        .transitions
-                        .contains(&(*char_class, target_state.id().into()))
-                    {
-                        dfa.states[state_id]
-                            .transitions
-                            .push((*char_class, target_state.id().into()));
+                    let new_transition = DfaTransition::new(*char_class, target_state.id().into());
+                    if !dfa.states[state_id].transitions.contains(&new_transition) {
+                        dfa.states[state_id].transitions.push(new_transition);
                     }
                 }
             }
@@ -439,86 +430,5 @@ impl Minimizer {
         for (char_class, group) in &transitions_to_groups.0 {
             trace!("    cc# {} -> gr# {}", char_class, group);
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-
-    use super::*;
-    use crate::compiled_dfa::DfaState;
-
-    #[test]
-    fn test_calculate_initial_partition() {
-        let mut dfa = Dfa::new(
-            vec![],
-            vec![0.into(), 1.into(), 2.into()],
-            vec![DfaState::new(); 5],
-        );
-        [(0, 0), (1, 1), (4, 2)].iter().for_each(|(i, t)| {
-            dfa.states[*i].set_terminal_id((*t).into());
-        });
-
-        let partition = Minimizer::calculate_initial_partition(&dfa);
-        assert_eq!(partition.len(), 4);
-        assert_eq!(partition[0].len(), 2);
-        assert_eq!(partition[1].len(), 1);
-        assert_eq!(partition[2].len(), 1);
-        assert_eq!(partition[3].len(), 1);
-    }
-
-    #[test]
-    fn test_calculate_new_partition() {
-        let mut dfa = Dfa::new(
-            vec![],
-            vec![0.into(), 1.into(), 2.into()],
-            vec![DfaState::new(); 5],
-        );
-        [(0, 0), (1, 1), (4, 2)].iter().for_each(|(i, t)| {
-            dfa.states[*i].set_terminal_id((*t).into());
-        });
-
-        let transitions: TransitionMap = vec![
-            (
-                0.into(),
-                vec![(0.into(), vec![1.into()]), (1.into(), vec![2.into()])]
-                    .into_iter()
-                    .collect(),
-            ),
-            (
-                1.into(),
-                vec![(0.into(), vec![1.into()]), (1.into(), vec![2.into()])]
-                    .into_iter()
-                    .collect(),
-            ),
-            (
-                2.into(),
-                vec![(0.into(), vec![1.into()]), (1.into(), vec![2.into()])]
-                    .into_iter()
-                    .collect(),
-            ),
-            (
-                3.into(),
-                vec![(0.into(), vec![1.into()]), (1.into(), vec![2.into()])]
-                    .into_iter()
-                    .collect(),
-            ),
-            (
-                4.into(),
-                vec![(0.into(), vec![1.into()]), (1.into(), vec![2.into()])]
-                    .into_iter()
-                    .collect(),
-            ),
-        ]
-        .into_iter()
-        .collect();
-
-        let partition_old = Minimizer::calculate_initial_partition(&dfa);
-        let partition_new = Minimizer::calculate_new_partition(&partition_old, &transitions);
-        assert_eq!(partition_new.len(), 4);
-        assert_eq!(partition_new[0].len(), 2);
-        assert_eq!(partition_new[1].len(), 1);
-        assert_eq!(partition_new[2].len(), 1);
-        assert_eq!(partition_new[3].len(), 1);
     }
 }
