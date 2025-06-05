@@ -8,7 +8,7 @@ use std::ops::RangeInclusive;
 use crate::{
     Result,
     character_classes::CharacterClasses,
-    ids::{CharClassID, DisjointCharClassID, NfaStateID, StateIDBase},
+    ids::{DisjointCharClassID, NfaStateID, StateIDBase},
     pattern::{AutomatonType, Lookahead, Pattern},
 };
 use regex_syntax::hir::{Hir, HirKind, Look};

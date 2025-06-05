@@ -7,9 +7,7 @@ use log::trace;
 
 use crate::{
     dfa::{Dfa, DfaState, DfaTransition},
-    ids::{
-        DfaStateID, DisjointCharClassID, StateGroupID, StateGroupIDBase, StateIDBase, TerminalID,
-    },
+    ids::{DfaStateID, DisjointCharClassID, StateGroupID, StateGroupIDBase, StateIDBase},
     pattern::Pattern,
 };
 
@@ -66,7 +64,7 @@ impl Minimizer {
                 t_of_s
                     .entry(t.elementary_interval_index)
                     .or_default()
-                    .push(t.target.into());
+                    .push(t.target);
                 t_of_s.get_mut(&t.elementary_interval_index).unwrap().sort();
                 t_of_s
                     .get_mut(&t.elementary_interval_index)
@@ -211,7 +209,7 @@ impl Minimizer {
     fn find_group(state_id: DfaStateID, partition: &[StateGroup]) -> Option<StateGroupID> {
         partition
             .iter()
-            .position(|group| group.iter().find(|s| **s == state_id).is_some())
+            .position(|group| group.iter().any(|s| *s == state_id))
             .map(|id| (id as StateGroupIDBase).into())
     }
 
@@ -248,10 +246,10 @@ impl Minimizer {
         // even after minimization.
         let mut partition = partition.to_vec();
         partition.sort_by(|a, b| {
-            if a.iter().find(|s| **s == DfaStateID::default()).is_some() {
+            if a.iter().any(|s| *s == DfaStateID::default()) {
                 return std::cmp::Ordering::Less;
             }
-            if b.iter().find(|s| **s == DfaStateID::default()).is_some() {
+            if b.iter().any(|s| *s == DfaStateID::default()) {
                 return std::cmp::Ordering::Greater;
             }
             std::cmp::Ordering::Equal

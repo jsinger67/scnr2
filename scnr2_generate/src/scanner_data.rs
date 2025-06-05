@@ -100,7 +100,7 @@ impl syn::parse::Parse for ScannerModeWithNamedTransitions {
                 if new_mode.is_empty() {
                     return Err(content.error("expected a mode name"));
                 }
-                transitions.push((token_type.into(), new_mode));
+                transitions.push((token_type, new_mode));
                 // Parse the semicolon at the end of the transition.
                 if content.peek(syn::Token![;]) {
                     content.parse::<syn::Token![;]>()?;
