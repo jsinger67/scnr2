@@ -26,9 +26,6 @@ mod minimizer;
 /// The nfa module contains the NFA implementation.
 mod nfa;
 
-/// The parser module contains the regex syntax parser.
-mod parser;
-
 /// The pattern module contains the pattern matching implementation.
 mod pattern;
 

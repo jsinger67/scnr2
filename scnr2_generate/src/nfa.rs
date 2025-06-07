@@ -663,7 +663,7 @@ fn char_to_bytes(c: char) -> Vec<u8> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{parser::parse_regex, pattern::Lookahead};
+    use crate::pattern::Lookahead;
 
     use super::*;
 
@@ -836,7 +836,7 @@ mod tests {
         #[case] elementary_intervals: &[std::ops::RangeInclusive<char>],
     ) {
         let mut character_classes = CharacterClasses::new();
-        let hir = parse_regex(regex).unwrap();
+        let hir = regex_syntax::parse(regex).unwrap();
         let mut nfa: Nfa = Nfa::try_from_hir(hir).unwrap();
         nfa.collect_character_classes(&mut character_classes);
         character_classes.create_disjoint_character_classes();
