@@ -167,14 +167,6 @@ impl DfaState {
         Default::default()
     }
 
-    /// Adds a transition to this state.
-    ///
-    /// # Arguments
-    /// * `transition` - The transition to add.
-    pub fn add_transition(&mut self, transition: DfaTransition) {
-        self.transitions.push(transition);
-    }
-
     /// Set the accept data for this state.
     ///
     /// # Arguments

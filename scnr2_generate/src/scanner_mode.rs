@@ -50,9 +50,4 @@ impl ScannerMode {
             transitions,
         }
     }
-
-    /// Returns the name of the scanner mode.
-    pub fn name(&self) -> &str {
-        &self.name
-    }
 }

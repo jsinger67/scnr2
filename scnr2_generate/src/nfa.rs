@@ -408,36 +408,36 @@ impl Nfa {
         target_states
     }
 
-    /// Calculate move(T, a) for a set of states T and a character class a.
-    /// This is the set of states that can be reached from T by matching a.
-    pub(crate) fn move_set(&self, states: &[NfaStateID], char_class: &Hir) -> Vec<NfaStateID> {
-        let mut move_set = Vec::new();
-        for state in states {
-            if let Some(state) = self.find_state(*state) {
-                for transition in state.transitions() {
-                    if let Some(symbol) = transition.character_class.as_ref() {
-                        if let CharacterClassType::HirKind(hir_kind) = symbol {
-                            // If the transition matches the character class, check if it matches
-                            // the given character class.
-                            if hir_kind == char_class.kind() {
-                                move_set.push(transition.target);
-                            }
-                        } else if let CharacterClassType::Range(range) = symbol {
-                            panic!(
-                                "Character class ranges are not supported in NFA move_set: {:?}",
-                                range
-                            );
-                        }
-                    }
-                }
-            } else {
-                panic!("State not found: {:?}", state);
-            }
-        }
-        move_set.sort_unstable();
-        move_set.dedup();
-        move_set
-    }
+    // /// Calculate move(T, a) for a set of states T and a character class a.
+    // /// This is the set of states that can be reached from T by matching a.
+    // pub(crate) fn move_set(&self, states: &[NfaStateID], char_class: &Hir) -> Vec<NfaStateID> {
+    //     let mut move_set = Vec::new();
+    //     for state in states {
+    //         if let Some(state) = self.find_state(*state) {
+    //             for transition in state.transitions() {
+    //                 if let Some(symbol) = transition.character_class.as_ref() {
+    //                     if let CharacterClassType::HirKind(hir_kind) = symbol {
+    //                         // If the transition matches the character class, check if it matches
+    //                         // the given character class.
+    //                         if hir_kind == char_class.kind() {
+    //                             move_set.push(transition.target);
+    //                         }
+    //                     } else if let CharacterClassType::Range(range) = symbol {
+    //                         panic!(
+    //                             "Character class ranges are not supported in NFA move_set: {:?}",
+    //                             range
+    //                         );
+    //                     }
+    //                 }
+    //             }
+    //         } else {
+    //             panic!("State not found: {:?}", state);
+    //         }
+    //     }
+    //     move_set.sort_unstable();
+    //     move_set.dedup();
+    //     move_set
+    // }
 
     fn find_state(&self, state: NfaStateID) -> Option<&NfaState> {
         self.states.iter().find(|s| s.id == state)

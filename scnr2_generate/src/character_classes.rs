@@ -217,16 +217,6 @@ impl CharacterClasses {
         self.classes.push(new_class);
     }
 
-    /// Adds a new interval to the set of disjoint intervals.
-    pub(crate) fn add_interval(&mut self, interval: RangeInclusive<char>) {
-        // Check if the interval is already present
-        if self.intervals.iter().any(|i| i == &interval) {
-            return; // Interval already exists, no need to add it again
-        }
-        // Add the new interval to the set
-        self.intervals.push(interval);
-    }
-
     /// Creates disjoint character classes from the NFA states and lookahead patterns.
     /// This function collects all character classes from the NFA states and lookahead patterns,
     /// then generates disjoint intervals for each character class.
