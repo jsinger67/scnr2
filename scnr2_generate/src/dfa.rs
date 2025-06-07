@@ -21,6 +21,19 @@ impl Dfa {
     /// We use a subset construction algorithm to convert an NFA to a DFA.
     /// We also convert the NFA within a possible lookahead to a DFA.
     fn try_from_nfa(nfa: &Nfa) -> Result<Self> {
+        match Self::try_from_nfa_not_minimized(nfa) {
+            Ok(dfa) => {
+                // Minimize the DFA.
+                let minimized_dfa = Minimizer::minimize(dfa);
+                Ok(minimized_dfa)
+            }
+            Err(e) => Err(e),
+        }
+    }
+
+    /// Converts an NFA to a DFA without minimizing it.
+    /// This is useful for debugging and testing purposes.
+    pub(crate) fn try_from_nfa_not_minimized(nfa: &Nfa) -> Result<Self> {
         // A temporary map to store the state ids of the sets of states.
         let mut state_map: FxHashMap<BTreeSet<NfaStateID>, DfaStateID> = FxHashMap::default();
         // A temporary set to store the transitions of the CompiledDfa.
@@ -76,12 +89,12 @@ impl Dfa {
             }
         }
         // The transitions of the CompiledDfa.
-        let mut states: Vec<DfaState> = Vec::with_capacity(state_map.len());
-        for (nfa_states, _) in state_map.iter() {
-            let mut dfa_state = DfaState::new();
+        let mut states: Vec<DfaState> = vec![DfaState::default(); state_map.len()];
+        for (nfa_states, dfa_id) in state_map.iter() {
             // Update accepting states if the epsilon closure contains the end state
             for nfa_state in nfa_states {
                 if let Some(accept_data) = nfa.states[*nfa_state].accept_data.as_ref() {
+                    let dfa_state = &mut states[*dfa_id];
                     // If the NFA state is accepting, add the accept data to the DFA state.
                     let mut accept_data = accept_data.clone();
                     // Convert the Nfa of the pattern's lookahead to a Dfa too.
@@ -113,20 +126,15 @@ impl Dfa {
                         "DFA state already has accept data: {:?}",
                         dfa_state.accept_data
                     );
-                    dfa_state.set_accept_data(accept_data.clone());
+                    dfa_state.set_accept_data(accept_data);
                 }
             }
-            states.push(dfa_state);
         }
         for (from, cc, to) in transitions {
             states[from].transitions.push(DfaTransition::new(cc, to));
         }
         // Create the CompiledDfa from the states and patterns.
-        let mut dfa = Dfa { states };
-        // Minimize the CompiledDfa.
-        dfa = Minimizer::minimize(dfa);
-
-        Ok(dfa)
+        Ok(Dfa { states })
     }
 }
 

@@ -56,22 +56,7 @@ impl Minimizer {
         trace!("Minimize DFA ----------------------------");
         trace!("Initial DFA:\n{:?}", dfa);
         // The transitions of the DFA in a convenient data structure.
-        let mut transitions = TransitionMap::new();
-        dfa.states.iter().enumerate().for_each(|(id, state)| {
-            transitions.entry((id as StateIDBase).into()).or_default();
-            for t in &state.transitions {
-                let t_of_s = transitions.get_mut(&(id as StateIDBase).into()).unwrap();
-                t_of_s
-                    .entry(t.elementary_interval_index)
-                    .or_default()
-                    .push(t.target);
-                t_of_s.get_mut(&t.elementary_interval_index).unwrap().sort();
-                t_of_s
-                    .get_mut(&t.elementary_interval_index)
-                    .unwrap()
-                    .dedup();
-            }
-        });
+        let transitions = Self::calculate_transitions(&dfa);
 
         trace!("Transitions: {:?}", transitions);
 
@@ -428,5 +413,140 @@ impl Minimizer {
         for (char_class, group) in &transitions_to_groups.0 {
             trace!("    cc# {} -> gr# {}", char_class, group);
         }
+    }
+
+    /// Transform the transitions of a DFA into a map that groups transitions via character class
+    /// by state ids.
+    fn calculate_transitions(
+        dfa: &Dfa,
+    ) -> BTreeMap<DfaStateID, BTreeMap<DisjointCharClassID, Vec<DfaStateID>>> {
+        let mut transitions = TransitionMap::new();
+        dfa.states.iter().enumerate().for_each(|(id, state)| {
+            transitions.entry((id as StateIDBase).into()).or_default();
+            for t in &state.transitions {
+                let t_of_s = transitions.get_mut(&(id as StateIDBase).into()).unwrap();
+                t_of_s
+                    .entry(t.elementary_interval_index)
+                    .or_default()
+                    .push(t.target);
+                t_of_s.get_mut(&t.elementary_interval_index).unwrap().sort();
+                t_of_s
+                    .get_mut(&t.elementary_interval_index)
+                    .unwrap()
+                    .dedup();
+            }
+        });
+        transitions
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{character_classes::CharacterClasses, nfa::Nfa, pattern::Pattern};
+
+    use super::*;
+
+    #[test]
+    fn test_calculate_initial_partition() {
+        let pattern = Pattern::new(r"(A*B|AC)D".to_string(), 0.into());
+        let mut nfa: Nfa = Nfa::build(&pattern).unwrap();
+        assert_eq!(nfa.start_state.as_usize(), 9);
+        assert_eq!(nfa.end_state.as_usize(), 12);
+        assert_eq!(nfa.states.len(), 13);
+        let accepting_states = nfa
+            .states
+            .iter()
+            .filter(|s| s.accept_data.is_some())
+            .count();
+        assert_eq!(accepting_states, 1); // Example: 1 accepting state
+
+        let mut character_classes = CharacterClasses::new();
+        nfa.collect_character_classes(&mut character_classes);
+        assert_eq!(character_classes.classes.len(), 4); // Example: 4 character classes
+
+        character_classes.create_disjoint_character_classes();
+        assert_eq!(character_classes.intervals.len(), 4); // Example: 4 disjoint classes
+
+        // eprintln!("Nfa: {:#?}", nfa);
+
+        nfa.convert_to_disjoint_character_classes(&character_classes);
+
+        // eprintln!("Nfa: {:#?}", nfa);
+
+        assert_eq!(nfa.states.len(), 13);
+        let transition_count = nfa
+            .states
+            .iter()
+            .map(|s| s.transitions.len())
+            .sum::<usize>();
+        assert_eq!(transition_count, 15); // Example: 15 transitions
+
+        let dfa = Dfa::try_from_nfa_not_minimized(&nfa).unwrap();
+        assert_eq!(dfa.states.len(), 6); // Example: 5 states in the DFA
+        let accepting_states = dfa
+            .states
+            .iter()
+            .filter(|s| s.accept_data.is_some())
+            .count();
+        assert_eq!(accepting_states, 1); // Example: 1 accepting state
+
+        let partition = Minimizer::calculate_initial_partition(&dfa);
+        // eprintln!("Initial partition: {:#?}", partition);
+        assert_eq!(partition.len(), 2);
+    }
+
+    #[test]
+    fn test_calculate_new_partition() {
+        let pattern = Pattern::new(r"(A*B|AC)D".to_string(), 0.into());
+        let mut nfa: Nfa = Nfa::build(&pattern).unwrap();
+
+        let mut character_classes = CharacterClasses::new();
+        nfa.collect_character_classes(&mut character_classes);
+        character_classes.create_disjoint_character_classes();
+
+        nfa.convert_to_disjoint_character_classes(&character_classes);
+
+        let dfa = Dfa::try_from_nfa_not_minimized(&nfa).unwrap();
+        let initial_partition = Minimizer::calculate_initial_partition(&dfa);
+        // eprintln!("Initial partition: {:#?}", initial_partition);
+
+        let transitions = Minimizer::calculate_transitions(&dfa);
+        // eprintln!("Transitions: {:#?}", transitions);
+        assert!(!transitions.is_empty());
+        assert_eq!(transitions.len(), 6); // Example: 6 states in the DFA
+
+        let new_partition = Minimizer::calculate_new_partition(&initial_partition, &transitions);
+        // eprintln!("New partition: {:#?}", new_partition);
+        assert_eq!(new_partition.len(), 4); // Example: 4 groups in the new partition
+    }
+
+    #[test]
+    fn test_minimize_dfa() {
+        let pattern = Pattern::new(r"(A*B|AC)D".to_string(), 0.into());
+        let mut nfa: Nfa = Nfa::build(&pattern).unwrap();
+
+        let mut character_classes = CharacterClasses::new();
+        nfa.collect_character_classes(&mut character_classes);
+        character_classes.create_disjoint_character_classes();
+        // eprintln!("Character classes: {:#?}", character_classes);
+
+        nfa.convert_to_disjoint_character_classes(&character_classes);
+
+        let dfa = Dfa::try_from_nfa_not_minimized(&nfa).unwrap();
+        // eprintln!("DFA: {:#?}", dfa);
+        assert_eq!(dfa.states.len(), 6); // Example: 6 states in the DFA
+
+        let minimized_dfa = Minimizer::minimize(dfa);
+        // eprintln!("Minimized DFA: {:#?}", minimized_dfa);
+        assert_eq!(minimized_dfa.states.len(), 5); // Example: 5 states in the minimized DFA
+
+        let accepting_states = minimized_dfa
+            .states
+            .iter()
+            .filter(|s| s.accept_data.is_some())
+            .count();
+        assert_eq!(accepting_states, 1); // Example: 1 accepting state
+
+        assert!(minimized_dfa.states[4].accept_data.is_some());
     }
 }

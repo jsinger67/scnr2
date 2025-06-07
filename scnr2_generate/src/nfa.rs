@@ -147,7 +147,7 @@ impl Nfa {
     /// An `Nfa` that represents the NFA of the regex pattern.
     pub fn build(pattern: &Pattern) -> Result<Self> {
         let hir = regex_syntax::parse(&pattern.pattern)?;
-        match Nfa::try_from(hir) {
+        match Nfa::try_from_hir(hir) {
             Ok(mut nfa) => {
                 // Set the terminal type and pattern for the end state
                 if let Some(end_state) = nfa.states.get_mut(nfa.end_state.as_usize()) {
@@ -503,7 +503,6 @@ impl Nfa {
     pub fn convert_to_disjoint_character_classes(&mut self, character_classes: &CharacterClasses) {
         // Replace the transitions in the NFA with the disjoint character classes.
         for state in &mut self.states {
-            state.transitions.retain(|t| t.character_class.is_some());
             // Take all transitions from the state and convert each of them to possibly multiple
             // disjoint character classes.
             let old_transitions = std::mem::take(&mut state.transitions);
@@ -539,17 +538,14 @@ impl Nfa {
                 .collect();
         }
     }
-}
-
-impl TryFrom<Hir> for Nfa {
-    type Error = Box<dyn std::error::Error>;
 
     /// Converts a high-level intermediate representation (HIR) into an NFA.
+    /// Internal method that recursively builds the NFA from the HIR.
     /// # Arguments
     /// * `hir` - The high-level intermediate representation (HIR) of the regex syntax.
     /// # Returns
     /// An `Nfa` that represents the NFA of the regex syntax.
-    fn try_from(hir: Hir) -> Result<Self> {
+    fn try_from_hir(hir: Hir) -> Result<Self> {
         let mut nfa = Nfa::new();
         match hir.kind() {
             HirKind::Empty => Ok(nfa),
@@ -618,7 +614,7 @@ impl TryFrom<Hir> for Nfa {
                         hir
                     ))?;
                 }
-                let nfa2: Nfa = Self::try_from((*repetition.sub).clone())?;
+                let nfa2: Nfa = Self::try_from_hir((*repetition.sub).clone())?;
                 // At least min repetitions
                 for _ in 0..repetition.min {
                     nfa.concat(nfa2.clone());
@@ -639,19 +635,19 @@ impl TryFrom<Hir> for Nfa {
                 Ok(nfa)
             }
             HirKind::Capture(capture) => {
-                let nfa = Self::try_from((*capture.sub).clone())?;
+                let nfa = Self::try_from_hir((*capture.sub).clone())?;
                 Ok(nfa)
             }
             HirKind::Concat(hirs) => {
                 for hir in hirs.iter() {
-                    let nfa2: Nfa = Self::try_from(hir.clone())?;
+                    let nfa2: Nfa = Self::try_from_hir(hir.clone())?;
                     nfa.concat(nfa2);
                 }
                 Ok(nfa)
             }
             HirKind::Alternation(hirs) => {
                 for hir in hirs.iter() {
-                    let nfa2: Nfa = Self::try_from(hir.clone())?;
+                    let nfa2: Nfa = Self::try_from_hir(hir.clone())?;
                     nfa.alternation(nfa2);
                 }
                 Ok(nfa)
@@ -674,7 +670,7 @@ mod tests {
     #[test]
     fn test_nfa_from_hir() {
         let hir = regex_syntax::parse(r"\d").unwrap();
-        let nfa: Nfa = Nfa::try_from(hir).unwrap();
+        let nfa: Nfa = Nfa::try_from_hir(hir).unwrap();
         // assert_eq!(nfa.pattern, r"\d");
         assert_eq!(nfa.states.len(), 2);
         assert_eq!(nfa.start_state, 0.into());
@@ -841,7 +837,7 @@ mod tests {
     ) {
         let mut character_classes = CharacterClasses::new();
         let hir = parse_regex(regex).unwrap();
-        let mut nfa: Nfa = hir.try_into().unwrap();
+        let mut nfa: Nfa = Nfa::try_from_hir(hir).unwrap();
         nfa.collect_character_classes(&mut character_classes);
         character_classes.create_disjoint_character_classes();
         nfa.convert_to_disjoint_character_classes(&character_classes);
