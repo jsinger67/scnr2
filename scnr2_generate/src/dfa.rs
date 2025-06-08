@@ -20,7 +20,7 @@ pub struct Dfa {
 impl Dfa {
     /// We use a subset construction algorithm to convert an NFA to a DFA.
     /// We also convert the NFA within a possible lookahead to a DFA.
-    fn try_from_nfa(nfa: &Nfa) -> Result<Self> {
+    pub(crate) fn try_from_nfa(nfa: &Nfa) -> Result<Self> {
         match Self::try_from_nfa_not_minimized(nfa) {
             Ok(dfa) => {
                 // Minimize the DFA.
@@ -121,11 +121,6 @@ impl Dfa {
                         }
                     }
                     // Add the accept data to the accepting states.
-                    debug_assert!(
-                        dfa_state.accept_data.is_none(),
-                        "DFA state already has accept data: {:?}",
-                        dfa_state.accept_data
-                    );
                     dfa_state.set_accept_data(accept_data);
                 }
             }

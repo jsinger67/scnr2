@@ -536,6 +536,23 @@ impl Nfa {
                     }
                 })
                 .collect();
+
+            // Convert possible accepting states with lookahead patterns to disjoint character classes.
+            if let Some(accept_data) = &mut state.accept_data {
+                match &mut accept_data.lookahead {
+                    Lookahead::Positive(lookahead_nfa) | Lookahead::Negative(lookahead_nfa) => {
+                        match lookahead_nfa {
+                            AutomatonType::Nfa(lookahead_nfa) => {
+                                // Convert the lookahead NFA transitions to disjoint character classes.
+                                lookahead_nfa
+                                    .convert_to_disjoint_character_classes(character_classes);
+                            }
+                            _ => panic!("Lookahead is not an NFA: {:?}", lookahead_nfa),
+                        }
+                    }
+                    _ => (),
+                }
+            }
         }
     }
 
