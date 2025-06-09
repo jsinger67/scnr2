@@ -2,12 +2,14 @@
     "cSpell.words": [
         "bfnt",
         "codegen",
-        "daaf",
         "hirs",
         "lookaheads",
         "nfas",
         "peekable",
         "rstest",
         "scnr"
+    ],
+    "cSpell.ignoreRegExpList": [
+        "\\u\\{[0-9a-f]+\\}"
     ]
 }
