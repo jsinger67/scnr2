@@ -776,12 +776,28 @@ mod tests {
             })
         );
         // There should be one accepting state for each pattern
-        assert_eq!(
+        assert!(
             nfa.states
                 .iter()
                 .filter(|s| s.accept_data.is_some())
-                .count(),
-            patterns.len()
+                .count()
+                >= patterns.len()
+        );
+
+        // There should be at least one accepting state for each pattern
+        let mut terminals = nfa
+            .states
+            .iter()
+            .filter_map(|s| s.accept_data.as_ref().map(|ad| ad.terminal_type))
+            .collect::<Vec<_>>();
+        terminals.sort();
+        terminals.dedup();
+
+        assert!(
+            patterns
+                .iter()
+                .all(|p| { terminals.contains(&p.terminal_type) }),
+            "NFA should have accepting states for all patterns"
         );
     }
 
