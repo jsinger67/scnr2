@@ -38,7 +38,7 @@ impl ScannerModeWithNamedTransitions {
             let new_mode_id = scanner_names
                 .iter()
                 .position(|name| name == new_mode)
-                .expect("Scanner mode not found");
+                .unwrap_or_else(|| panic!("Scanner mode '{}' not found", new_mode));
             transitions.push((*token_type, new_mode_id));
         }
         transitions.sort_by_key(|(token_type, _)| *token_type);

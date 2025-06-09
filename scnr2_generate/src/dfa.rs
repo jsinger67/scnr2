@@ -158,7 +158,7 @@ impl ToTokens for Dfa {
         let states = self.states.iter().map(|s| s.to_token_stream());
         tokens.extend(quote! {
             Dfa {
-                states: vec![#(#states),*],
+                states: &[#(#states),*],
             }
         });
     }
@@ -201,7 +201,7 @@ impl ToTokens for DfaState {
             .map_or_else(|| quote! { None }, |ad| quote! { Some(#ad) });
         tokens.extend(quote! {
             DfaState {
-                transitions: vec![#(#transitions),*],
+                transitions: &[#(#transitions),*],
                 accept_data: #accept_data,
             }
         });
