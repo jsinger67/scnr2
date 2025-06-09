@@ -224,7 +224,7 @@ impl CharacterClasses {
         }
 
         // Step 4: Group adjacent intervals with identical membership
-        let mut grouped_intervals = Vec::new();
+        let mut grouped_intervals: Vec<Vec<RangeInclusive<char>>> = Vec::new();
         let mut membership_to_group_idx: std::collections::HashMap<Vec<usize>, usize> =
             std::collections::HashMap::new();
 
@@ -232,21 +232,8 @@ impl CharacterClasses {
             let membership_key = membership.clone();
 
             if let Some(&group_idx) = membership_to_group_idx.get(&membership_key) {
-                // This membership pattern already exists, check if we can merge with the last interval
-                let last_group: &mut Vec<std::ops::RangeInclusive<char>> =
-                    &mut grouped_intervals[group_idx];
-                let last_interval = last_group.last().unwrap();
-
-                // Check if intervals are adjacent
-                if char::from_u32((*last_interval.end() as u32) + 1) == Some(*interval.start()) {
-                    // Merge with the last interval
-                    let new_merged = *last_interval.start()..=*interval.end();
-                    last_group.pop();
-                    last_group.push(new_merged);
-                } else {
-                    // Not adjacent, just add to the existing group
-                    grouped_intervals[group_idx].push(interval);
-                }
+                // This membership pattern already exists
+                grouped_intervals[group_idx].push(interval);
             } else {
                 // New membership pattern
                 membership_to_group_idx.insert(membership_key, grouped_intervals.len());
