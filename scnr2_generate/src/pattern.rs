@@ -7,6 +7,8 @@ use crate::{
     ids::{TerminalID, TerminalIDBase},
     nfa::Nfa,
 };
+use proc_macro2::TokenStream;
+use quote::{ToTokens, quote};
 
 macro_rules! parse_ident {
     ($input:ident, $name:ident) => {
@@ -144,6 +146,22 @@ impl syn::parse::Parse for Lookahead {
     }
 }
 
+impl ToTokens for Lookahead {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let lookahead_tokens = match self {
+            Lookahead::None => quote! { Lookahead::None },
+            Lookahead::Positive(AutomatonType::Dfa(dfa)) => {
+                quote! { Lookahead::Positive(#dfa) }
+            }
+            Lookahead::Negative(AutomatonType::Dfa(dfa)) => {
+                quote! { Lookahead::Negative(#dfa) }
+            }
+            _ => panic!("Unexpected lookahead type in Lookahead: {:?}", self),
+        };
+        tokens.extend(lookahead_tokens);
+    }
+}
+
 /// A pattern is a data structure that is used during the construction of the NFA.
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct Pattern {
@@ -234,5 +252,22 @@ impl syn::parse::Parse for Pattern {
             return Err(input.error("expected ';'"));
         }
         Ok(pattern)
+    }
+}
+
+impl ToTokens for Pattern {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let Pattern {
+            terminal_type,
+            lookahead,
+            ..
+        } = self;
+        let terminal_type = terminal_type.as_usize().to_token_stream();
+        tokens.extend(quote! {
+            AcceptData {
+                token_type: #terminal_type,
+                lookahead: #lookahead,
+            }
+        });
     }
 }

@@ -1,3 +1,5 @@
+use proc_macro2::TokenStream;
+use quote::{ToTokens, quote};
 use std::collections::{BTreeSet, VecDeque};
 
 use rustc_hash::{FxHashMap, FxHashSet};
@@ -146,6 +148,17 @@ impl TryFrom<&Nfa> for Dfa {
     }
 }
 
+impl ToTokens for Dfa {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let states = self.states.iter().map(|s| s.to_token_stream());
+        tokens.extend(quote! {
+            Dfa {
+                states: vec![#(#states),*],
+            }
+        });
+    }
+}
+
 /// Represents a state in the DFA.
 /// The id of the state is the index in the `states` vector of the DFA.
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
@@ -171,6 +184,26 @@ impl DfaState {
     }
 }
 
+impl ToTokens for DfaState {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let DfaState {
+            transitions,
+            accept_data,
+        } = self;
+        let transitions = transitions.iter().map(|t| t.to_token_stream());
+        let accept_data = accept_data
+            .as_ref()
+            .map(|ad| ad.to_token_stream())
+            .unwrap_or_default();
+        tokens.extend(quote! {
+            DfaState {
+                transitions: vec![#(#transitions),*],
+                accept_data: #accept_data,
+            }
+        });
+    }
+}
+
 /// Represents a transition in the DFA.
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct DfaTransition {
@@ -192,5 +225,22 @@ impl DfaTransition {
             elementary_interval_index,
             target,
         }
+    }
+}
+
+impl ToTokens for DfaTransition {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let DfaTransition {
+            elementary_interval_index,
+            target,
+        } = self;
+        let elementary_interval_index = elementary_interval_index.as_usize().to_token_stream();
+        let target = target.as_usize().to_token_stream();
+        tokens.extend(quote! {
+            DfaTransition {
+                char_class: #elementary_interval_index,
+                to: #target,
+            }
+        });
     }
 }

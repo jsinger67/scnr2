@@ -51,7 +51,7 @@ pub enum CharacterClassType {
     /// An elementary, non-overlapping character range in the form of a range of characters plus
     /// the index of the elementary interval in the character class.
     /// After calculating disjoint character classes, this is used.
-    Range((RangeInclusive<char>, DisjointCharClassID)),
+    Range((Vec<RangeInclusive<char>>, DisjointCharClassID)),
 }
 
 /// Represents a transition in the NFA.
@@ -791,34 +791,32 @@ mod tests {
             r"[a-f][0-9a-f]",
             // elementary_intervals
             &[
-                '0'..='9',
-                'a'..='f',
+                vec!['0'..='9'],
+                vec!['a'..='f'],
             ])]
     #[case::c2(
             // regex
             r"[a-f]",
             // elementary_intervals
             &[
-                'a'..='f'
+                vec!['a'..='f']
             ])]
     #[case::c3(
             // regex
             r"[0-9]+(_[0-9]+)*\.[0-9]+(_[0-9]+)*[eE][+-]?[0-9]+(_[0-9]+)*",
             // elementary_intervals
             &[
-                '+'..='+',
-                '-'..='-',
-                '.'..='.',
-                '0'..='9',
-                'E'..='E',
-                '_'..='_',
-                'e'..='e'
+                vec!['+'..='+', '-'..='-'],
+                vec!['.'..='.'],
+                vec!['0'..='9'],
+                vec!['E'..='E', 'e'..='e'],
+                vec!['_'..='_'],
             ])]
     #[case::c4(
             // regex
             r"[\s--\r\n]+",
             // elementary_intervals
-            &[
+            &[vec![
                 '\t'..='\t',
                 '\u{b}'..='\u{c}',
                 ' '..=' ',
@@ -830,27 +828,27 @@ mod tests {
                 '\u{202f}'..='\u{202f}',
                 '\u{205f}'..='\u{205f}',
                 '\u{3000}'..='\u{3000}'
-            ])]
+            ]])]
     #[case::c5(
             // regex
             r"\+=|-=|\*=|/=|%=|&=|\\|=|\^=|<<=|>>=|<<<=|>>>=",
             // elementary_intervals
             &[
-                '%'..='%',
-                '&'..='&',
-                '*'..='*',
-                '+'..='+',
-                '-'..='-',
-                '/'..='/',
-                '<'..='<',
-                '='..='=',
-                '>'..='>',
-                '\\'..='\\',
-                '^'..='^'
+                vec!['%'..='%'],
+                vec!['&'..='&'],
+                vec!['*'..='*'],
+                vec!['+'..='+'],
+                vec!['-'..='-'],
+                vec!['/'..='/'],
+                vec!['<'..='<'],
+                vec!['='..='='],
+                vec!['>'..='>'],
+                vec!['\\'..='\\'],
+                vec!['^'..='^']
             ])]
     fn test_create_disjoint_character_classes(
         #[case] regex: &'static str,
-        #[case] elementary_intervals: &[std::ops::RangeInclusive<char>],
+        #[case] elementary_intervals: &[Vec<std::ops::RangeInclusive<char>>],
     ) {
         let mut character_classes = CharacterClasses::new();
         let hir = regex_syntax::parse(regex).unwrap();

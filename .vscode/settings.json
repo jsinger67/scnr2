@@ -6,6 +6,7 @@
         "hirs",
         "lookaheads",
         "nfas",
+        "peekable",
         "rstest",
         "scnr"
     ]

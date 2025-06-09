@@ -81,15 +81,10 @@ impl CharacterClass {
 
     /// Adds a disjoint interval to the character class.
     fn add_disjoint_interval(&mut self, interval_index: DisjointCharClassID) {
-        // Check that the interval is not already present
-        // This is a debug assertion to ensure that we do not add the same interval twice.
-        // It is normally not expected to fail, but it is a good sanity check.
-        debug_assert!(!self.intervals.iter().any(|i| {
-            // Check if the interval index is already present in the intervals
-            *i == interval_index
-        }));
-
-        // Add the interval to the class
+        // Add the interval to the class only if it is not already present
+        if self.intervals.contains(&interval_index) {
+            return; // Interval already exists, no need to add it again
+        }
         self.intervals.push(interval_index);
     }
 }
@@ -101,9 +96,9 @@ pub struct CharacterClasses {
     /// The set of character classes
     pub classes: Vec<CharacterClass>,
 
-    /// The list of elementary character ranges that define the characters in this set as
-    /// disjoint intervals. They are set during the calculation of disjoint character classes.
-    pub intervals: Vec<RangeInclusive<char>>,
+    /// Groups of elementary intervals where each group contains intervals
+    /// that belong to exactly the same set of character classes.
+    pub intervals: Vec<Vec<RangeInclusive<char>>>,
 }
 
 impl CharacterClasses {
@@ -187,119 +182,159 @@ impl CharacterClasses {
         let boundaries: Vec<char> = boundaries.into_iter().collect();
 
         // Step 2: Generate elementary intervals from the boundaries
-        // Elementary intervals are ranges between consecutive boundaries.
+        let mut elementary_intervals = Vec::new();
         for i in 0..boundaries.len() - 1 {
             let start = boundaries[i];
-            // Get character before next boundary.
-            // If the next boundary is out of range, use the current character.
             if let Some(end) = char::from_u32(boundaries[i + 1] as u32 - 1) {
                 if start <= end {
-                    // Create a closed interval [start, end] again
-                    // Insert the interval into the elementary intervals only if any character class
-                    // matches it.
+                    let interval = start..=end;
+                    // Only add if any character class matches it
                     if self
                         .classes
                         .iter()
-                        .any(|hir| hir.contains_interval(&(start..=end)))
+                        .any(|hir| hir.contains_interval(&interval))
                     {
-                        // We use inclusive ranges to represent the intervals.
-                        self.intervals.push(start..=end);
+                        elementary_intervals.push(interval);
                     }
                 }
             } else {
-                // If the next boundary is not a valid character, we use the current character
-                // as the end of the interval.
-                // Insert the interval into the elementary intervals only if any character class
-                // matches it.
+                let interval = start..=start;
                 if self
                     .classes
                     .iter()
-                    .any(|hir| hir.contains_interval(&(start..=start)))
+                    .any(|hir| hir.contains_interval(&interval))
                 {
-                    // We use inclusive ranges to represent the intervals.
-                    self.intervals.push(start..=start);
+                    elementary_intervals.push(interval);
                 }
             }
         }
 
-        // Step 3: Add disjoint intervals to each character class
-        for class in self.classes.iter_mut() {
-            for (idx, interval) in self.intervals.iter_mut().enumerate() {
-                // Check if the character class matches the interval
+        elementary_intervals.sort_by(|a, b| a.start().cmp(b.start()));
+
+        // Step 3: Map each elementary interval to its character class membership
+        let mut interval_memberships = Vec::new();
+        for interval in &elementary_intervals {
+            let mut membership = Vec::new();
+            for (class_idx, class) in self.classes.iter().enumerate() {
                 if class.contains_interval(interval) {
-                    class.add_disjoint_interval((idx as CharClassIDBase).into());
+                    membership.push(class_idx);
                 }
             }
+            interval_memberships.push(membership);
         }
+
+        // Step 4: Group adjacent intervals with identical membership
+        let mut grouped_intervals = Vec::new();
+        let mut membership_to_group_idx: std::collections::HashMap<Vec<usize>, usize> =
+            std::collections::HashMap::new();
+
+        for (interval, membership) in elementary_intervals.into_iter().zip(interval_memberships) {
+            let membership_key = membership.clone();
+
+            if let Some(&group_idx) = membership_to_group_idx.get(&membership_key) {
+                // This membership pattern already exists, check if we can merge with the last interval
+                let last_group: &mut Vec<std::ops::RangeInclusive<char>> =
+                    &mut grouped_intervals[group_idx];
+                let last_interval = last_group.last().unwrap();
+
+                // Check if intervals are adjacent
+                if char::from_u32((*last_interval.end() as u32) + 1) == Some(*interval.start()) {
+                    // Merge with the last interval
+                    let new_merged = *last_interval.start()..=*interval.end();
+                    last_group.pop();
+                    last_group.push(new_merged);
+                } else {
+                    // Not adjacent, just add to the existing group
+                    grouped_intervals[group_idx].push(interval);
+                }
+            } else {
+                // New membership pattern
+                membership_to_group_idx.insert(membership_key, grouped_intervals.len());
+                grouped_intervals.push(vec![interval]);
+            }
+
+            // Update class intervals - assign each class the index of its group
+            for class_idx in membership {
+                let disjoint_id = (grouped_intervals.len() - 1) as CharClassIDBase;
+                self.classes[class_idx].add_disjoint_interval(disjoint_id.into());
+            }
+        }
+
+        // Update the intervals field with our grouped intervals
+        self.intervals = grouped_intervals;
     }
 
     /// Retrieves the disjoint character classes for a given `HirKind`.
-    pub(crate) fn get_disjoint_classes(&self, hir_kind: &HirKind) -> &Vec<DisjointCharClassID> {
+    pub(crate) fn get_disjoint_classes(&self, hir_kind: &HirKind) -> Vec<DisjointCharClassID> {
         // Find the character class that matches the given HirKind
         if let Some(class) = self.classes.iter().find(|c| c.characters == *hir_kind) {
-            // Return the indices of the disjoint intervals for this class
-            &class.intervals
+            class.intervals.clone()
         } else {
-            // If no matching class is found, return an empty vector
-            panic!(
-                "No disjoint character class found for HirKind: {:?}",
-                hir_kind
-            );
+            Vec::new()
         }
     }
 
     /// Generates a function that checks if a character belongs to a specific character class.
     pub(crate) fn generate(&self, name: &str) -> proc_macro2::TokenStream {
-        let name = syn::Ident::new(name, proc_macro2::Span::call_site()); // Convert name to an Ident
+        let name = syn::Ident::new(name, proc_macro2::Span::call_site());
         if self.intervals.is_empty() {
             panic!(
                 "No disjoint character classes found. Did you call `create_disjoint_character_classes`?"
             );
         }
 
-        // Check in debug that the intervals are sorted ascending
-        debug_assert!(self.intervals.windows(2).all(|w| w[0].end() < w[1].start()));
-
-        let intervals = self
+        // Generate grouped intervals
+        let grouped_intervals = self
             .intervals
             .iter()
-            .map(|interval| {
-                // Convert each interval to a range inclusive of characters
-                let start = interval.start();
-                let end = interval.end();
-                if start == end {
-                    quote::quote! { #start..=#start }
-                } else {
-                    quote::quote! { #start..=#end }
+            .map(|intervals| {
+                let interval_tokens = intervals
+                    .iter()
+                    .map(|interval| {
+                        let start = interval.start();
+                        let end = interval.end();
+                        if start == end {
+                            quote::quote! { #start..=#start }
+                        } else {
+                            quote::quote! { #start..=#end }
+                        }
+                    })
+                    .collect::<Vec<_>>();
+
+                quote::quote! {
+                    &[
+                        #(#interval_tokens),*
+                    ]
                 }
             })
             .collect::<Vec<_>>();
+
         quote::quote! {
             #[allow(clippy::manual_is_ascii_check, dead_code)]
             pub(crate) fn #name(c: char) -> Option<usize> {
                 use std::cmp::Ordering;
 
-                // Define a table of elementary intervals
-                // Each interval is a range inclusive of characters.
-                static INTERVALS: &[std::ops::RangeInclusive<char>] = &[
-                                #(
-                                    #intervals,
-                                )*
+                // Define grouped intervals
+                static GROUPED_INTERVALS: &[&[std::ops::RangeInclusive<char>]] = &[
+                    #(#grouped_intervals),*
                 ];
 
-                // Find the index of the interval that contains the character `c`
-                match INTERVALS.binary_search_by(|range| {
-                    if c < *range.start() {
-                        Ordering::Greater
-                    } else if c > *range.end() {
-                        Ordering::Less
-                    } else {
-                        Ordering::Equal
+                // Try each group of intervals
+                for (group_idx, intervals) in GROUPED_INTERVALS.iter().enumerate() {
+                    if intervals.binary_search_by(|range| {
+                        if c < *range.start() {
+                            Ordering::Greater
+                        } else if c > *range.end() {
+                            Ordering::Less
+                        } else {
+                            Ordering::Equal
+                        }
+                    }).is_ok() {
+                        return Some(group_idx);
                     }
-                }) {
-                    Ok(index) => Some(index),
-                    Err(_) => None
                 }
+
+                None
             }
         }
     }
