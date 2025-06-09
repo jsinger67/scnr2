@@ -193,8 +193,7 @@ impl ToTokens for DfaState {
         let transitions = transitions.iter().map(|t| t.to_token_stream());
         let accept_data = accept_data
             .as_ref()
-            .map(|ad| ad.to_token_stream())
-            .unwrap_or_default();
+            .map_or_else(|| quote! { None }, |ad| quote! { Some(#ad) });
         tokens.extend(quote! {
             DfaState {
                 transitions: vec![#(#transitions),*],
@@ -242,5 +241,51 @@ impl ToTokens for DfaTransition {
                 to: #target,
             }
         });
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::character_classes::CharacterClasses;
+
+    use super::*;
+
+    #[test]
+    fn test_dfa_from_nfa() {
+        let patterns = vec![
+            Pattern::new(r"\r\n|\r|\n".to_string(), 1.into())
+                .with_lookahead(Lookahead::positive("!".to_string()).unwrap()),
+            Pattern::new(r"[\s--\r\n]+".to_string(), 2.into()),
+            Pattern::new(r#","#.to_string(), 5.into()),
+            Pattern::new(r"0|[1-9][0-9]*".to_string(), 6.into()),
+        ];
+        let mut nfa = Nfa::build_from_patterns(&patterns).unwrap();
+        let mut character_classes = CharacterClasses::new();
+        nfa.collect_character_classes(&mut character_classes);
+        eprintln!("Character classes: {:#?}", character_classes);
+        // Generate disjoint character classes
+        character_classes.create_disjoint_character_classes();
+        eprintln!("Disjoint character classes: {:#?}", character_classes);
+        // Convert the NFA to use disjoint character classes
+        nfa.convert_to_disjoint_character_classes(&character_classes);
+
+        let dfa = Dfa::try_from_nfa(&nfa).expect("Failed to convert NFA to DFA");
+        assert_eq!(dfa.states.len(), 6, "DFA should have states");
+
+        // There should be at least one accepting state for each pattern
+        let mut terminals = dfa
+            .states
+            .iter()
+            .filter_map(|s| s.accept_data.as_ref().map(|ad| ad.terminal_type))
+            .collect::<Vec<_>>();
+        terminals.sort();
+        terminals.dedup();
+
+        assert!(
+            patterns
+                .iter()
+                .all(|p| { terminals.contains(&p.terminal_type) }),
+            "DFA should have accepting states for all patterns"
+        );
     }
 }
