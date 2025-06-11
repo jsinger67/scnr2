@@ -130,21 +130,19 @@ pub fn generate(input: TokenStream) -> TokenStream {
 
     let output = quote! {
         pub mod #module_name_ident {
-            use scnr2::*;
+            use scnr2::{AcceptData, Dfa, DfaState, DfaTransition, Lookahead, ScannerMode, ScannerImpl};
             pub const MODES: &'static [ScannerMode] = &[
                 #(
                     #modes
                 ),*
             ];
             pub struct #scanner_name {
-                pub current_mode: usize,
-                current_state: usize,
+                scanner_impl: ScannerImpl,
             }
             impl #scanner_name {
                 pub fn new() -> Self {
                     #scanner_name {
-                        current_mode: 0,
-                        current_state: 0,
+                        scanner_impl: ScannerImpl::new(MODES),
                     }
                 }
                 #match_function_code

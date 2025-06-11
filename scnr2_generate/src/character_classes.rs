@@ -334,16 +334,46 @@ impl CharacterClasses {
                     #(#grouped_intervals),*
                 ];
 
-                // Try each group of intervals
-                INTERVALS
-                .iter()
-                .position(|interval| c >= *interval.start() && c <= *interval.end())
-                .and_then(|interval_idx| {
-                    // Find the group that contains the interval index
-                    GROUPED_INTERVALS
-                        .iter()
-                        .position(|group| group.contains(&interval_idx))
-                })
+                // Binary search to find the interval containing the character
+                let interval_idx = match INTERVALS.binary_search_by(|interval| {
+                    if c < *interval.start() {
+                        Ordering::Greater
+                    } else if c > *interval.end() {
+                        Ordering::Less
+                    } else {
+                        Ordering::Equal
+                    }
+                }) {
+                    Ok(idx) => idx,
+                    Err(_) => return None,
+                };
+
+                // Binary search to find the group that might contain the interval
+                // Since groups are sorted by first entry, we can use binary search to narrow down
+                let mut left = 0;
+                let mut right = GROUPED_INTERVALS.len() - 1;
+
+                while left <= right {
+                    let mid = left + (right - left) / 2;
+                    let group = GROUPED_INTERVALS[mid];
+
+                    // Since elements in group are sorted, check first and last
+                    if interval_idx < group[0] {
+                        // Interval is before this group
+                        if mid == 0 { return None; }
+                        right = mid - 1;
+                    } else if interval_idx > group[group.len() - 1] {
+                        // Interval is after this group
+                        left = mid + 1;
+                    } else {
+                        // Interval may be in this group - do a binary search within the group
+                        return match group.binary_search(&interval_idx) {
+                            Ok(_) => Some(mid),
+                            Err(_) => None
+                        };
+                    }
+                }
+                None
             }
         }
     }

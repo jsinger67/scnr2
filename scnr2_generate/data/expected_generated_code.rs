@@ -1,5 +1,5 @@
 pub mod test_scanner {
-    use scnr2::*;
+    use scnr2::{AcceptData, Dfa, DfaState, DfaTransition, Lookahead, ScannerImpl, ScannerMode};
     pub const MODES: &'static [ScannerMode] = &[
         ScannerMode {
             name: "INITIAL",
@@ -1777,14 +1777,12 @@ pub mod test_scanner {
         },
     ];
     pub struct TestScanner {
-        pub current_mode: usize,
-        current_state: usize,
+        scanner_impl: ScannerImpl,
     }
     impl TestScanner {
         pub fn new() -> Self {
             TestScanner {
-                current_mode: 0,
-                current_state: 0,
+                scanner_impl: ScannerImpl::new(MODES),
             }
         }
         #[allow(clippy::manual_is_ascii_check, dead_code)]
@@ -3673,14 +3671,38 @@ pub mod test_scanner {
                 &[35usize],
                 &[37usize],
             ];
-            INTERVALS
-                .iter()
-                .position(|interval| c >= *interval.start() && c <= *interval.end())
-                .and_then(|interval_idx| {
-                    GROUPED_INTERVALS
-                        .iter()
-                        .position(|group| group.contains(&interval_idx))
-                })
+            let interval_idx = match INTERVALS.binary_search_by(|interval| {
+                if c < *interval.start() {
+                    Ordering::Greater
+                } else if c > *interval.end() {
+                    Ordering::Less
+                } else {
+                    Ordering::Equal
+                }
+            }) {
+                Ok(idx) => idx,
+                Err(_) => return None,
+            };
+            let mut left = 0;
+            let mut right = GROUPED_INTERVALS.len() - 1;
+            while left <= right {
+                let mid = left + (right - left) / 2;
+                let group = GROUPED_INTERVALS[mid];
+                if interval_idx < group[0] {
+                    if mid == 0 {
+                        return None;
+                    }
+                    right = mid - 1;
+                } else if interval_idx > group[group.len() - 1] {
+                    left = mid + 1;
+                } else {
+                    return match group.binary_search(&interval_idx) {
+                        Ok(_) => Some(mid),
+                        Err(_) => None,
+                    };
+                }
+            }
+            None
         }
     }
 }
