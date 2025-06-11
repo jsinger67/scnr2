@@ -299,6 +299,9 @@ dependencies = [
 [[package]]
 name = "scnr2"
 version = "0.1.0"
+dependencies = [
+ "scnr2_macro",
+]
 
 [[package]]
 name = "scnr2_generate"

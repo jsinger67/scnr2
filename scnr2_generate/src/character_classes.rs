@@ -96,6 +96,9 @@ pub struct CharacterClasses {
     /// The set of character classes
     pub classes: Vec<CharacterClass>,
 
+    /// Used for generating disjoint character classes and code generation.
+    pub elementary_intervals: Vec<RangeInclusive<char>>,
+
     /// Groups of elementary intervals where each group contains intervals
     /// that belong to exactly the same set of character classes.
     pub intervals: Vec<Vec<RangeInclusive<char>>>,
@@ -182,7 +185,7 @@ impl CharacterClasses {
         let boundaries: Vec<char> = boundaries.into_iter().collect();
 
         // Step 2: Generate elementary intervals from the boundaries
-        let mut elementary_intervals = Vec::new();
+        self.elementary_intervals = Vec::new();
         for i in 0..boundaries.len() - 1 {
             let start = boundaries[i];
             if let Some(end) = char::from_u32(boundaries[i + 1] as u32 - 1) {
@@ -194,7 +197,7 @@ impl CharacterClasses {
                         .iter()
                         .any(|hir| hir.contains_interval(&interval))
                     {
-                        elementary_intervals.push(interval);
+                        self.elementary_intervals.push(interval);
                     }
                 }
             } else {
@@ -204,16 +207,17 @@ impl CharacterClasses {
                     .iter()
                     .any(|hir| hir.contains_interval(&interval))
                 {
-                    elementary_intervals.push(interval);
+                    self.elementary_intervals.push(interval);
                 }
             }
         }
 
-        elementary_intervals.sort_by(|a, b| a.start().cmp(b.start()));
+        self.elementary_intervals
+            .sort_by(|a, b| a.start().cmp(b.start()));
 
         // Step 3: Map each elementary interval to its character class membership
         let mut interval_memberships = Vec::new();
-        for interval in &elementary_intervals {
+        for interval in &self.elementary_intervals {
             let mut membership = Vec::new();
             for (class_idx, class) in self.classes.iter().enumerate() {
                 if class.contains_interval(interval) {
@@ -228,7 +232,12 @@ impl CharacterClasses {
         let mut membership_to_group_idx: std::collections::HashMap<Vec<usize>, usize> =
             std::collections::HashMap::new();
 
-        for (interval, membership) in elementary_intervals.into_iter().zip(interval_memberships) {
+        for (interval, membership) in self
+            .elementary_intervals
+            .clone()
+            .into_iter()
+            .zip(interval_memberships)
+        {
             let membership_key = membership.clone();
 
             if let Some(&group_idx) = membership_to_group_idx.get(&membership_key) {
@@ -269,8 +278,22 @@ impl CharacterClasses {
                 "No disjoint character classes found. Did you call `create_disjoint_character_classes`?"
             );
         }
+        // Generate elementary intervals
+        let intervals = self
+            .elementary_intervals
+            .iter()
+            .map(|interval| {
+                let start = interval.start();
+                let end = interval.end();
+                if start == end {
+                    quote::quote! { #start..=#start }
+                } else {
+                    quote::quote! { #start..=#end }
+                }
+            })
+            .collect::<Vec<_>>();
 
-        // Generate grouped intervals
+        // Generate grouped intervals, generate the index in the elementary_intervals of intervals
         let grouped_intervals = self
             .intervals
             .iter()
@@ -278,13 +301,13 @@ impl CharacterClasses {
                 let interval_tokens = intervals
                     .iter()
                     .map(|interval| {
-                        let start = interval.start();
-                        let end = interval.end();
-                        if start == end {
-                            quote::quote! { #start..=#start }
-                        } else {
-                            quote::quote! { #start..=#end }
-                        }
+                        // Find the index of the interval in elementary_intervals
+                        let index = self
+                            .elementary_intervals
+                            .iter()
+                            .position(|e| e == interval)
+                            .expect("Interval not found in elementary intervals");
+                        quote::quote! { #index }
                     })
                     .collect::<Vec<_>>();
 
@@ -301,27 +324,26 @@ impl CharacterClasses {
             pub(crate) fn #name(c: char) -> Option<usize> {
                 use std::cmp::Ordering;
 
+                // Define elementary intervals
+                static INTERVALS: &[std::ops::RangeInclusive<char>] = &[
+                    #(#intervals),*
+                ];
+
                 // Define grouped intervals
-                static GROUPED_INTERVALS: &[&[std::ops::RangeInclusive<char>]] = &[
+                static GROUPED_INTERVALS: &[&[usize]] = &[
                     #(#grouped_intervals),*
                 ];
 
                 // Try each group of intervals
-                for (group_idx, intervals) in GROUPED_INTERVALS.iter().enumerate() {
-                    if intervals.binary_search_by(|range| {
-                        if c < *range.start() {
-                            Ordering::Greater
-                        } else if c > *range.end() {
-                            Ordering::Less
-                        } else {
-                            Ordering::Equal
-                        }
-                    }).is_ok() {
-                        return Some(group_idx);
-                    }
-                }
-
-                None
+                INTERVALS
+                .iter()
+                .position(|interval| c >= *interval.start() && c <= *interval.end())
+                .and_then(|interval_idx| {
+                    // Find the group that contains the interval index
+                    GROUPED_INTERVALS
+                        .iter()
+                        .position(|group| group.contains(&interval_idx))
+                })
             }
         }
     }

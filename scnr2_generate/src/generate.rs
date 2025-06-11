@@ -130,31 +130,7 @@ pub fn generate(input: TokenStream) -> TokenStream {
 
     let output = quote! {
         pub mod #module_name_ident {
-            pub struct ScannerMode {
-                pub name: &'static str,
-                pub transitions: &'static [(usize, usize)],
-                pub dfa: Dfa
-            }
-            pub struct Dfa {
-                pub states: &'static [DfaState]
-            }
-            pub struct DfaState {
-                pub transitions: &'static [DfaTransition],
-                pub accept_data: std::option::Option<AcceptData>
-            }
-            pub struct AcceptData {
-                pub token_type: usize,
-                pub lookahead: Lookahead
-            }
-            pub enum Lookahead {
-                None,
-                Positive(Dfa),
-                Negative(Dfa)
-            }
-            pub struct DfaTransition {
-                pub char_class: usize,
-                pub to: usize
-            }
+            use scnr2::*;
             pub const MODES: &'static [ScannerMode] = &[
                 #(
                     #modes
@@ -162,11 +138,13 @@ pub fn generate(input: TokenStream) -> TokenStream {
             ];
             pub struct #scanner_name {
                 pub current_mode: usize,
+                current_state: usize,
             }
             impl #scanner_name {
                 pub fn new() -> Self {
                     #scanner_name {
                         current_mode: 0,
+                        current_state: 0,
                     }
                 }
                 #match_function_code
