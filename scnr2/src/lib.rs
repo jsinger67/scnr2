@@ -16,33 +16,39 @@ pub mod internals;
 
 /// A scanner mode, which includes its name, transitions, and the DFA (Deterministic Finite
 /// Automaton) that defines its behavior.
+#[derive(Debug)]
 pub struct ScannerMode {
     pub name: &'static str,
     pub transitions: &'static [(usize, usize)],
     pub dfa: Dfa,
 }
 /// A Deterministic Finite Automaton (DFA) that consists of states.
+#[derive(Debug, Clone)]
 pub struct Dfa {
     pub states: &'static [DfaState],
 }
 /// A state in the DFA, which includes transitions to other states and optional accept data.
+#[derive(Debug, Clone)]
 pub struct DfaState {
     pub transitions: &'static [DfaTransition],
     pub accept_data: std::option::Option<AcceptData>,
 }
 /// Data associated with an accepting state in the DFA, including the type of token and lookahead
 /// information.
+#[derive(Debug, Clone)]
 pub struct AcceptData {
     pub token_type: usize,
     pub lookahead: Lookahead,
 }
 /// Lookahead information for the DFA, which can be positive or negative.
+#[derive(Debug, Clone)]
 pub enum Lookahead {
     None,
     Positive(Dfa),
     Negative(Dfa),
 }
 /// A transition in the DFA, which includes a character class and the state to transition to.
+#[derive(Debug, Clone)]
 pub struct DfaTransition {
     pub char_class: usize,
     pub to: usize,
