@@ -270,6 +270,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 1usize,
+                            priority: 0usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -294,6 +295,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 1usize,
+                            priority: 0usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -358,6 +360,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 2usize,
+                            priority: 1usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -382,6 +385,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 2usize,
+                            priority: 1usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -466,6 +470,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 3usize,
+                            priority: 2usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -550,6 +555,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 4usize,
+                            priority: 3usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -557,6 +563,7 @@ pub mod test_scanner {
                         transitions: &[],
                         accept_data: Some(AcceptData {
                             token_type: 8usize,
+                            priority: 4usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -609,6 +616,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 9usize,
+                            priority: 5usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -661,6 +669,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 10usize,
+                            priority: 6usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -668,6 +677,7 @@ pub mod test_scanner {
                         transitions: &[],
                         accept_data: Some(AcceptData {
                             token_type: 12usize,
+                            priority: 8usize,
                             lookahead: Lookahead::Negative(Dfa {
                                 states: &[
                                     DfaState {
@@ -681,6 +691,7 @@ pub mod test_scanner {
                                         transitions: &[],
                                         accept_data: Some(AcceptData {
                                             token_type: 4294967295usize,
+                                            priority: 0usize,
                                             lookahead: Lookahead::None,
                                         }),
                                     },
@@ -737,6 +748,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -789,6 +801,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -841,6 +854,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -893,6 +907,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -945,6 +960,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -997,6 +1013,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1049,6 +1066,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1101,6 +1119,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1153,6 +1172,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
+                            priority: 9usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1160,6 +1180,7 @@ pub mod test_scanner {
                         transitions: &[],
                         accept_data: Some(AcceptData {
                             token_type: 14usize,
+                            priority: 10usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1176,6 +1197,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 14usize,
+                            priority: 10usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1349,6 +1371,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 5usize,
+                            priority: 0usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1433,6 +1456,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 5usize,
+                            priority: 0usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1517,6 +1541,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 6usize,
+                            priority: 1usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1601,6 +1626,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 7usize,
+                            priority: 2usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1685,6 +1711,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 7usize,
+                            priority: 2usize,
                             lookahead: Lookahead::None,
                         }),
                     },
@@ -1769,6 +1796,7 @@ pub mod test_scanner {
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 7usize,
+                            priority: 2usize,
                             lookahead: Lookahead::None,
                         }),
                     },

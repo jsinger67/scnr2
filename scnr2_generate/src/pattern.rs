@@ -263,9 +263,11 @@ impl ToTokens for Pattern {
             ..
         } = self;
         let terminal_type = terminal_type.as_usize().to_token_stream();
+        let priority = self.priority.to_token_stream();
         tokens.extend(quote! {
             AcceptData {
                 token_type: #terminal_type,
+                priority: #priority,
                 lookahead: #lookahead,
             }
         });
