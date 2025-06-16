@@ -98,13 +98,14 @@ where
             }
             let character_class = (self.match_function)(ch);
             if let Some(class_idx) = character_class {
-                let state_data = &dfa.states[state];
+                let mut state_data = &dfa.states[state];
                 if let Ok(transition_index) = state_data
                     .transitions
                     .binary_search_by_key(&class_idx, |t| t.char_class)
                 {
                     // Transition to the next state based on the character class
                     state = state_data.transitions[transition_index].to;
+                    state_data = &dfa.states[state];
                 } else {
                     // No valid transition for this character, break the loop
                     break;
@@ -134,7 +135,7 @@ where
                     if lookahead_satisfied {
                         Self::update_match_end(
                             &mut match_end,
-                            byte_index + lookahead_len,
+                            byte_index + lookahead_len + ch.len_utf8(),
                             position,
                             accept_data.token_type,
                             accept_data.priority,

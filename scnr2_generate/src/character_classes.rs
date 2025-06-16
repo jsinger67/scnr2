@@ -1,5 +1,5 @@
 //! Module with data structures and algorithms to handle character classes for SCNR2 generation
-use std::ops::RangeInclusive;
+use std::{char, ops::RangeInclusive};
 
 use regex_syntax::hir::HirKind;
 
@@ -285,36 +285,17 @@ impl CharacterClasses {
             .map(|interval| {
                 let start = interval.start();
                 let end = interval.end();
-                if start == end {
-                    quote::quote! { #start..=#start }
-                } else {
-                    quote::quote! { #start..=#end }
-                }
-            })
-            .collect::<Vec<_>>();
-
-        // Generate grouped intervals, generate the index in the elementary_intervals of intervals
-        let grouped_intervals = self
-            .intervals
-            .iter()
-            .map(|intervals| {
-                let interval_tokens = intervals
+                let char_class_id = self
+                    .intervals
                     .iter()
-                    .map(|interval| {
-                        // Find the index of the interval in elementary_intervals
-                        let index = self
-                            .elementary_intervals
-                            .iter()
-                            .position(|e| e == interval)
-                            .expect("Interval not found in elementary intervals");
-                        quote::quote! { #index }
-                    })
-                    .collect::<Vec<_>>();
-
-                quote::quote! {
-                    &[
-                        #(#interval_tokens),*
-                    ]
+                    .enumerate()
+                    .find(|(_, group)| group.contains(interval))
+                    .map(|(idx, _)| idx)
+                    .expect("Interval should belong to a group");
+                if start == end {
+                    quote::quote! { (#start..=#start, #char_class_id) }
+                } else {
+                    quote::quote! { (#start..=#end, #char_class_id) }
                 }
             })
             .collect::<Vec<_>>();
@@ -325,20 +306,15 @@ impl CharacterClasses {
                 use std::cmp::Ordering;
 
                 // Define elementary intervals
-                static INTERVALS: &[std::ops::RangeInclusive<char>] = &[
+                static INTERVALS: &[(std::ops::RangeInclusive<char>, usize)] = &[
                     #(#intervals),*
-                ];
-
-                // Define grouped intervals
-                static GROUPED_INTERVALS: &[&[usize]] = &[
-                    #(#grouped_intervals),*
                 ];
 
                 // Binary search to find the interval containing the character
                 let interval_idx = match INTERVALS.binary_search_by(|interval| {
-                    if c < *interval.start() {
+                    if c < *interval.0.start() {
                         Ordering::Greater
-                    } else if c > *interval.end() {
+                    } else if c > *interval.0.end() {
                         Ordering::Less
                     } else {
                         Ordering::Equal
@@ -348,33 +324,75 @@ impl CharacterClasses {
                     Err(_) => return None,
                 };
 
-                // Binary search to find the group that might contain the interval
-                // Since groups are sorted by first entry, we can use binary search to narrow down
-                let mut left = 0;
-                let mut right = GROUPED_INTERVALS.len() - 1;
-
-                while left <= right {
-                    let mid = left + (right - left) / 2;
-                    let group = GROUPED_INTERVALS[mid];
-
-                    // Since elements in group are sorted, check first and last
-                    if interval_idx < group[0] {
-                        // Interval is before this group
-                        if mid == 0 { return None; }
-                        right = mid - 1;
-                    } else if interval_idx > group[group.len() - 1] {
-                        // Interval is after this group
-                        left = mid + 1;
-                    } else {
-                        // Interval may be in this group - do a binary search within the group
-                        return match group.binary_search(&interval_idx) {
-                            Ok(_) => Some(mid),
-                            Err(_) => None
-                        };
-                    }
-                }
-                None
+                INTERVALS[interval_idx].1.into()
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    // scanner! {
+    //     TestScanner {
+    //         mode INITIAL {
+    //             token r"\r\n|\r|\n" => 1 not followed by r"!";
+    //             token r"[\s--\r\n]+" => 2;
+    //             token r#","# => 5;
+    //             token r"0|[1-9][0-9]*" => 6;
+    //         }
+    //     }
+    // }
+
+    // This function was generated by the macro above and is used to test the generated function.
+    // Todo: Test the actual generated function.
+    #[allow(clippy::manual_is_ascii_check, dead_code)]
+    pub(crate) fn match_function(c: char) -> Option<usize> {
+        use std::cmp::Ordering;
+        static INTERVALS: &[(std::ops::RangeInclusive<char>, usize)] = &[
+            ('\t'..='\t', 0),
+            ('\n'..='\n', 1),
+            ('\u{b}'..='\u{c}', 0),
+            ('\r'..='\r', 2),
+            (' '..=' ', 0),
+            ('!'..='!', 3),
+            (','..=',', 4),
+            ('0'..='0', 5),
+            ('1'..='9', 6),
+            ('\u{85}'..='\u{85}', 0),
+            ('\u{a0}'..='\u{a0}', 0),
+            ('\u{1680}'..='\u{1680}', 0),
+            ('\u{2000}'..='\u{200a}', 0),
+            ('\u{2028}'..='\u{2029}', 0),
+            ('\u{202f}'..='\u{202f}', 0),
+            ('\u{205f}'..='\u{205f}', 0),
+            ('\u{3000}'..='\u{3000}', 0),
+        ];
+        let interval_idx = match INTERVALS.binary_search_by(|interval| {
+            if c < *interval.0.start() {
+                Ordering::Greater
+            } else if c > *interval.0.end() {
+                Ordering::Less
+            } else {
+                Ordering::Equal
+            }
+        }) {
+            Ok(idx) => idx,
+            Err(_) => return None,
+        };
+        INTERVALS[interval_idx].1.into()
+    }
+
+    #[test]
+    fn test_match_function() {
+        // Test the generated function with various characters
+        assert_eq!(match_function('\t'), Some(0));
+        assert_eq!(match_function('\n'), Some(1));
+        assert_eq!(match_function(' '), Some(0));
+        assert_eq!(match_function(','), Some(4));
+        assert_eq!(match_function('0'), Some(5));
+        assert_eq!(match_function('1'), Some(6));
+        assert_eq!(match_function('9'), Some(6));
+        assert_eq!(match_function('!'), Some(3));
+        assert_eq!(match_function('a'), None); // Not in any class
     }
 }

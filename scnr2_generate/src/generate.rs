@@ -131,7 +131,7 @@ pub fn generate(input: TokenStream) -> TokenStream {
     let output = quote! {
         pub mod #module_name_ident {
             use scnr2::{AcceptData, Dfa, DfaState, DfaTransition, Lookahead, ScannerMode, ScannerImpl};
-            pub const MODES: &'static [ScannerMode] = &[
+            pub const MODES: &[ScannerMode] = &[
                 #(
                     #modes
                 ),*
@@ -146,6 +146,28 @@ pub fn generate(input: TokenStream) -> TokenStream {
                     }
                 }
                 #match_function_code
+                pub fn find_matches<'a, F>(
+                    &'a self,
+                    haystack: &'a str,
+                    offset: usize,
+                    match_function: &'static F,
+                ) -> scnr2::internals::find_matches::FindMatches<'a, F>
+                where
+                    F: Fn(char) -> Option<usize> + 'static,
+                {
+                    self.scanner_impl.find_matches(haystack, offset, match_function)
+                }
+                pub fn find_matches_with_position<'a, F>(
+                    &'a self,
+                    haystack: &'a str,
+                    offset: usize,
+                    match_function: &'static F,
+                ) -> scnr2::internals::find_matches::FindMatchesWithPosition<'a, F>
+                where
+                    F: Fn(char) -> Option<usize> + 'static,
+                {
+                    self.scanner_impl.find_matches_with_position(haystack, offset, match_function)
+                }
             }
         }
     };

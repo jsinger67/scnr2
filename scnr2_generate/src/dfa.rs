@@ -98,9 +98,16 @@ impl Dfa {
                     let dfa_state = &mut states[*dfa_id];
                     // Only set the accept data if there isn't one already
                     // or if this one has higher priority (lower priority value)
-                    if dfa_state.accept_data.is_none()
-                        || (accept_data.priority < dfa_state.accept_data.as_ref().unwrap().priority)
-                    {
+                    let should_replace = match &dfa_state.accept_data {
+                        None => true,
+                        Some(existing) => {
+                            accept_data.priority < existing.priority
+                                || (accept_data.priority == existing.priority
+                                    && accept_data.terminal_type < existing.terminal_type)
+                        }
+                    };
+
+                    if should_replace {
                         // If the NFA state is accepting, add the accept data to the DFA state.
                         let mut accept_data = accept_data.clone();
                         // Convert the Nfa of the pattern's lookahead to a Dfa too.
