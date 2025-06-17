@@ -89,13 +89,8 @@ where
         let mut match_end: Option<MatchEnd> = None;
 
         // Iterate over characters in the haystack using char_iter
-        for (byte_index, ch, position) in self.char_iter.by_ref() {
-            if match_start.is_none() {
-                match_start = Some(MatchStart {
-                    byte_index,
-                    position,
-                });
-            }
+        while let Some(peeked) = self.char_iter.peek() {
+            let (byte_index, ch, position) = peeked;
             let character_class = (self.match_function)(ch);
             if let Some(class_idx) = character_class {
                 let mut state_data = &dfa.states[state];
@@ -103,6 +98,17 @@ where
                     .transitions
                     .binary_search_by_key(&class_idx, |t| t.char_class)
                 {
+                    // Advance the iterator after using peeked values
+                    if self.char_iter.next().is_none() {
+                        // If we reach the end of the input, break the loop
+                        break;
+                    }
+                    if match_start.is_none() {
+                        match_start = Some(MatchStart {
+                            byte_index,
+                            position,
+                        });
+                    }
                     // Transition to the next state based on the character class
                     state = state_data.transitions[transition_index].to;
                     state_data = &dfa.states[state];

@@ -34,13 +34,27 @@ impl<'a> CharIter<'a> {
     pub fn position(&self) -> (usize, usize) {
         (self.line, self.column)
     }
+
+    /// Returns the next character without advancing the iterator.
+    pub(crate) fn peek(&mut self) -> Option<(usize, char, Position)> {
+        if let Some((byte_index, ch)) = self.char_indices.clone().next() {
+            let (line, column) = if ch == '\n' {
+                (self.line + 1, 0)
+            } else {
+                (self.line, self.column + 1)
+            };
+            Some((byte_index, ch, Position::new(line, column)))
+        } else {
+            None
+        }
+    }
 }
 
 // CharIter implements an iterator over characters in a string slice,
 // yielding tuples of (char_index, char, Position) where Position
 // contains the line and column numbers of the character.
 impl Iterator for CharIter<'_> {
-    type Item = (usize, char, Position); // (char_index, char, Position)
+    type Item = (usize, char, Position);
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some((byte_index, ch)) = self.char_indices.next() {
