@@ -14,7 +14,7 @@ macro_rules! parse_ident {
 }
 
 #[derive(Debug)]
-pub(crate) struct ScannerModeWithNamedTransitions {
+pub struct ScannerModeWithNamedTransitions {
     /// The name of the scanner mode.
     pub(crate) name: String,
     /// The regular expressions that are valid token types in this mode, bundled with their token
@@ -120,14 +120,14 @@ impl syn::parse::Parse for ScannerModeWithNamedTransitions {
 }
 
 #[derive(Debug)]
-pub(crate) struct ScannerData {
+pub struct ScannerData {
     /// The scanner name.
     pub name: String,
     /// The scanner modes.
     pub modes: Vec<ScannerModeWithNamedTransitions>,
 }
 impl ScannerData {
-    pub(crate) fn build_scanner_modes(&self) -> syn::Result<Vec<ScannerMode>> {
+    pub fn build_scanner_modes(&self) -> syn::Result<Vec<ScannerMode>> {
         let mut scanner_modes = Vec::new();
         let mut scanner_names = self
             .modes

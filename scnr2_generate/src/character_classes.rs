@@ -41,7 +41,7 @@ impl CharacterClass {
                     .take(4)
                     .fold(0, |acc, &b| (acc << 8) | b as u32);
                 let c = char::from_u32(lit).unwrap_or('\0');
-                interval.contains(&c)
+                *interval == std::ops::RangeInclusive::new(c, c)
             }
             regex_syntax::hir::HirKind::Class(class) => {
                 // Check if the class contains any character in the interval.
@@ -106,7 +106,7 @@ pub struct CharacterClasses {
 
 impl CharacterClasses {
     /// Creates a new `CharacterClassSet` with an empty set of character classes.
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Default::default()
     }
 
@@ -123,7 +123,7 @@ impl CharacterClasses {
     /// Creates disjoint character classes from the NFA states and lookahead patterns.
     /// This function collects all character classes from the NFA states and lookahead patterns,
     /// then generates disjoint intervals for each character class.
-    pub(crate) fn create_disjoint_character_classes(&mut self) {
+    pub fn create_disjoint_character_classes(&mut self) {
         // Step 1: Collect all boundary points
         // The boundaries are collected in a BTreeSet to ensure they are unique and sorted.
         let mut boundaries = std::collections::BTreeSet::new();
@@ -227,8 +227,15 @@ impl CharacterClasses {
             interval_memberships.push(membership);
         }
 
-        // Step 4: Group adjacent intervals with identical membership
+        // Step 4: Group intervals with identical membership
+
+        // A vector to hold grouped intervals
+        // Each group will contain intervals that share the same membership pattern
+        // No single interval will be in more than one group.
         let mut grouped_intervals: Vec<Vec<RangeInclusive<char>>> = Vec::new();
+        // A map to track which membership pattern corresponds to which group index
+        // This map will help us avoid creating duplicate groups for the same membership pattern
+        // The key is a vector of class indices representing the membership pattern
         let mut membership_to_group_idx: std::collections::HashMap<Vec<usize>, usize> =
             std::collections::HashMap::new();
 
@@ -240,18 +247,21 @@ impl CharacterClasses {
         {
             let membership_key = membership.clone();
 
-            if let Some(&group_idx) = membership_to_group_idx.get(&membership_key) {
+            let group_idx = if let Some(&group_idx) = membership_to_group_idx.get(&membership_key) {
                 // This membership pattern already exists
                 grouped_intervals[group_idx].push(interval);
+                group_idx
             } else {
                 // New membership pattern
-                membership_to_group_idx.insert(membership_key, grouped_intervals.len());
+                let new_idx = grouped_intervals.len();
+                membership_to_group_idx.insert(membership_key.clone(), new_idx);
                 grouped_intervals.push(vec![interval]);
-            }
+                new_idx
+            };
 
             // Update class intervals - assign each class the index of its group
             for class_idx in membership {
-                let disjoint_id = (grouped_intervals.len() - 1) as CharClassIDBase;
+                let disjoint_id = group_idx as CharClassIDBase;
                 self.classes[class_idx].add_disjoint_interval(disjoint_id.into());
             }
         }

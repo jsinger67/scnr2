@@ -9,28 +9,28 @@ pub type Result<T> = std::result::Result<T, crate::Error>;
 
 /// The character_classes module contains the character class definitions
 /// and utilities for SCNR2 generation.
-mod character_classes;
+pub mod character_classes;
 
 /// The dfa module contains the DFA implementation.
-mod dfa;
+pub mod dfa;
 
 /// The codegen module contains the code generation logic for SCNR2.
 pub mod generate;
 
 /// The id module contains the ID types used in the SCNR2 generation.
-mod ids;
+pub mod ids;
 
 /// Module that provides functions and types related to DFA minimization.
-mod minimizer;
+pub mod minimizer;
 
 /// The nfa module contains the NFA implementation.
-mod nfa;
+pub mod nfa;
 
 /// The pattern module contains the pattern matching implementation.
-mod pattern;
+pub mod pattern;
 
 /// The scanner data module.
-mod scanner_data;
+pub mod scanner_data;
 
 /// The scanner mode module contains the scanner mode's implementation.
-mod scanner_mode;
+pub mod scanner_mode;

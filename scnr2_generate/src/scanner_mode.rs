@@ -6,17 +6,17 @@ use super::pattern::Pattern;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScannerMode {
     /// The name of the scanner mode.
-    pub(crate) name: String,
+    pub name: String,
     /// The regular expressions that are valid token types in this mode, bundled with their token
     /// type numbers.
     /// The priorities of the patterns are determined by their order in the vector. Lower indices
     /// have higher priority if multiple patterns match the input and have the same length.
-    pub(crate) patterns: Vec<Pattern>,
+    pub patterns: Vec<Pattern>,
 
     /// The transitions between the scanner modes triggered by a token type number.
     /// The entries are tuples of the token type numbers and the new scanner mode index and are
     /// sorted by token type number.
-    pub(crate) transitions: Vec<(usize, usize)>,
+    pub transitions: Vec<(usize, usize)>,
 }
 
 impl ScannerMode {
