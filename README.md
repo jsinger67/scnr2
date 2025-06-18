@@ -6,9 +6,14 @@
 
 <!-- markdownlint-enable first-line-h1 -->
 
+# Attention
+***This project is still in its early phases and not ready for use***
+
 # About `scnr2`
 
 This crate provides a scanner/lexer with sufficient regex support and minimal compile time.
 The scanners support multiple scanner modes out of the box.
 
 It is intended as the successor of [scnr](https://github.com/jsinger67/scnr).
+
+In contrast to scnr this crate uses code generation during compile time by leveraging rust macros.
