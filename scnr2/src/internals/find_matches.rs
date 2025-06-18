@@ -7,7 +7,6 @@ use crate::{
     internals::{
         char_iter::CharIter,
         match_types::{Match, MatchWithPosition},
-        position::Position,
     },
 };
 
@@ -89,81 +88,81 @@ where
         let mut match_end: Option<MatchEnd> = None;
 
         // Iterate over characters in the haystack using char_iter
-        while let Some(peeked) = self.char_iter.peek() {
-            let (byte_index, ch, position) = peeked;
+        while let Some((byte_index, ch, position)) = self.char_iter.peek() {
             let character_class = (self.match_function)(ch);
-            if let Some(class_idx) = character_class {
-                let mut state_data = &dfa.states[state];
-                if let Ok(transition_index) = state_data
-                    .transitions
-                    .binary_search_by_key(&class_idx, |t| t.char_class)
-                {
-                    // Advance the iterator after using peeked values
-                    if self.char_iter.next().is_none() {
-                        // If we reach the end of the input, break the loop
-                        break;
-                    }
-                    if match_start.is_none() {
-                        match_start = Some(MatchStart {
-                            byte_index,
-                            position,
-                        });
-                    }
-                    // Transition to the next state based on the character class
-                    state = state_data.transitions[transition_index].to;
-                    state_data = &dfa.states[state];
-                } else {
-                    // No valid transition for this character, break the loop
-                    break;
-                }
+            let state_data = &dfa.states[state];
 
-                // Check if the current state is an accepting state
-                // Even though we may have find a match, we should keep looking for the longest match
-                if let Some(accept_data) = &state_data.accept_data {
-                    // We have to consider lookahead's length here, because the length of the lookahead
-                    // has influence of the longest match rule.
+            let Some(class_idx) = character_class else {
+                break;
+            };
+            let Ok(transition_index) = state_data
+                .transitions
+                .binary_search_by_key(&class_idx, |t| t.char_class)
+            else {
+                break;
+            };
 
-                    // Clone the char_iter and check if the lookahead is satisfied
-                    let (lookahead_satisfied, lookahead_len) =
-                        if !matches!(accept_data.lookahead, Lookahead::None) {
-                            let find_matches = FindMatches::new(
-                                self.input,
-                                self.offset,
-                                self.scanner_impl.clone(),
-                                self.match_function,
-                            );
-                            Self::evaluate_lookahead(find_matches, accept_data)
-                        } else {
-                            (true, 0)
-                        };
-                    // Update the match end and terminal type if the match is longer or the
-                    // terminal type is lower.
-                    if lookahead_satisfied {
-                        Self::update_match_end(
-                            &mut match_end,
-                            byte_index + lookahead_len + ch.len_utf8(),
-                            position,
-                            accept_data.token_type,
-                            accept_data.priority,
-                            match_start.as_ref().unwrap(),
+            // Only now advance the iterator
+            self.char_iter.next();
+
+            if match_start.is_none() {
+                match_start = Some(MatchStart {
+                    byte_index,
+                    position,
+                });
+            }
+
+            state = state_data.transitions[transition_index].to;
+            let state_data = &dfa.states[state];
+
+            if let Some(accept_data) = &state_data.accept_data {
+                let (lookahead_satisfied, lookahead_len) =
+                    if !matches!(accept_data.lookahead, Lookahead::None) {
+                        let find_matches = FindMatches::new(
+                            self.input,
+                            self.offset,
+                            self.scanner_impl.clone(),
+                            self.match_function,
                         );
+                        Self::evaluate_lookahead(find_matches, accept_data)
+                    } else {
+                        (true, 0)
+                    };
+                if lookahead_satisfied {
+                    let match_start = match_start.as_ref().unwrap();
+                    let new_byte_index = byte_index + lookahead_len + ch.len_utf8();
+                    let new_len = new_byte_index - match_start.byte_index;
+                    let update = match &match_end {
+                        Some(me) => {
+                            let old_len = me.byte_index - match_start.byte_index;
+                            new_len > old_len
+                                || (new_len == old_len && accept_data.priority < me.priority)
+                        }
+                        None => true,
+                    };
+                    if update {
+                        match_end = Some(MatchEnd {
+                            byte_index: new_byte_index,
+                            position,
+                            token_type: accept_data.token_type,
+                            priority: accept_data.priority,
+                        });
                     }
                 }
             }
         }
-        // After iterating through the characters, we check if we have a match_end.
+
         if let Some(match_end) = match_end {
-            // Unwrap is safe here because we always set match_start before match_end
             let match_start = match_start.unwrap();
             let span: crate::Span = match_start.byte_index..match_end.byte_index;
-            return Some(MatchWithPosition::new(
+            Some(MatchWithPosition::new(
                 Match::new(span, match_end.token_type),
                 match_start.position,
                 match_end.position,
-            ));
+            ))
+        } else {
+            None
         }
-
-        None
     }
 
     /// Evaluates the lookahead condition for the current match.
@@ -195,35 +194,6 @@ where
                     (true, 0)
                 }
             }
-        }
-    }
-
-    fn update_match_end(
-        match_end: &mut Option<MatchEnd>,
-        new_byte_index: usize,
-        position: Position,
-        token_type: usize,
-        priority: usize,
-        match_start: &MatchStart,
-    ) {
-        let new_len = new_byte_index - match_start.byte_index;
-        if let Some(me) = match_end {
-            let old_len = me.byte_index - match_start.byte_index;
-            if new_len > old_len || (new_len == old_len && priority < me.priority) {
-                *match_end = Some(MatchEnd {
-                    byte_index: new_byte_index,
-                    position,
-                    token_type,
-                    priority,
-                });
-            }
-        } else {
-            *match_end = Some(MatchEnd {
-                byte_index: new_byte_index,
-                position,
-                token_type,
-                priority,
-            });
         }
     }
 }
