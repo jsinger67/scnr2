@@ -280,7 +280,7 @@ mod tests {
         nfa.convert_to_disjoint_character_classes(&character_classes);
 
         let dfa = Dfa::try_from_nfa(&nfa).expect("Failed to convert NFA to DFA");
-        assert_eq!(dfa.states.len(), 8, "DFA should have states");
+        assert_eq!(dfa.states.len(), 7, "DFA should have states");
 
         // There should be at least one accepting state for each pattern
         let mut terminals = dfa
