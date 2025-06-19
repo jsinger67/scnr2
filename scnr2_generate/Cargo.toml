@@ -6,6 +6,9 @@ authors.workspace = true
 keywords.workspace = true
 categories.workspace = true
 license.workspace = true
+readme.workspace = true
+description = "Scanner/Lexer with regex patterns and multiple modes"
+repository = "https://github.com/jsinger67/scnr2"
 
 [dependencies]
 log = "0.4.25"
