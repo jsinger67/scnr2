@@ -73,7 +73,16 @@ where
             let scanner_impl = self.scanner_impl.borrow();
             &scanner_impl.modes[*scanner_impl.current_mode.borrow()].dfa
         };
-        self.find_next(dfa)
+        let ma = self.find_next(dfa);
+        // If a match is found and there exists a transition to the next mode,
+        // update the current mode in the scanner implementation.
+        if let Some(ma) = &ma {
+            let scanner_impl = self.scanner_impl.borrow();
+            if let Some(next_mode) = scanner_impl.next_mode(ma.token_type) {
+                *scanner_impl.current_mode.borrow_mut() = next_mode;
+            }
+        }
+        ma
     }
 
     /// Simulates the DFA on the given input.
