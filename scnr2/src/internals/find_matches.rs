@@ -2,8 +2,10 @@
 
 use std::{cell::RefCell, rc::Rc};
 
+use log::trace;
+
 use crate::{
-    Dfa, Lookahead, ScannerImpl,
+    Dfa, Lookahead, Position, ScannerImpl,
     internals::{
         char_iter::CharIter,
         match_types::{Match, MatchWithPosition},
@@ -79,6 +81,7 @@ where
         if let Some(ma) = &ma {
             let scanner_impl = self.scanner_impl.borrow();
             if let Some(next_mode) = scanner_impl.next_mode(ma.token_type) {
+                trace!("Switching to next mode: {}", next_mode);
                 *scanner_impl.current_mode.borrow_mut() = next_mode;
             }
         }
@@ -152,7 +155,10 @@ where
                     if update {
                         match_end = Some(MatchEnd {
                             byte_index: new_byte_index,
-                            position,
+                            position: Position {
+                                line: position.line,
+                                column: position.column + 1,
+                            },
                             token_type: accept_data.token_type,
                             priority: accept_data.priority,
                         });
@@ -205,6 +211,18 @@ where
             }
         }
     }
+
+    /// Returns the name of the given mode.
+    #[inline]
+    pub fn mode_name(&self, index: usize) -> Option<&'static str> {
+        self.scanner_impl.borrow().mode_name(index)
+    }
+
+    /// Returns the current mode index.
+    #[inline]
+    pub fn current_mode(&self) -> usize {
+        *self.scanner_impl.borrow().current_mode.borrow()
+    }
 }
 
 impl<F> Iterator for FindMatches<'_, F>
@@ -246,6 +264,16 @@ where
         FindMatchesWithPosition {
             find_matches: FindMatches::new(haystack, offset, scanner_impl, match_function),
         }
+    }
+
+    /// Returns the name of the given mode.
+    pub fn mode_name(&self, index: usize) -> Option<&'static str> {
+        self.find_matches.mode_name(index)
+    }
+
+    /// Returns the current mode index.
+    pub fn current_mode(&self) -> usize {
+        self.find_matches.current_mode()
     }
 }
 

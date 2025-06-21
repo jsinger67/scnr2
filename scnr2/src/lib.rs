@@ -6,11 +6,16 @@
 // Re-export the scanner macro
 pub use scnr2_macro::scanner;
 
-// Expose only the necessary types and functions from the internals module
-pub use crate::internals::ScannerImpl;
-
+// Expose only some necessary types and functions from the internals module
 #[doc(hidden)]
 pub mod internals;
+pub use crate::internals::{
+    char_iter::CharIter,
+    find_matches::{FindMatches, FindMatchesWithPosition},
+    match_types::{Match, MatchWithPosition},
+    position::Position,
+    scanner_impl::ScannerImpl,
+};
 
 // -------- Scanner Data Structures -------
 // These structures are used to define the scanner's modes, tokens, and transitions.

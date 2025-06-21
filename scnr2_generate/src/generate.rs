@@ -137,7 +137,7 @@ pub fn generate(input: TokenStream) -> TokenStream {
                 ),*
             ];
             pub struct #scanner_name {
-                scanner_impl: ScannerImpl,
+                pub scanner_impl: ScannerImpl,
             }
             impl #scanner_name {
                 pub fn new() -> Self {

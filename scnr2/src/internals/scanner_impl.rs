@@ -26,7 +26,7 @@ impl ScannerImpl {
 
     /// Creates a new `FindMatches` iterator for the given haystack and offset.
     pub fn find_matches<'a, F>(
-        &'a self,
+        &self,
         haystack: &'a str,
         offset: usize,
         match_function: &'static F,
@@ -43,12 +43,12 @@ impl ScannerImpl {
     }
 
     /// Creates a new `FindMatchesWithPosition` iterator for the given haystack and offset.
-    pub fn find_matches_with_position<'a, F>(
-        &'a self,
-        haystack: &'a str,
+    pub fn find_matches_with_position<'h, F>(
+        &self,
+        haystack: &'h str,
         offset: usize,
         match_function: &'static F,
-    ) -> crate::internals::find_matches::FindMatchesWithPosition<'a, F>
+    ) -> crate::internals::find_matches::FindMatchesWithPosition<'h, F>
     where
         F: Fn(char) -> Option<usize> + 'static,
     {
@@ -91,5 +91,14 @@ impl ScannerImpl {
             .get(mode_index)
             .and_then(|map| map.get(&token_type))
             .cloned()
+    }
+
+    /// Returns the name of the given mode.
+    pub fn mode_name(&self, index: usize) -> Option<&'static str> {
+        Some(
+            self.modes
+                .get(index)
+                .map_or_else(|| "Unknown", |mode| mode.name),
+        )
     }
 }

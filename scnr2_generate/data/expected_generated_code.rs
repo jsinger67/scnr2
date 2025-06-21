@@ -1230,7 +1230,7 @@ pub mod test_scanner {
         },
     ];
     pub struct TestScanner {
-        scanner_impl: ScannerImpl,
+        pub scanner_impl: ScannerImpl,
     }
     impl TestScanner {
         pub fn new() -> Self {

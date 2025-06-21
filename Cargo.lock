@@ -300,6 +300,7 @@ dependencies = [
 name = "scnr2"
 version = "0.1.0"
 dependencies = [
+ "log",
  "scnr2_macro",
 ]
 

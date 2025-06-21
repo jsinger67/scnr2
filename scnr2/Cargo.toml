@@ -11,4 +11,5 @@ description = "Scanner/Lexer with regex patterns and multiple modes"
 repository = "https://github.com/jsinger67/scnr2"
 
 [dependencies]
+log = "0.4.27"
 scnr2_macro = { version = "0.1.0", path = "../scnr2_macro" }
