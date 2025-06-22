@@ -93,6 +93,11 @@ impl ScannerImpl {
             .cloned()
     }
 
+    /// Returns the current mode index.
+    pub fn current_mode_index(&self) -> usize {
+        *self.current_mode.borrow()
+    }
+
     /// Returns the name of the given mode.
     pub fn mode_name(&self, index: usize) -> Option<&'static str> {
         Some(
@@ -100,5 +105,11 @@ impl ScannerImpl {
                 .get(index)
                 .map_or_else(|| "Unknown", |mode| mode.name),
         )
+    }
+
+    /// returns the name of the current mode.
+    pub fn current_mode_name(&self) -> &'static str {
+        self.mode_name(self.current_mode_index())
+            .unwrap_or("Unknown")
     }
 }

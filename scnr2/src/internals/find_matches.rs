@@ -212,6 +212,14 @@ where
         }
     }
 
+    /// returns the name of the current mode.
+    #[inline]
+    pub fn current_mode_name(&self) -> Option<&'static str> {
+        let scanner_impl = self.scanner_impl.borrow();
+        let current_mode_index = *scanner_impl.current_mode.borrow();
+        scanner_impl.mode_name(current_mode_index)
+    }
+
     /// Returns the name of the given mode.
     #[inline]
     pub fn mode_name(&self, index: usize) -> Option<&'static str> {
@@ -264,6 +272,12 @@ where
         FindMatchesWithPosition {
             find_matches: FindMatches::new(haystack, offset, scanner_impl, match_function),
         }
+    }
+
+    /// returns the name of the current mode.
+    #[inline]
+    pub fn current_mode_name(&self) -> Option<&'static str> {
+        self.find_matches.current_mode_name()
     }
 
     /// Returns the name of the given mode.
