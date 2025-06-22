@@ -136,16 +136,22 @@ pub fn generate(input: TokenStream) -> TokenStream {
                     #modes
                 ),*
             ];
+            /// The scanner type generated for this grammar.
             pub struct #scanner_name {
+                /// The member that handles the actual scanning logic.
                 pub scanner_impl: ScannerImpl,
             }
             impl #scanner_name {
+                /// Creates a new instance of the scanner.
                 pub fn new() -> Self {
                     #scanner_name {
                         scanner_impl: ScannerImpl::new(MODES),
                     }
                 }
+                /// Returns the disjunct character classes of the given character.
+                /// Used for matching characters in the scanner.
                 #match_function_code
+                /// Creates a find_matches iterator for the given haystack and offset.
                 pub fn find_matches<'a, F>(
                     &'a self,
                     haystack: &'a str,
@@ -157,6 +163,7 @@ pub fn generate(input: TokenStream) -> TokenStream {
                 {
                     self.scanner_impl.find_matches(haystack, offset, match_function)
                 }
+                /// Creates a find_matches_with_position iterator for the given haystack and offset.
                 pub fn find_matches_with_position<'a, F>(
                     &'a self,
                     haystack: &'a str,
@@ -167,6 +174,21 @@ pub fn generate(input: TokenStream) -> TokenStream {
                     F: Fn(char) -> Option<usize> + 'static,
                 {
                     self.scanner_impl.find_matches_with_position(haystack, offset, match_function)
+                }
+
+                /// Returns the current mode index.
+                pub fn current_mode_index(&self) -> usize {
+                    self.scanner_impl.current_mode_index()
+                }
+
+                /// Returns the name of the given mode.
+                pub fn mode_name(&self, index: usize) -> Option<&'static str> {
+                    self.scanner_impl.mode_name(index)
+                }
+
+                /// returns the name of the current mode.
+                pub fn current_mode_name(&self) -> &'static str {
+                    self.scanner_impl.current_mode_name()
                 }
             }
         }

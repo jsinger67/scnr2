@@ -1229,15 +1229,20 @@ pub mod test_scanner {
             },
         },
     ];
+    #[doc = r" The scanner implementation for the `#scanner_name`."]
     pub struct TestScanner {
+        #[doc = r" The member that handles the actual scanning logic."]
         pub scanner_impl: ScannerImpl,
     }
     impl TestScanner {
+        #[doc = r" Creates a new instance of the scanner."]
         pub fn new() -> Self {
             TestScanner {
                 scanner_impl: ScannerImpl::new(MODES),
             }
         }
+        #[doc = r" Returns the disjunct character classes of the given character."]
+        #[doc = r" Used for matching characters in the scanner."]
         #[allow(clippy::manual_is_ascii_check, dead_code)]
         pub(crate) fn match_function(c: char) -> Option<usize> {
             use std::cmp::Ordering;
@@ -2897,6 +2902,7 @@ pub mod test_scanner {
             };
             INTERVALS[interval_idx].1.into()
         }
+        #[doc = r" Creates a find_matches iterator for the given haystack and offset."]
         pub fn find_matches<'a, F>(
             &'a self,
             haystack: &'a str,
@@ -2909,6 +2915,7 @@ pub mod test_scanner {
             self.scanner_impl
                 .find_matches(haystack, offset, match_function)
         }
+        #[doc = r" Creates a find_matches_with_position iterator for the given haystack and offset."]
         pub fn find_matches_with_position<'a, F>(
             &'a self,
             haystack: &'a str,
@@ -2920,6 +2927,18 @@ pub mod test_scanner {
         {
             self.scanner_impl
                 .find_matches_with_position(haystack, offset, match_function)
+        }
+        #[doc = r" Returns the current mode index."]
+        pub fn current_mode_index(&self) -> usize {
+            self.scanner_impl.current_mode_index()
+        }
+        #[doc = r" Returns the name of the given mode."]
+        pub fn mode_name(&self, index: usize) -> Option<&'static str> {
+            self.scanner_impl.mode_name(index)
+        }
+        #[doc = r" returns the name of the current mode."]
+        pub fn current_mode_name(&self) -> &'static str {
+            self.scanner_impl.current_mode_name()
         }
     }
 }
