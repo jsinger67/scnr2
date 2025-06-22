@@ -1229,7 +1229,7 @@ pub mod test_scanner {
             },
         },
     ];
-    #[doc = r" The scanner implementation for the `#scanner_name`."]
+    #[doc = r" The scanner type generated for this grammar."]
     pub struct TestScanner {
         #[doc = r" The member that handles the actual scanning logic."]
         pub scanner_impl: ScannerImpl,
