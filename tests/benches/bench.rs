@@ -1,3 +1,12 @@
+// Substantial parts of this code are adapted from the `logos` crate's benchmarks.
+// Logos is licensed under the MIT License and Apache License 2.0.
+//
+// The original source can be found at:
+// https://github.com/maciejhirsz/logos/blob/master/tests/benches/bench.rs
+// Copyright (c) 2018 Maciej Hirsz <maciej.hirsz@gmail.com>
+//
+// `scnr2` is also licensed under the MIT License and Apache License 2.0.
+
 use codspeed_criterion_compat::{
     black_box, criterion_group, criterion_main, Criterion, Throughput,
 };
