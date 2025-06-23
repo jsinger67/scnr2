@@ -1,5 +1,5 @@
 [workspace]
-members = [ "scnr2", "scnr2_generate","scnr2_macro" ]
+members = [ "scnr2", "scnr2_generate","scnr2_macro", "tests" ]
 resolver = "2"
 
 [workspace.package]
@@ -14,3 +14,6 @@ license = "MIT/Apache-2.0"
 opt-level = 3
 lto = true
 debug = true
+
+[profile.bench]
+lto = true

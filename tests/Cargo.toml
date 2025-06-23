@@ -1,0 +1,20 @@
+[package]
+edition.workspace = true
+name = "tests"
+publish = false
+version = "0.1.0"
+
+[dependencies]
+scnr2 = { path = "../scnr2" }
+scnr2_generate = { path = "../scnr2_generate" }
+
+[dev-dependencies]
+codspeed-criterion-compat = "2.7.0"
+criterion = "0.6"
+
+[package.metadata.release]
+release = false
+
+[[bench]]
+harness = false
+name = "bench"
