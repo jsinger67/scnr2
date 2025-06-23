@@ -1,4 +1,4 @@
-//! CharIter struct and its implementation
+//! CharIter structs and their implementations
 use std::str::CharIndices;
 
 use crate::internals::position::Position;
@@ -10,8 +10,6 @@ use crate::internals::position::Position;
 pub struct CharIter<'a> {
     char_indices: CharIndices<'a>,
     offset: usize,
-    line: usize,
-    column: usize,
 }
 
 impl<'a> CharIter<'a> {
@@ -23,6 +21,57 @@ impl<'a> CharIter<'a> {
             haystack[haystack.len()..haystack.len()].char_indices()
         };
         CharIter {
+            char_indices,
+            offset: 0,
+        }
+    }
+
+    /// Returns the next character without advancing the iterator.
+    pub(crate) fn peek(&mut self) -> Option<(usize, char)> {
+        if let Some((byte_index, ch)) = self.char_indices.clone().next() {
+            Some((byte_index, ch))
+        } else {
+            None
+        }
+    }
+}
+
+// CharIter implements an iterator over characters in a string slice,
+// yielding tuples of (char_index, char) where Position
+// contains the line and column numbers of the character.
+impl Iterator for CharIter<'_> {
+    type Item = (usize, char);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some((byte_index, ch)) = self.char_indices.next() {
+            self.offset = byte_index + ch.len_utf8();
+            Some((byte_index, ch))
+        } else {
+            None
+        }
+    }
+}
+
+/// An iterator over characters in a string slice, yielding tuples of (char_index, char, Position).
+/// The `CharIter` struct provides an iterator that tracks the position of characters in a string,
+/// including their byte index, line number, and column number.
+#[derive(Debug, Clone)]
+pub struct CharIterWithPosition<'a> {
+    char_indices: CharIndices<'a>,
+    offset: usize,
+    line: usize,
+    column: usize,
+}
+
+impl<'a> CharIterWithPosition<'a> {
+    /// Creates a new `CharIter` from the given string slice.
+    pub fn new(haystack: &'a str, offset: usize) -> Self {
+        let char_indices = if offset <= haystack.len() {
+            haystack[offset..].char_indices()
+        } else {
+            haystack[haystack.len()..haystack.len()].char_indices()
+        };
+        CharIterWithPosition {
             char_indices,
             offset: 0,
             line: 1,
@@ -53,7 +102,7 @@ impl<'a> CharIter<'a> {
 // CharIter implements an iterator over characters in a string slice,
 // yielding tuples of (char_index, char, Position) where Position
 // contains the line and column numbers of the character.
-impl Iterator for CharIter<'_> {
+impl Iterator for CharIterWithPosition<'_> {
     type Item = (usize, char, Position);
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -80,7 +129,7 @@ mod tests {
     #[test]
     fn test_char_iter() {
         let haystack = "Hello\nWorld";
-        let mut iter = CharIter::new(haystack, 0);
+        let mut iter = CharIterWithPosition::new(haystack, 0);
 
         assert_eq!(iter.next(), Some((0, 'H', Position::new(1, 1))));
         assert_eq!(iter.next(), Some((1, 'e', Position::new(1, 2))));

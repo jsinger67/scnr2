@@ -10,7 +10,7 @@ pub use scnr2_macro::scanner;
 #[doc(hidden)]
 pub mod internals;
 pub use crate::internals::{
-    char_iter::CharIter,
+    char_iter::CharIterWithPosition,
     find_matches::{FindMatches, FindMatchesWithPosition},
     match_types::{Match, MatchWithPosition},
     position::Position,

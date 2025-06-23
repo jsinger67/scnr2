@@ -3,9 +3,9 @@
 use std::{cell::RefCell, rc::Rc};
 
 use crate::{
-    Dfa, Lookahead, Position, ScannerImpl,
+    Dfa, Lookahead, ScannerImpl,
     internals::{
-        char_iter::CharIter,
+        char_iter::{CharIter, CharIterWithPosition},
         match_types::{Match, MatchWithPosition},
     },
 };
@@ -29,15 +29,27 @@ where
 }
 
 /// Helper structures to manage the start and end of matches with their positions.
-struct MatchStart {
+struct MatchStartWithPosition {
     byte_index: usize,
     position: crate::internals::position::Position,
 }
 
 /// Helper structure to manage the end of matches with their positions, token type, and priority.
-struct MatchEnd {
+struct MatchEndWithPosition {
     byte_index: usize,
     position: crate::internals::position::Position,
+    token_type: usize,
+    priority: usize,
+}
+
+/// Helper structures to manage the start and end of matches with their positions.
+struct MatchStart {
+    byte_index: usize,
+}
+
+/// Helper structure to manage the end of matches with their positions, token type, and priority.
+struct MatchEnd {
+    byte_index: usize,
     token_type: usize,
     priority: usize,
 }
@@ -66,7 +78,8 @@ where
     /// This method is responsible for finding the next match based on the current state of the
     /// scanner implementation and the current position in the haystack.
     /// It is used in the `next` method of the `Iterator` trait implementation.
-    pub(crate) fn next_match(&mut self) -> Option<MatchWithPosition> {
+    #[inline(always)]
+    pub(crate) fn next_match(&mut self) -> Option<Match> {
         // Logic to find the next match in the haystack using the scanner implementation
         // and the current position in the char_iter.
         let dfa: &Dfa = {
@@ -88,14 +101,14 @@ where
     /// The caller must do that.
     ///
     /// If no match is found, None is returned.
-    fn find_next(&mut self, dfa: &Dfa) -> Option<MatchWithPosition> {
+    fn find_next(&mut self, dfa: &Dfa) -> Option<Match> {
         let mut state = 0; // Initial state of the DFA
         let mut match_start: Option<MatchStart> = None;
 
         let mut match_end: Option<MatchEnd> = None;
 
         // Iterate over characters in the haystack using char_iter
-        while let Some((byte_index, ch, position)) = self.char_iter.peek() {
+        while let Some((byte_index, ch)) = self.char_iter.peek() {
             let character_class = (self.match_function)(ch);
             let state_data = &dfa.states[state];
 
@@ -113,10 +126,7 @@ where
             self.char_iter.next();
 
             if match_start.is_none() {
-                match_start = Some(MatchStart {
-                    byte_index,
-                    position,
-                });
+                match_start = Some(MatchStart { byte_index });
             }
 
             state = state_data.transitions[transition_index].to;
@@ -150,10 +160,6 @@ where
                     if update {
                         match_end = Some(MatchEnd {
                             byte_index: new_byte_index,
-                            position: Position {
-                                line: position.line,
-                                column: position.column + 1,
-                            },
                             token_type: accept_data.token_type,
                             priority: accept_data.priority,
                         });
@@ -165,11 +171,7 @@ where
         if let Some(match_end) = match_end {
             let match_start = match_start.unwrap();
             let span: crate::Span = match_start.byte_index..match_end.byte_index;
-            Some(MatchWithPosition::new(
-                Match::new(span, match_end.token_type),
-                match_start.position,
-                match_end.position,
-            ))
+            Some(Match::new(span, match_end.token_type))
         } else {
             None
         }
@@ -235,10 +237,7 @@ where
     type Item = Match;
 
     fn next(&mut self) -> Option<Match> {
-        self.next_match().map(|m| Match {
-            span: m.span,
-            token_type: m.token_type,
-        })
+        self.next_match()
     }
 }
 
@@ -250,7 +249,16 @@ pub struct FindMatchesWithPosition<'a, F>
 where
     F: Fn(char) -> Option<usize> + 'static,
 {
-    find_matches: FindMatches<'a, F>,
+    /// The input string slice in which to find matches.
+    input: &'a str,
+    /// The offset in the input string slice from which to start searching for matches.
+    offset: usize,
+    /// An iterator over characters in the input string slice, starting from the given offset.
+    char_iter: CharIterWithPosition<'a>,
+    /// The creating scanner implementation, wrapped in an Rc<RefCell> for thread safety.
+    scanner_impl: Rc<RefCell<ScannerImpl>>,
+    /// A reference to the match function that returns the character class for a given character.
+    match_function: &'static F,
 }
 
 impl<'a, F> FindMatchesWithPosition<'a, F>
@@ -265,24 +273,175 @@ where
         match_function: &'static F,
     ) -> Self {
         FindMatchesWithPosition {
-            find_matches: FindMatches::new(haystack, offset, scanner_impl, match_function),
+            input: haystack,
+            offset,
+            char_iter: CharIterWithPosition::new(haystack, offset),
+            scanner_impl,
+            match_function,
         }
     }
 
     /// returns the name of the current mode.
     #[inline]
     pub fn current_mode_name(&self) -> Option<&'static str> {
-        self.find_matches.current_mode_name()
+        let scanner_impl = self.scanner_impl.borrow();
+        let current_mode_index = *scanner_impl.current_mode.borrow();
+        scanner_impl.mode_name(current_mode_index)
     }
 
     /// Returns the name of the given mode.
+    #[inline]
     pub fn mode_name(&self, index: usize) -> Option<&'static str> {
-        self.find_matches.mode_name(index)
+        self.scanner_impl.borrow().mode_name(index)
     }
 
     /// Returns the current mode index.
+    #[inline]
     pub fn current_mode(&self) -> usize {
-        self.find_matches.current_mode()
+        *self.scanner_impl.borrow().current_mode.borrow()
+    }
+
+    /// Returns the next match in the haystack, if available.
+    /// This method is responsible for finding the next match based on the current state of the
+    /// scanner implementation and the current position in the haystack.
+    /// It is used in the `next` method of the `Iterator` trait implementation.
+    #[inline(always)]
+    pub(crate) fn next_match(&mut self) -> Option<MatchWithPosition> {
+        // Logic to find the next match in the haystack using the scanner implementation
+        // and the current position in the char_iter.
+        let dfa: &Dfa = {
+            let scanner_impl = self.scanner_impl.borrow();
+            &scanner_impl.modes[*scanner_impl.current_mode.borrow()].dfa
+        };
+        let ma = self.find_next(dfa);
+        // If a match is found and there exists a transition to the next mode,
+        // update the current mode in the scanner implementation.
+        if let Some(ma) = &ma {
+            let scanner_impl = self.scanner_impl.borrow();
+            scanner_impl.handle_mode_transition(ma.token_type);
+        }
+        ma
+    }
+
+    /// Simulates the DFA on the given input.
+    /// Returns a match starting at the current position. No try on next character is done.
+    /// The caller must do that.
+    ///
+    /// If no match is found, None is returned.
+    fn find_next(&mut self, dfa: &Dfa) -> Option<MatchWithPosition> {
+        let mut state = 0; // Initial state of the DFA
+        let mut match_start: Option<MatchStartWithPosition> = None;
+
+        let mut match_end: Option<MatchEndWithPosition> = None;
+
+        // Iterate over characters in the haystack using char_iter
+        while let Some((byte_index, ch, position)) = self.char_iter.peek() {
+            let character_class = (self.match_function)(ch);
+            let state_data = &dfa.states[state];
+
+            let Some(class_idx) = character_class else {
+                break;
+            };
+            let Ok(transition_index) = state_data
+                .transitions
+                .binary_search_by_key(&class_idx, |t| t.char_class)
+            else {
+                break;
+            };
+
+            // Only now advance the iterator
+            self.char_iter.next();
+
+            if match_start.is_none() {
+                match_start = Some(MatchStartWithPosition {
+                    byte_index,
+                    position,
+                });
+            }
+
+            state = state_data.transitions[transition_index].to;
+            let state_data = &dfa.states[state];
+
+            if let Some(accept_data) = &state_data.accept_data {
+                let (lookahead_satisfied, lookahead_len) =
+                    if !matches!(accept_data.lookahead, Lookahead::None) {
+                        let find_matches = FindMatchesWithPosition::new(
+                            self.input,
+                            self.offset,
+                            self.scanner_impl.clone(),
+                            self.match_function,
+                        );
+                        Self::evaluate_lookahead(find_matches, accept_data)
+                    } else {
+                        (true, 0)
+                    };
+                if lookahead_satisfied {
+                    let match_start = match_start.as_ref().unwrap();
+                    let new_byte_index = byte_index + lookahead_len + ch.len_utf8();
+                    let new_len = new_byte_index - match_start.byte_index;
+                    let update = match &match_end {
+                        Some(me) => {
+                            let old_len = me.byte_index - match_start.byte_index;
+                            new_len > old_len
+                                || (new_len == old_len && accept_data.priority < me.priority)
+                        }
+                        None => true,
+                    };
+                    if update {
+                        match_end = Some(MatchEndWithPosition {
+                            byte_index: new_byte_index,
+                            token_type: accept_data.token_type,
+                            priority: accept_data.priority,
+                            position,
+                        });
+                    }
+                }
+            }
+        }
+
+        if let Some(match_end) = match_end {
+            let match_start = match_start.unwrap();
+            let span: crate::Span = match_start.byte_index..match_end.byte_index;
+            Some(MatchWithPosition::new(
+                Match::new(span, match_end.token_type),
+                match_start.position,
+                match_end.position,
+            ))
+        } else {
+            None
+        }
+    }
+
+    /// Evaluates the lookahead condition for the current match.
+    /// This method checks if the lookahead condition is satisfied based on the
+    /// current match and the accept data.
+    /// It returns a tuple containing a boolean indicating whether the lookahead is satisfied
+    /// and the length of the lookahead match.
+    fn evaluate_lookahead(
+        mut find_matches: FindMatchesWithPosition<'_, F>,
+        accept_data: &crate::AcceptData,
+    ) -> (bool, usize) {
+        match &accept_data.lookahead {
+            crate::Lookahead::None => {
+                unreachable!("Lookahead::None should not be evaluated here")
+            }
+            crate::Lookahead::Positive(dfa) => {
+                // Handle positive lookahead logic here
+                if let Some(ma) = find_matches.find_next(dfa) {
+                    (true, ma.span.len())
+                } else {
+                    (false, 0)
+                }
+            }
+            crate::Lookahead::Negative(dfa) => {
+                // Handle negative lookahead logic here
+                if find_matches.find_next(dfa).is_some() {
+                    (false, 0)
+                } else {
+                    (true, 0)
+                }
+            }
+        }
     }
 }
 
@@ -293,6 +452,6 @@ where
     type Item = MatchWithPosition;
 
     fn next(&mut self) -> Option<MatchWithPosition> {
-        self.find_matches.next_match()
+        self.next_match()
     }
 }

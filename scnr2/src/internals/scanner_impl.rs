@@ -66,6 +66,7 @@ impl ScannerImpl {
         )
     }
 
+    #[inline(always)]
     pub fn handle_mode_transition(&self, token_type: usize) {
         let mode_index = *self.current_mode.borrow();
         if let Some(transition) = self.transition_for_token_type(token_type) {
