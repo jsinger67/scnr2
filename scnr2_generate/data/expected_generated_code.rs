@@ -1,5 +1,7 @@
 pub mod test_scanner {
-    use scnr2::{AcceptData, Dfa, DfaState, DfaTransition, Lookahead, ScannerImpl, ScannerMode};
+    use scnr2::{
+        AcceptData, Dfa, DfaState, DfaTransition, Lookahead, ScannerImpl, ScannerMode, Transition,
+    };
     pub const MODES: &[ScannerMode] = &[
         ScannerMode {
             name: "INITIAL",

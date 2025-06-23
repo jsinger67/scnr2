@@ -142,7 +142,7 @@ pub fn generate(input: TokenStream) -> TokenStream {
 
     let output = quote! {
         pub mod #module_name_ident {
-            use scnr2::{AcceptData, Dfa, DfaState, DfaTransition, Lookahead, ScannerMode, ScannerImpl};
+            use scnr2::{AcceptData, Dfa, DfaState, DfaTransition, Lookahead, ScannerMode, ScannerImpl, Transition};
             pub const MODES: &[ScannerMode] = &[
                 #(
                     #modes
