@@ -1,3 +1,5 @@
+use crate::scanner_data::TransitionToNumericMode;
+
 use super::pattern::Pattern;
 
 /// A scanner mode that can be used to scan specific parts of the input.
@@ -16,7 +18,7 @@ pub struct ScannerMode {
     /// The transitions between the scanner modes triggered by a token type number.
     /// The entries are tuples of the token type numbers and the new scanner mode index and are
     /// sorted by token type number.
-    pub transitions: Vec<(usize, usize)>,
+    pub transitions: Vec<TransitionToNumericMode>,
 }
 
 impl ScannerMode {
@@ -36,12 +38,14 @@ impl ScannerMode {
     pub fn new<P, T>(name: &str, patterns: P, mode_transitions: T) -> Self
     where
         P: IntoIterator<Item = Pattern>,
-        T: IntoIterator<Item = (usize, usize)>,
+        T: IntoIterator<Item = TransitionToNumericMode>,
     {
         let patterns = patterns.into_iter().collect::<Vec<_>>();
         let transitions = mode_transitions.into_iter().collect::<Vec<_>>();
         debug_assert!(
-            transitions.windows(2).all(|w| w[0].0 < w[1].0),
+            transitions
+                .windows(2)
+                .all(|w| w[0].token_type() < w[1].token_type()),
             "Transitions are not sorted by token type number."
         );
         Self {

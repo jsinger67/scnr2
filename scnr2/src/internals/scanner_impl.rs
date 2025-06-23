@@ -6,12 +6,17 @@ use std::{
     rc::Rc,
 };
 
+use crate::Transition;
+
 #[derive(Debug, Clone)]
 pub struct ScannerImpl {
+    /// The current mode index, wrapped in a `RefCell` for interior mutability.
     pub(crate) current_mode: Rc<RefCell<usize>>,
+    /// The mode stack
+    pub(crate) mode_stack: Rc<RefCell<Vec<usize>>>,
     pub(crate) modes: &'static [crate::ScannerMode],
-    // For each mode, we store a map of token types to their priorities.
-    priority_map: OnceCell<Vec<HashMap<usize, usize>>>,
+    // For each mode we store a map of token types to their transitions.
+    transition_map: OnceCell<Vec<HashMap<usize, Transition>>>,
 }
 
 impl ScannerImpl {
@@ -19,8 +24,9 @@ impl ScannerImpl {
     pub fn new(modes: &'static [crate::ScannerMode]) -> Self {
         ScannerImpl {
             current_mode: Rc::new(RefCell::new(0)),
+            mode_stack: Rc::new(RefCell::new(vec![])),
             modes,
-            priority_map: OnceCell::new(),
+            transition_map: OnceCell::new(),
         }
     }
 
@@ -60,34 +66,45 @@ impl ScannerImpl {
         )
     }
 
-    /// Returns the index of the new mode based on the token type.
-    /// If no transition exists for the token type, it returns `None`.
-    pub fn next_mode(&self, token_type: usize) -> Option<usize> {
-        self.modes[*self.current_mode.borrow()].next_mode(token_type)
+    pub fn handle_mode_transition(&self, token_type: usize) {
+        let mode_index = *self.current_mode.borrow();
+        if let Some(transition) = self.transition_for_token_type(token_type) {
+            match transition {
+                crate::Transition::SetMode(_, m) => {
+                    *self.current_mode.borrow_mut() = m;
+                }
+                crate::Transition::PushMode(_, m) => {
+                    self.mode_stack.borrow_mut().push(mode_index);
+                    *self.current_mode.borrow_mut() = m;
+                }
+                crate::Transition::PopMode(_) => {
+                    if let Some(previous_mode_index) = self.mode_stack.borrow_mut().pop() {
+                        *self.current_mode.borrow_mut() = previous_mode_index;
+                    } else {
+                        // If the stack is empty, we stay in the current mode.
+                        // This is a no-op, but it ensures we don't panic.
+                    }
+                }
+            }
+        }
     }
 
-    /// Returns the priority of the token type in this mode.
-    pub fn token_priority(&self, token_type: usize) -> Option<usize> {
-        let priority_map = self.priority_map.get_or_init(|| {
+    /// Returns the transition for the given token type in the current mode.
+    fn transition_for_token_type(&self, token_type: usize) -> Option<Transition> {
+        let transition_map = self.transition_map.get_or_init(|| {
             self.modes
                 .iter()
                 .map(|mode| {
-                    mode.dfa
-                        .states
+                    mode.transitions
                         .iter()
-                        .filter_map(|state| {
-                            state
-                                .accept_data
-                                .as_ref()
-                                .map(|ad| (ad.token_type, ad.priority))
-                        })
+                        .map(|transition| (transition.token_type(), transition.clone()))
                         .collect()
                 })
                 .collect()
         });
 
         let mode_index = *self.current_mode.borrow();
-        priority_map
+        transition_map
             .get(mode_index)
             .and_then(|map| map.get(&token_type))
             .cloned()

@@ -3,7 +3,7 @@ pub mod test_scanner {
     pub const MODES: &[ScannerMode] = &[
         ScannerMode {
             name: "INITIAL",
-            transitions: &[(8usize, 1usize)],
+            transitions: &[Transition::SetMode(8usize, 1usize)],
             dfa: Dfa {
                 states: &[
                     DfaState {
@@ -983,7 +983,7 @@ pub mod test_scanner {
         },
         ScannerMode {
             name: "STRING",
-            transitions: &[(8usize, 0usize)],
+            transitions: &[Transition::SetMode(8usize, 0usize)],
             dfa: Dfa {
                 states: &[
                     DfaState {

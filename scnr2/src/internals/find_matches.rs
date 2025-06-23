@@ -2,8 +2,6 @@
 
 use std::{cell::RefCell, rc::Rc};
 
-use log::trace;
-
 use crate::{
     Dfa, Lookahead, Position, ScannerImpl,
     internals::{
@@ -80,10 +78,7 @@ where
         // update the current mode in the scanner implementation.
         if let Some(ma) = &ma {
             let scanner_impl = self.scanner_impl.borrow();
-            if let Some(next_mode) = scanner_impl.next_mode(ma.token_type) {
-                trace!("Switching to next mode: {}", next_mode);
-                *scanner_impl.current_mode.borrow_mut() = next_mode;
-            }
+            scanner_impl.handle_mode_transition(ma.token_type);
         }
         ma
     }

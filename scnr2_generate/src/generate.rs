@@ -3,7 +3,10 @@ use quote::{ToTokens, quote};
 use syn::parse2;
 
 use crate::{
-    character_classes::CharacterClasses, dfa::Dfa, nfa::Nfa, scanner_data::ScannerData,
+    character_classes::CharacterClasses,
+    dfa::Dfa,
+    nfa::Nfa,
+    scanner_data::{ScannerData, TransitionToNumericMode},
     scanner_mode::ScannerMode,
 };
 
@@ -109,9 +112,18 @@ pub fn generate(input: TokenStream) -> TokenStream {
     let match_function_code = character_classes.generate("match_function");
 
     let modes = scanner_modes.into_iter().enumerate().map(|(index, mode)| {
-        let transitions = mode.transitions.iter().map(|(token_type, new_mode_index)| {
-            quote! {
-                (#token_type, #new_mode_index)
+        let transitions = mode.transitions.iter().map(|transition_to_numeric_mode| {
+            match transition_to_numeric_mode {
+                // Convert the transition to a token type and new mode index
+                TransitionToNumericMode::SetMode(token_type, new_mode_index) => {
+                    quote! { Transition::SetMode(#token_type, #new_mode_index) }
+                }
+                TransitionToNumericMode::PushMode(token_type, new_mode_index) => {
+                    quote! { Transition::PushMode(#token_type, #new_mode_index) }
+                }
+                TransitionToNumericMode::PopMode(token_type) => {
+                    quote! { Transition::PopMode(#token_type) }
+                }
             }
         });
         let states = dfas[index]
@@ -256,7 +268,7 @@ mod tests {
                     token r"[a-zA-Z_]\w*" => 13;
                     token r"." => 14;
 
-                    transition 8 => STRING;
+                    on 8 enter STRING;
                 }
                 mode STRING {
                     token r#"\\[\"\\bfnt]"# => 5;
@@ -265,7 +277,7 @@ mod tests {
                     token r#"""# => 8;
                     token r"." => 14;
 
-                    transition 8 => INITIAL;
+                    on 8 enter INITIAL;
                 }
             }
         };

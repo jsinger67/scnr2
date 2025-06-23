@@ -25,24 +25,40 @@ pub use crate::internals::{
 /// A range type representing a span in the source code, typically used for token match positions.
 pub type Span = core::ops::Range<usize>;
 
+/// A transition in the scanner, which can be a change of mode or a push/pop operation on the mode stack.
+#[derive(Debug, Clone)]
+pub enum Transition {
+    /// A transition to a new scanner mode triggered by a token type number.
+    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// This transition is used to set the current scanner mode.
+    SetMode(usize, usize),
+    /// A transition to a new scanner mode triggered by a token type number.
+    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// This transition is used to push the current mode on the mode stack o be able to return to it later.
+    PushMode(usize, usize),
+    /// A transition back to a formerly pushed scanner mode triggered by a token type number.
+    /// This transition is used to pop the current scanner mode from the stack.
+    PopMode(usize),
+}
+
+impl Transition {
+    /// Returns the token type number of this transition.
+    pub fn token_type(&self) -> usize {
+        match self {
+            Transition::SetMode(token_type, _)
+            | Transition::PushMode(token_type, _)
+            | Transition::PopMode(token_type) => *token_type,
+        }
+    }
+}
+
 /// A scanner mode, which includes its name, transitions, and the DFA (Deterministic Finite
 /// Automaton) that defines its behavior.
 #[derive(Debug)]
 pub struct ScannerMode {
     pub name: &'static str,
-    pub transitions: &'static [(usize, usize)],
+    pub transitions: &'static [Transition],
     pub dfa: Dfa,
-}
-
-impl ScannerMode {
-    /// Returns the index of the new mode based on the token type.
-    /// If no transition exists for the token type, it returns `None`.
-    pub fn next_mode(&self, token_type: usize) -> Option<usize> {
-        self.transitions
-            .iter()
-            .find(|&&(t, _)| t == token_type)
-            .map(|&(_, next_mode)| next_mode)
-    }
 }
 
 /// A Deterministic Finite Automaton (DFA) that consists of states.

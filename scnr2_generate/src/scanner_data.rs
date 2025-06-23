@@ -13,6 +13,95 @@ macro_rules! parse_ident {
     };
 }
 
+#[derive(Debug, Clone)]
+pub enum TransitionToNumericMode {
+    /// A transition to a new scanner mode triggered by a token type number.
+    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// This transition is used to set the current scanner mode.
+    SetMode(usize, usize),
+    /// A transition to a new scanner mode triggered by a token type number.
+    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// This transition is used to push the current mode on the mode stack o be able to return to it later.
+    PushMode(usize, usize),
+    /// A transition back to a formerly pushed scanner mode triggered by a token type number.
+    /// This transition is used to pop the current scanner mode from the stack.
+    PopMode(usize),
+}
+
+impl TransitionToNumericMode {
+    /// Returns the token type number of this transition.
+    pub fn token_type(&self) -> usize {
+        match self {
+            TransitionToNumericMode::SetMode(token_type, _)
+            | TransitionToNumericMode::PushMode(token_type, _)
+            | TransitionToNumericMode::PopMode(token_type) => *token_type,
+        }
+    }
+}
+
+impl PartialEq for TransitionToNumericMode {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (TransitionToNumericMode::SetMode(a, b), TransitionToNumericMode::SetMode(c, d)) => {
+                a == c && b == d
+            }
+            (TransitionToNumericMode::PushMode(a, b), TransitionToNumericMode::PushMode(c, d)) => {
+                a == c && b == d
+            }
+            (TransitionToNumericMode::PopMode(a), TransitionToNumericMode::PopMode(b)) => a == b,
+            _ => false,
+        }
+    }
+}
+
+impl Eq for TransitionToNumericMode {}
+
+// impl PartialOrd for TransitionToNumericMode {
+//     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//         match (self, other) {
+//             (TransitionToNumericMode::SetMode(a, _), TransitionToNumericMode::SetMode(b, _)) => {
+//                 a.partial_cmp(b)
+//             }
+//             (TransitionToNumericMode::PushMode(a, _), TransitionToNumericMode::PushMode(b, _)) => {
+//                 a.partial_cmp(b)
+//             }
+//             (TransitionToNumericMode::PopMode(a), TransitionToNumericMode::PopMode(b)) => {
+//                 a.partial_cmp(b)
+//             }
+//             _ => None,
+//         }
+//     }
+// }
+
+// impl Ord for TransitionToNumericMode {
+//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+//         match (self, other) {
+//             (TransitionToNumericMode::SetMode(a, _), TransitionToNumericMode::SetMode(b, _)) => {
+//                 a.cmp(b)
+//             }
+//             (TransitionToNumericMode::PushMode(a, _), TransitionToNumericMode::PushMode(b, _)) => {
+//                 a.cmp(b)
+//             }
+//             (TransitionToNumericMode::PopMode(a), TransitionToNumericMode::PopMode(b)) => a.cmp(b),
+//         }
+//     }
+// }
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TransitionToNamedMode {
+    /// A transition to a new scanner mode triggered by a token type number.
+    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// This transition is used to set the current scanner mode.
+    SetMode(usize, String),
+    /// A transition to a new scanner mode triggered by a token type number.
+    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// This transition is used to push the current mode on the mode stack o be able to return to it later.
+    PushMode(usize, String),
+    /// A transition back to a formerly pushed scanner mode triggered by a token type number.
+    /// This transition is used to pop the current scanner mode from the stack.
+    PopMode(usize),
+}
+
 #[derive(Debug)]
 pub struct ScannerModeWithNamedTransitions {
     /// The name of the scanner mode.
@@ -24,24 +113,44 @@ pub struct ScannerModeWithNamedTransitions {
     pub(crate) patterns: Vec<Pattern>,
 
     /// The transitions between the scanner modes triggered by a token type number.
-    /// The entries are tuples of the token type numbers and the new scanner mode name and are
-    /// sorted by token type number.
-    pub(crate) transitions: Vec<(usize, String)>,
+    /// The entries are sorted by token type number.
+    pub(crate) transitions: Vec<TransitionToNamedMode>,
 }
 
 impl ScannerModeWithNamedTransitions {
     /// Converts the scanner mode with named transitions to a scanner mode with numeric transitions.
     /// Returns a vector of tuples of the token type numbers and the new scanner mode ID.
-    pub(crate) fn convert_transitions(&self, scanner_names: &[&str]) -> Vec<(usize, usize)> {
+    pub(crate) fn convert_transitions(
+        &self,
+        scanner_names: &[&str],
+    ) -> Vec<TransitionToNumericMode> {
         let mut transitions = Vec::new();
-        for (token_type, new_mode) in &self.transitions {
-            let new_mode_id = scanner_names
-                .iter()
-                .position(|name| name == new_mode)
-                .unwrap_or_else(|| panic!("Scanner mode '{}' not found", new_mode));
-            transitions.push((*token_type, new_mode_id));
+        for transition in &self.transitions {
+            match transition {
+                TransitionToNamedMode::SetMode(token_type, new_mode) => {
+                    let new_mode_id = scanner_names
+                        .iter()
+                        .position(|name| name == new_mode)
+                        .unwrap_or_else(|| panic!("Scanner mode '{}' not found", new_mode));
+                    transitions.push(TransitionToNumericMode::SetMode(*token_type, new_mode_id));
+                }
+                TransitionToNamedMode::PushMode(token_type, new_mode) => {
+                    let new_mode_id = scanner_names
+                        .iter()
+                        .position(|name| name == new_mode)
+                        .unwrap_or_else(|| panic!("Scanner mode '{}' not found", new_mode));
+                    transitions.push(TransitionToNumericMode::PushMode(*token_type, new_mode_id));
+                }
+                TransitionToNamedMode::PopMode(token_type) => {
+                    transitions.push(TransitionToNumericMode::PopMode(*token_type));
+                }
+            }
         }
-        transitions.sort_by_key(|(token_type, _)| *token_type);
+        transitions.sort_by_key(|t| match t {
+            TransitionToNumericMode::SetMode(token_type, _)
+            | TransitionToNumericMode::PushMode(token_type, _)
+            | TransitionToNumericMode::PopMode(token_type) => *token_type,
+        });
         transitions
     }
 }
@@ -57,12 +166,14 @@ impl ScannerModeWithNamedTransitions {
 ///     token r#"""# => 8;
 ///     token r"Hello" => 9;
 ///     token r"World" => 10;
-///     token r"World" => 11 followed by r"!";
+///     token r"World" followed by r"!" => 11;
 ///     token r"!" => 12;
 ///     token r"[a-zA-Z_]\w*" => 13;
 ///     token r"." => 14;
 ///
-///     transition 8 => STRING;
+///     on 8 enter STRING; // Transition to the STRING mode when token type 8 is encountered.
+///     on 8 push STRING;  // Push the current mode on the mode stack when token type 8 is encountered and enter STRING mode.
+///     on 8 pop; // Pop the current mode from the mode stack when token type 8 is encountered.
 /// }
 /// ```
 /// where there must be at least one token entries which are parsed with the help of the `Pattern`
@@ -91,16 +202,34 @@ impl syn::parse::Parse for ScannerModeWithNamedTransitions {
             if token_or_transition == "token" {
                 let pattern: Pattern = content.parse()?;
                 patterns.push(pattern);
-            } else if token_or_transition == "transition" {
+            } else if token_or_transition == "on" {
                 let token_type: syn::LitInt = content.parse()?;
                 let token_type = token_type.base10_parse::<usize>()?;
-                let _: syn::Token![=>] = content.parse()?;
-                let new_mode: syn::Ident = parse_ident!(content, new_mode);
-                let new_mode = new_mode.to_string();
-                if new_mode.is_empty() {
-                    return Err(content.error("expected a mode name"));
+                let transition_kind: syn::Ident = parse_ident!(content, transition_kind);
+                match transition_kind.to_string().as_str() {
+                    "enter" => {
+                        let new_mode: syn::Ident = parse_ident!(content, new_mode);
+                        let new_mode = new_mode.to_string();
+                        if new_mode.is_empty() {
+                            return Err(content.error("expected a mode name"));
+                        }
+                        transitions.push(TransitionToNamedMode::SetMode(token_type, new_mode));
+                    }
+                    "push" => {
+                        let new_mode: syn::Ident = parse_ident!(content, new_mode);
+                        let new_mode = new_mode.to_string();
+                        if new_mode.is_empty() {
+                            return Err(content.error("expected a mode name"));
+                        }
+                        transitions.push(TransitionToNamedMode::PushMode(token_type, new_mode));
+                    }
+                    "pop" => {
+                        transitions.push(TransitionToNamedMode::PopMode(token_type));
+                    }
+                    _ => {
+                        return Err(content.error("expected 'enter', 'push' or 'pop'"));
+                    }
                 }
-                transitions.push((token_type, new_mode));
                 // Parse the semicolon at the end of the transition.
                 if content.peek(syn::Token![;]) {
                     content.parse::<syn::Token![;]>()?;
@@ -189,12 +318,12 @@ mod tests {
                     token r#"""# => 8;
                     token r"Hello" => 9;
                     token r"World" => 10;
-                    token r"World" => 11 followed by r"!";
-                    token r"!" => 12 not followed by r"!";
+                    token r"World" followed by r"!" => 11;
+                    token r"!" not followed by r"!" => 12;
                     token r"[a-zA-Z_]\w*" => 13;
                     token r"." => 14;
 
-                    transition 8 => STRING;
+                    on 8 enter STRING;
                 }
                 mode STRING {
                     token r#"\\[\"\\bfnt]"# => 5;
@@ -203,7 +332,7 @@ mod tests {
                     token r#"""# => 8;
                     token r"." => 14;
 
-                    transition 8 => INITIAL;
+                    on 8 enter INITIAL;
                 }
             }
         };
@@ -214,8 +343,10 @@ mod tests {
         assert_eq!(mode_initial.name, "INITIAL");
         assert_eq!(mode_initial.patterns.len(), 11);
         assert_eq!(mode_initial.transitions.len(), 1);
-        assert_eq!(mode_initial.transitions[0].0, 8);
-        assert_eq!(mode_initial.transitions[0].1, "STRING");
+        assert_eq!(
+            TransitionToNamedMode::SetMode(8, "STRING".to_string()),
+            mode_initial.transitions[0]
+        );
         let mode_initial_patterns = &mode_initial.patterns;
         assert_eq!(mode_initial_patterns[0].pattern, r"\r\n|\r|\n");
         assert_eq!(mode_initial_patterns[1].pattern, r"[\s--\r\n]+");
@@ -261,8 +392,10 @@ mod tests {
         assert_eq!(mode_string.name, "STRING");
         assert_eq!(mode_string.patterns.len(), 5);
         assert_eq!(mode_string.transitions.len(), 1);
-        assert_eq!(mode_string.transitions[0].0, 8);
-        assert_eq!(mode_string.transitions[0].1, "INITIAL");
+        assert_eq!(
+            TransitionToNamedMode::SetMode(8, "INITIAL".to_string()),
+            mode_string.transitions[0]
+        );
         let mode_string_patterns = &mode_string.patterns;
         assert_eq!(mode_string_patterns[0].pattern, r#"\\[\"\\bfnt]"#);
         assert_eq!(mode_string_patterns[1].pattern, r"\\[\s--\n\r]*\r?\n");
