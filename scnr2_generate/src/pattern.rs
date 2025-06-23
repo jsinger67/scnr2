@@ -70,23 +70,6 @@ impl Lookahead {
             .map_err(|e| format!("Failed to create NFA from regex pattern: {}", e))?;
         Ok(Lookahead::Negative(AutomatonType::Nfa(nfa)))
     }
-
-    // /// Checks if the lookahead is empty, meaning it has no constraints.
-    // pub fn is_empty(&self) -> bool {
-    //     matches!(self, Lookahead::None)
-    // }
-
-    // /// Checks if the lookahead is positive, meaning it has a positive lookahead constraint.
-    // /// Returns `true` if the lookahead is positive, `false` otherwise.
-    // pub fn is_positive(&self) -> bool {
-    //     matches!(self, Lookahead::Positive(_))
-    // }
-
-    // /// Checks if the lookahead is negative, meaning it has a negative lookahead constraint.
-    // /// Returns `true` if the lookahead is negative, `false` otherwise.
-    // pub fn is_negative(&self) -> bool {
-    //     matches!(self, Lookahead::Negative(_))
-    // }
 }
 
 /// This is used to create a lookahead from a part of a macro input.
@@ -211,7 +194,7 @@ impl Pattern {
 /// This is used to create a pattern from a part of a macro input.
 /// The macro input looks like this:
 /// ```text
-/// token r"World" => 11 followed by r"!";
+/// token r"World" followed by r"!" => 11;
 /// ```
 /// where the lookahead part can be either
 /// ```text
@@ -233,24 +216,29 @@ impl syn::parse::Parse for Pattern {
             .parse()
             .map_err(|e| syn::Error::new(e.span(), "expected a string literal for the pattern"))?;
         let pattern = pattern.value();
-        input.parse::<syn::Token![=>]>()?;
-        let token_type: syn::LitInt = input.parse()?;
-        let token_type: TerminalIDBase = token_type.base10_parse()?;
-        let mut pattern = Pattern::new(pattern, token_type.into());
+        let mut lookahead: Option<Lookahead> = None;
         // Check if there is a lookahead and parse it.
         if input.peek(syn::Ident) {
             // The parse implementation of the Lookahead struct will check if the ident is
             // `followed` or `not`.
             // If it is neither, it will return an error.
-            let lookahead: Lookahead = input.parse()?;
-            pattern = pattern.with_lookahead(lookahead);
+            lookahead = Some(input.parse()?);
         }
+        input.parse::<syn::Token![=>]>()?;
+        let token_type: syn::LitInt = input.parse()?;
+        let token_type: TerminalIDBase = token_type.base10_parse()?;
+        let mut pattern = Pattern::new(pattern, token_type.into());
         // Parse the semicolon at the end of the pattern.
         if input.peek(syn::Token![;]) {
             input.parse::<syn::Token![;]>()?;
         } else {
             return Err(input.error("expected ';'"));
         }
+
+        // If a lookahead was parsed, set it on the pattern.
+        let lookahead = lookahead.unwrap_or(Lookahead::None);
+        pattern = pattern.with_lookahead(lookahead);
+
         Ok(pattern)
     }
 }

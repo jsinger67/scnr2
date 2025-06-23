@@ -27,8 +27,8 @@ use crate::{
 ///             token r#"""# => 8;
 ///             token r"Hello" => 9;
 ///             token r"World" => 10;
-///             token r"World" => 11 followed by r"!";
-///             token r"!" => 12 not followed by r"!";
+///             token r"World" followed by r"!" => 11;
+///             token r"!" not followed by r"!" => 12;
 ///             token r"[a-zA-Z_]\w*" => 13;
 ///             token r"." => 14;
 ///
@@ -251,8 +251,8 @@ mod tests {
                     token r#"""# => 8;
                     token r"Hello" => 9;
                     token r"World" => 10;
-                    token r"World" => 11 followed by r"!";
-                    token r"!" => 12 not followed by r"!";
+                    token r"World" followed by r"!" => 11;
+                    token r"!" not followed by r"!" => 12;
                     token r"[a-zA-Z_]\w*" => 13;
                     token r"." => 14;
 
