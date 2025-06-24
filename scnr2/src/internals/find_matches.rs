@@ -6,7 +6,8 @@ use crate::{
     Dfa, Lookahead, ScannerImpl,
     internals::{
         char_iter::{CharIter, CharIterWithPosition},
-        match_types::{Match, MatchWithPosition},
+        match_types::Match,
+        position::Position,
     },
 };
 
@@ -29,29 +30,51 @@ where
 }
 
 /// Helper structures to manage the start and end of matches with their positions.
-struct MatchStartWithPosition {
-    byte_index: usize,
-    position: crate::internals::position::Position,
-}
-
-/// Helper structure to manage the end of matches with their positions, token type, and priority.
-struct MatchEndWithPosition {
-    byte_index: usize,
-    position: crate::internals::position::Position,
-    token_type: usize,
-    priority: usize,
-}
-
-/// Helper structures to manage the start and end of matches with their positions.
 struct MatchStart {
     byte_index: usize,
+    position: Option<Position>,
+}
+
+impl MatchStart {
+    /// Creates a new `MatchStart` with the given byte index and position.
+    fn new(byte_index: usize) -> Self {
+        MatchStart {
+            byte_index,
+            position: None,
+        }
+    }
+
+    /// Sets the position for the match start.
+    fn with_position(mut self, position: Position) -> Self {
+        self.position = Some(position);
+        self
+    }
 }
 
 /// Helper structure to manage the end of matches with their positions, token type, and priority.
 struct MatchEnd {
     byte_index: usize,
+    position: Option<Position>,
     token_type: usize,
     priority: usize,
+}
+
+impl MatchEnd {
+    /// Creates a new `MatchEnd` with the given byte index, token type, and priority.
+    fn new(byte_index: usize, token_type: usize, priority: usize) -> Self {
+        MatchEnd {
+            byte_index,
+            position: None,
+            token_type,
+            priority,
+        }
+    }
+
+    /// Sets the position for the match end.
+    fn with_position(mut self, position: Position) -> Self {
+        self.position = Some(position);
+        self
+    }
 }
 
 impl<'a, F> FindMatches<'a, F>
@@ -126,7 +149,7 @@ where
             self.char_iter.next();
 
             if match_start.is_none() {
-                match_start = Some(MatchStart { byte_index });
+                match_start = Some(MatchStart::new(byte_index));
             }
 
             state = state_data.transitions[transition_index].to;
@@ -158,11 +181,11 @@ where
                         None => true,
                     };
                     if update {
-                        match_end = Some(MatchEnd {
-                            byte_index: new_byte_index,
-                            token_type: accept_data.token_type,
-                            priority: accept_data.priority,
-                        });
+                        match_end = Some(MatchEnd::new(
+                            new_byte_index,
+                            accept_data.token_type,
+                            accept_data.priority,
+                        ));
                     }
                 }
             }
@@ -306,7 +329,7 @@ where
     /// scanner implementation and the current position in the haystack.
     /// It is used in the `next` method of the `Iterator` trait implementation.
     #[inline(always)]
-    pub(crate) fn next_match(&mut self) -> Option<MatchWithPosition> {
+    pub(crate) fn next_match(&mut self) -> Option<Match> {
         // Logic to find the next match in the haystack using the scanner implementation
         // and the current position in the char_iter.
         let dfa: &Dfa = {
@@ -328,11 +351,11 @@ where
     /// The caller must do that.
     ///
     /// If no match is found, None is returned.
-    fn find_next(&mut self, dfa: &Dfa) -> Option<MatchWithPosition> {
+    fn find_next(&mut self, dfa: &Dfa) -> Option<Match> {
         let mut state = 0; // Initial state of the DFA
-        let mut match_start: Option<MatchStartWithPosition> = None;
+        let mut match_start: Option<MatchStart> = None;
 
-        let mut match_end: Option<MatchEndWithPosition> = None;
+        let mut match_end: Option<MatchEnd> = None;
 
         // Iterate over characters in the haystack using char_iter
         while let Some((byte_index, ch, position)) = self.char_iter.peek() {
@@ -353,10 +376,7 @@ where
             self.char_iter.next();
 
             if match_start.is_none() {
-                match_start = Some(MatchStartWithPosition {
-                    byte_index,
-                    position,
-                });
+                match_start = Some(MatchStart::new(byte_index).with_position(position));
             }
 
             state = state_data.transitions[transition_index].to;
@@ -388,12 +408,14 @@ where
                         None => true,
                     };
                     if update {
-                        match_end = Some(MatchEndWithPosition {
-                            byte_index: new_byte_index,
-                            token_type: accept_data.token_type,
-                            priority: accept_data.priority,
-                            position,
-                        });
+                        match_end = Some(
+                            MatchEnd::new(
+                                new_byte_index,
+                                accept_data.token_type,
+                                accept_data.priority,
+                            )
+                            .with_position(Position::new(position.line, position.column + 1)),
+                        );
                     }
                 }
             }
@@ -402,11 +424,10 @@ where
         if let Some(match_end) = match_end {
             let match_start = match_start.unwrap();
             let span: crate::Span = match_start.byte_index..match_end.byte_index;
-            Some(MatchWithPosition::new(
-                Match::new(span, match_end.token_type),
-                match_start.position,
-                match_end.position,
-            ))
+            Some(
+                Match::new(span, match_end.token_type)
+                    .with_positions(match_start.position.unwrap(), match_end.position.unwrap()),
+            )
         } else {
             None
         }
@@ -449,9 +470,9 @@ impl<F> Iterator for FindMatchesWithPosition<'_, F>
 where
     F: Fn(char) -> Option<usize> + 'static,
 {
-    type Item = MatchWithPosition;
+    type Item = Match;
 
-    fn next(&mut self) -> Option<MatchWithPosition> {
+    fn next(&mut self) -> Option<Match> {
         self.next_match()
     }
 }

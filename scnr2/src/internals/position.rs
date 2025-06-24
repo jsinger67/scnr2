@@ -29,3 +29,12 @@ impl std::fmt::Display for Position {
         write!(f, "{}:{}", self.line, self.column)
     }
 }
+
+/// A match in the haystack.
+#[derive(Debug, Clone, Default)]
+pub struct Positions {
+    /// The line and column number where the match started.
+    pub start_position: Position,
+    /// The line and column number where the match ended.
+    pub end_position: Position,
+}

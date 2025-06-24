@@ -1,4 +1,7 @@
-use crate::{Span, internals::position::Position};
+use crate::{
+    Span,
+    internals::position::{Position, Positions},
+};
 
 /// A match in the haystack.
 #[derive(Debug, Clone)]
@@ -7,36 +10,33 @@ pub struct Match {
     pub span: Span,
     /// The type of token matched.
     pub token_type: usize,
+    /// The positions of the match in terms of line and column numbers.
+    pub positions: Option<Positions>,
 }
 
 impl Match {
     /// Creates a new `Match` from the given span and token type.
     pub fn new(span: Span, token_type: usize) -> Self {
-        Match { span, token_type }
+        Match {
+            span,
+            token_type,
+            positions: None,
+        }
     }
-}
 
-/// A match with additional line and column information.
-#[derive(Debug, Clone)]
-pub struct MatchWithPosition {
-    /// The position of the match in the haystack.
-    pub span: Span,
-    /// The type of token matched.
-    pub token_type: usize,
-    /// The line and column number where the match started.
-    pub start_position: Position,
-    /// The line and column number where the match ended.
-    pub end_position: Position,
-}
-
-impl MatchWithPosition {
-    /// Creates a new `MatchWithPosition` from a `Match` and the line and column information.
-    pub fn new(m: Match, start_position: Position, end_position: Position) -> Self {
-        MatchWithPosition {
-            span: m.span,
-            token_type: m.token_type,
+    /// Sets the positions of the match.
+    #[inline]
+    pub fn set_positions(&mut self, start_position: Position, end_position: Position) {
+        self.positions = Some(Positions {
             start_position,
             end_position,
-        }
+        });
+    }
+
+    /// Consumes the match, sets the positions and returns a new `Match` with the positions set.
+    #[inline]
+    pub fn with_positions(mut self, start_position: Position, end_position: Position) -> Self {
+        self.set_positions(start_position, end_position);
+        self
     }
 }

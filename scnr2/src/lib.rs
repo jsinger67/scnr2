@@ -12,7 +12,7 @@ pub mod internals;
 pub use crate::internals::{
     char_iter::CharIterWithPosition,
     find_matches::{FindMatches, FindMatchesWithPosition},
-    match_types::{Match, MatchWithPosition},
+    match_types::Match,
     position::Position,
     scanner_impl::ScannerImpl,
 };
