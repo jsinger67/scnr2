@@ -6,7 +6,7 @@ use crate::{
     Dfa, Lookahead, ScannerImpl,
     internals::{
         char_iter::{CharItem, CharIter, CharIterWithPosition},
-        match_types::Match,
+        match_types::{Match, MatchEnd, MatchStart},
         position::{Position, Positions},
     },
 };
@@ -44,54 +44,6 @@ where
     scanner_impl: Rc<RefCell<ScannerImpl>>,
     /// A reference to the match function that returns the character class for a given character.
     match_function: &'static F,
-}
-
-/// Helper structures to manage the start and end of matches with their positions.
-struct MatchStart {
-    byte_index: usize,
-    position: Option<Position>,
-}
-
-impl MatchStart {
-    /// Creates a new `MatchStart` with the given byte index and position.
-    fn new(byte_index: usize) -> Self {
-        MatchStart {
-            byte_index,
-            position: None,
-        }
-    }
-
-    /// Sets the position for the match start.
-    fn with_position(mut self, position: Option<Position>) -> Self {
-        self.position = position;
-        self
-    }
-}
-
-/// Helper structure to manage the end of matches with their positions, token type, and priority.
-struct MatchEnd {
-    byte_index: usize,
-    position: Option<Position>,
-    token_type: usize,
-    priority: usize,
-}
-
-impl MatchEnd {
-    /// Creates a new `MatchEnd` with the given byte index, token type, and priority.
-    fn new(byte_index: usize, token_type: usize, priority: usize) -> Self {
-        MatchEnd {
-            byte_index,
-            position: None,
-            token_type,
-            priority,
-        }
-    }
-
-    /// Sets the position for the match end.
-    fn with_position(mut self, position: Option<Position>) -> Self {
-        self.position = position;
-        self
-    }
 }
 
 impl<'a, F> FindMatches<'a, F>

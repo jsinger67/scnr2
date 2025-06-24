@@ -1,4 +1,4 @@
-use crate::{Span, internals::position::Positions};
+use crate::{Position, Span, internals::position::Positions};
 
 /// A match in the haystack.
 #[derive(Debug, Clone)]
@@ -25,6 +25,54 @@ impl Match {
     #[inline]
     pub fn with_positions(mut self, positions: Option<Positions>) -> Self {
         self.positions = positions;
+        self
+    }
+}
+
+/// Helper structures to manage the start and end of matches with their positions.
+pub(crate) struct MatchStart {
+    pub(crate) byte_index: usize,
+    pub(crate) position: Option<Position>,
+}
+
+impl MatchStart {
+    /// Creates a new `MatchStart` with the given byte index and position.
+    pub(crate) fn new(byte_index: usize) -> Self {
+        MatchStart {
+            byte_index,
+            position: None,
+        }
+    }
+
+    /// Sets the position for the match start.
+    pub(crate) fn with_position(mut self, position: Option<Position>) -> Self {
+        self.position = position;
+        self
+    }
+}
+
+/// Helper structure to manage the end of matches with their positions, token type, and priority.
+pub(crate) struct MatchEnd {
+    pub(crate) byte_index: usize,
+    pub(crate) position: Option<Position>,
+    pub(crate) token_type: usize,
+    pub(crate) priority: usize,
+}
+
+impl MatchEnd {
+    /// Creates a new `MatchEnd` with the given byte index, token type, and priority.
+    pub(crate) fn new(byte_index: usize, token_type: usize, priority: usize) -> Self {
+        MatchEnd {
+            byte_index,
+            position: None,
+            token_type,
+            priority,
+        }
+    }
+
+    /// Sets the position for the match end.
+    pub(crate) fn with_position(mut self, position: Option<Position>) -> Self {
+        self.position = position;
         self
     }
 }
