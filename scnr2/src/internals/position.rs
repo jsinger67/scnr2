@@ -38,3 +38,13 @@ pub struct Positions {
     /// The line and column number where the match ended.
     pub end_position: Position,
 }
+
+impl Positions {
+    /// Creates a new `Positions` with the given start and end positions.
+    pub fn new(start_position: Position, end_position: Position) -> Self {
+        Positions {
+            start_position,
+            end_position,
+        }
+    }
+}

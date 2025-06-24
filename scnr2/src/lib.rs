@@ -97,7 +97,7 @@ pub struct DfaTransition {
 /// A scanner that can be used to match tokens against the defined modes and transitions.
 pub struct Scanner<F>
 where
-    F: Fn(char) -> Option<usize> + 'static,
+    F: Fn(char) -> Option<usize> + 'static + Clone,
 {
     scanner_impl: ScannerImpl,
     match_function: &'static F,
@@ -105,7 +105,7 @@ where
 
 impl<F> Scanner<F>
 where
-    F: Fn(char) -> Option<usize> + 'static,
+    F: Fn(char) -> Option<usize> + 'static + Clone,
 {
     /// Creates a new scanner with the initial mode and state.
     pub fn new(modes: &'static [ScannerMode], match_function: &'static F) -> Self {

@@ -8,7 +8,7 @@
 // `scnr2` is also licensed under the MIT License and Apache License 2.0.
 
 use codspeed_criterion_compat::{
-    black_box, criterion_group, criterion_main, Criterion, Throughput,
+    Criterion, Throughput, black_box, criterion_group, criterion_main,
 };
 use scnr2::scanner;
 

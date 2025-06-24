@@ -2912,7 +2912,7 @@ pub mod test_scanner {
             match_function: &'static F,
         ) -> scnr2::internals::find_matches::FindMatches<'a, F>
         where
-            F: Fn(char) -> Option<usize> + 'static,
+            F: Fn(char) -> Option<usize> + 'static + Clone,
         {
             self.scanner_impl
                 .find_matches(haystack, offset, match_function)
@@ -2925,7 +2925,7 @@ pub mod test_scanner {
             match_function: &'static F,
         ) -> scnr2::internals::find_matches::FindMatchesWithPosition<'a, F>
         where
-            F: Fn(char) -> Option<usize> + 'static,
+            F: Fn(char) -> Option<usize> + 'static + Clone,
         {
             self.scanner_impl
                 .find_matches_with_position(haystack, offset, match_function)

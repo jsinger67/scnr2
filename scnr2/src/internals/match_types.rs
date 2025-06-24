@@ -1,7 +1,4 @@
-use crate::{
-    Span,
-    internals::position::{Position, Positions},
-};
+use crate::{Span, internals::position::Positions};
 
 /// A match in the haystack.
 #[derive(Debug, Clone)]
@@ -24,19 +21,10 @@ impl Match {
         }
     }
 
-    /// Sets the positions of the match.
-    #[inline]
-    pub fn set_positions(&mut self, start_position: Position, end_position: Position) {
-        self.positions = Some(Positions {
-            start_position,
-            end_position,
-        });
-    }
-
     /// Consumes the match, sets the positions and returns a new `Match` with the positions set.
     #[inline]
-    pub fn with_positions(mut self, start_position: Position, end_position: Position) -> Self {
-        self.set_positions(start_position, end_position);
+    pub fn with_positions(mut self, positions: Option<Positions>) -> Self {
+        self.positions = positions;
         self
     }
 }

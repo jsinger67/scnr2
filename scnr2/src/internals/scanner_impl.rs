@@ -38,7 +38,7 @@ impl ScannerImpl {
         match_function: &'static F,
     ) -> crate::internals::find_matches::FindMatches<'a, F>
     where
-        F: Fn(char) -> Option<usize> + 'static,
+        F: Fn(char) -> Option<usize> + 'static + Clone,
     {
         crate::internals::find_matches::FindMatches::new(
             haystack,
@@ -56,7 +56,7 @@ impl ScannerImpl {
         match_function: &'static F,
     ) -> crate::internals::find_matches::FindMatchesWithPosition<'h, F>
     where
-        F: Fn(char) -> Option<usize> + 'static,
+        F: Fn(char) -> Option<usize> + 'static + Clone,
     {
         crate::internals::find_matches::FindMatchesWithPosition::new(
             haystack,
@@ -72,11 +72,11 @@ impl ScannerImpl {
         if let Some(transition) = self.transition_for_token_type(token_type) {
             match transition {
                 crate::Transition::SetMode(_, m) => {
-                    *self.current_mode.borrow_mut() = m;
+                    *self.current_mode.borrow_mut() = *m;
                 }
                 crate::Transition::PushMode(_, m) => {
                     self.mode_stack.borrow_mut().push(mode_index);
-                    *self.current_mode.borrow_mut() = m;
+                    *self.current_mode.borrow_mut() = *m;
                 }
                 crate::Transition::PopMode(_) => {
                     if let Some(previous_mode_index) = self.mode_stack.borrow_mut().pop() {
@@ -91,7 +91,7 @@ impl ScannerImpl {
     }
 
     /// Returns the transition for the given token type in the current mode.
-    fn transition_for_token_type(&self, token_type: usize) -> Option<Transition> {
+    fn transition_for_token_type(&self, token_type: usize) -> Option<&Transition> {
         let transition_map = self.transition_map.get_or_init(|| {
             self.modes
                 .iter()
@@ -108,7 +108,6 @@ impl ScannerImpl {
         transition_map
             .get(mode_index)
             .and_then(|map| map.get(&token_type))
-            .cloned()
     }
 
     /// Returns the current mode index.
