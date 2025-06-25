@@ -6,7 +6,10 @@ use std::{
     rc::Rc,
 };
 
-use crate::Transition;
+use crate::{
+    Transition,
+    internals::find_matches::{FindMatches, FindMatchesWithPosition},
+};
 
 #[derive(Debug, Clone)]
 pub struct ScannerImpl {
@@ -30,36 +33,36 @@ impl ScannerImpl {
         }
     }
 
-    /// Creates a new `FindMatches` iterator for the given haystack and offset.
+    /// Creates a new `FindMatches` iterator for the given input and offset.
     pub fn find_matches<'a, F>(
         &self,
-        haystack: &'a str,
+        input: &'a str,
         offset: usize,
         match_function: &'static F,
-    ) -> crate::internals::find_matches::FindMatches<'a, F>
+    ) -> FindMatches<'a, F>
     where
         F: Fn(char) -> Option<usize> + 'static + Clone,
     {
-        crate::internals::find_matches::FindMatches::new(
-            haystack,
+        FindMatches::new(
+            input,
             offset,
             Rc::new(RefCell::new(self.clone())),
             match_function,
         )
     }
 
-    /// Creates a new `FindMatchesWithPosition` iterator for the given haystack and offset.
+    /// Creates a new `FindMatchesWithPosition` iterator for the given input and offset.
     pub fn find_matches_with_position<'h, F>(
         &self,
-        haystack: &'h str,
+        input: &'h str,
         offset: usize,
         match_function: &'static F,
-    ) -> crate::internals::find_matches::FindMatchesWithPosition<'h, F>
+    ) -> FindMatchesWithPosition<'h, F>
     where
         F: Fn(char) -> Option<usize> + 'static + Clone,
     {
-        crate::internals::find_matches::FindMatchesWithPosition::new(
-            haystack,
+        FindMatchesWithPosition::new(
+            input,
             offset,
             Rc::new(RefCell::new(self.clone())),
             match_function,

@@ -1,11 +1,11 @@
-/// A position in the haystack.
+/// A position in the input.
 /// The position is represented by a line and column number.
 /// The line and column numbers are 1-based.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Position {
-    /// The line number in the haystack.
+    /// The line number in the input.
     pub line: usize,
-    /// The column number in the haystack.
+    /// The column number in the input.
     pub column: usize,
 }
 
@@ -30,7 +30,7 @@ impl std::fmt::Display for Position {
     }
 }
 
-/// A match in the haystack.
+/// A match in the input.
 #[derive(Debug, Clone, Default)]
 pub struct Positions {
     /// The line and column number where the match started.

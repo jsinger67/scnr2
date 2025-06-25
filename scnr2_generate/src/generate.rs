@@ -163,29 +163,22 @@ pub fn generate(input: TokenStream) -> TokenStream {
                 /// Returns the disjunct character classes of the given character.
                 /// Used for matching characters in the scanner.
                 #match_function_code
-                /// Creates a find_matches iterator for the given haystack and offset.
-                pub fn find_matches<'a, F>(
+                /// Creates a find_matches iterator for the given input and offset.
+                pub fn find_matches<'a>(
                     &'a self,
-                    haystack: &'a str,
+                    input: &'a str,
                     offset: usize,
-                    match_function: &'static F,
-                ) -> scnr2::internals::find_matches::FindMatches<'a, F>
-                where
-                    F: Fn(char) -> Option<usize> + 'static + Clone,
-                {
-                    self.scanner_impl.find_matches(haystack, offset, match_function)
+                ) -> scnr2::FindMatches<'a, fn(char) -> Option<usize>> {
+                    self.scanner_impl.find_matches(input, offset, &(Self::match_function as fn(char) -> Option<usize>))
                 }
-                /// Creates a find_matches_with_position iterator for the given haystack and offset.
-                pub fn find_matches_with_position<'a, F>(
+
+                /// Creates a find_matches_with_position iterator for the given input and offset.
+                pub fn find_matches_with_position<'a>(
                     &'a self,
-                    haystack: &'a str,
+                    input: &'a str,
                     offset: usize,
-                    match_function: &'static F,
-                ) -> scnr2::internals::find_matches::FindMatchesWithPosition<'a, F>
-                where
-                    F: Fn(char) -> Option<usize> + 'static + Clone,
-                {
-                    self.scanner_impl.find_matches_with_position(haystack, offset, match_function)
+                ) -> scnr2::FindMatchesWithPosition<'a, fn(char) -> Option<usize>> {
+                    self.scanner_impl.find_matches_with_position(input, offset, &(Self::match_function as fn(char) -> Option<usize>))
                 }
 
                 /// Returns the current mode index.

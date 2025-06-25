@@ -99,8 +99,7 @@ fn iterate(s: &str) {
     use bench_scanner::BenchScanner;
 
     let scanner = BenchScanner::new();
-    let find_iter = scanner.find_matches(s, 0, &BenchScanner::match_function);
-
+    let find_iter = scanner.find_matches(s, 0);
     for token in find_iter {
         black_box(token);
     }
@@ -110,7 +109,7 @@ fn count_ok(s: &str) -> usize {
     use bench_scanner::BenchScanner;
 
     let scanner = BenchScanner::new();
-    let find_iter = scanner.find_matches(s, 0, &BenchScanner::match_function);
+    let find_iter = scanner.find_matches(s, 0);
     find_iter
         .filter_map(|ma| if ma.token_type > 1 { Some(ma) } else { None })
         .count()

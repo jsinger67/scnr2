@@ -40,11 +40,11 @@ pub struct CharIter<'a> {
 
 impl<'a> CharIter<'a> {
     /// Creates a new `CharIter` from the given string slice.
-    pub fn new(haystack: &'a str, offset: usize) -> Self {
-        let char_indices = if offset <= haystack.len() {
-            haystack[offset..].char_indices()
+    pub fn new(input: &'a str, offset: usize) -> Self {
+        let char_indices = if offset <= input.len() {
+            input[offset..].char_indices()
         } else {
-            haystack[haystack.len()..haystack.len()].char_indices()
+            input[input.len()..input.len()].char_indices()
         };
         CharIter {
             char_indices,
@@ -91,11 +91,11 @@ pub struct CharIterWithPosition<'a> {
 
 impl<'a> CharIterWithPosition<'a> {
     /// Creates a new `CharIter` from the given string slice.
-    pub fn new(haystack: &'a str, offset: usize) -> Self {
-        let char_indices = if offset <= haystack.len() {
-            haystack[offset..].char_indices()
+    pub fn new(input: &'a str, offset: usize) -> Self {
+        let char_indices = if offset <= input.len() {
+            input[offset..].char_indices()
         } else {
-            haystack[haystack.len()..haystack.len()].char_indices()
+            input[input.len()..input.len()].char_indices()
         };
         CharIterWithPosition {
             char_indices,
@@ -154,8 +154,8 @@ mod tests {
 
     #[test]
     fn test_char_iter() {
-        let haystack = "Hello\nWorld";
-        let mut iter = CharIterWithPosition::new(haystack, 0);
+        let input = "Hello\nWorld";
+        let mut iter = CharIterWithPosition::new(input, 0);
 
         assert_eq!(
             iter.next(),

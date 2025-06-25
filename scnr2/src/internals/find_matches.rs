@@ -131,6 +131,7 @@ where
     }
 
     /// Returns the character class for the given character.
+    #[inline(always)]
     fn get_disjoint_class(&self, ch: char) -> Option<usize> {
         (self.match_function)(ch)
     }
@@ -237,6 +238,7 @@ where
     }
 
     /// Returns the character class for the given character.
+    #[inline(always)]
     fn get_disjoint_class(&self, ch: char) -> Option<usize> {
         (self.match_function)(ch)
     }
@@ -274,13 +276,13 @@ fn evaluate_lookahead<F: FindMatchesTrait + Clone>(
     }
 }
 
-/// Returns the next match in the haystack, if available.
+/// Returns the next match in the input, if available.
 /// This method is responsible for finding the next match based on the current state of the
-/// scanner implementation and the current position in the haystack.
+/// scanner implementation and the current position in the input.
 /// It is used in the `next` method of the `Iterator` trait implementation.
 #[inline(always)]
 pub(crate) fn next_match<F: FindMatchesTrait + Clone>(find_matches: &mut F) -> Option<Match> {
-    // Logic to find the next match in the haystack using the scanner implementation
+    // Logic to find the next match in the input using the scanner implementation
     // and the current position in the char_iter.
     let dfa: &Dfa = find_matches.current_dfa();
     loop {
@@ -309,7 +311,7 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
 
     let mut match_end: Option<MatchEnd> = None;
 
-    // Iterate over characters in the haystack using char_iter
+    // Iterate over characters in the input using char_iter
     while let Some(char_item) = find_matches.peek() {
         let character_class = find_matches.get_disjoint_class(char_item.ch);
         let state_data = &dfa.states[state];

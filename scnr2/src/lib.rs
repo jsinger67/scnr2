@@ -18,26 +18,30 @@ pub use crate::internals::{
 };
 
 // -------- Scanner Data Structures -------
-// These structures are used to define the scanner's modes, tokens, and transitions.
+// These structures are used to define the scanner's modes, tokens and transitions.
 // They are used in the generated code to encode the scanner data and behavior.
 // ----------------------------------------
 
 /// A range type representing a span in the source code, typically used for token match positions.
 pub type Span = core::ops::Range<usize>;
 
-/// A transition in the scanner, which can be a change of mode or a push/pop operation on the mode stack.
+/// A transition in the scanner
 #[derive(Debug, Clone)]
 pub enum Transition {
     /// A transition to a new scanner mode triggered by a token type number.
-    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// The first element is the token type number, and the second element is the new scanner mode
+    /// index.
     /// This transition is used to set the current scanner mode.
     SetMode(usize, usize),
     /// A transition to a new scanner mode triggered by a token type number.
-    /// The first element is the token type number, and the second element is the new scanner mode name.
-    /// This transition is used to push the current mode on the mode stack o be able to return to it later.
+    /// The first element is the token type number, and the second element is the new scanner mode
+    /// index.
+    /// This transition is used to push the current mode on the mode stack to be able to return to
+    /// it later.
     PushMode(usize, usize),
     /// A transition back to a formerly pushed scanner mode triggered by a token type number.
     /// This transition is used to pop the current scanner mode from the stack.
+    /// If the mode stack is empty, it stays in the current mode.
     PopMode(usize),
 }
 
@@ -92,46 +96,4 @@ pub enum Lookahead {
 pub struct DfaTransition {
     pub char_class: usize,
     pub to: usize,
-}
-
-/// A scanner that can be used to match tokens against the defined modes and transitions.
-pub struct Scanner<F>
-where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
-{
-    scanner_impl: ScannerImpl,
-    match_function: &'static F,
-}
-
-impl<F> Scanner<F>
-where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
-{
-    /// Creates a new scanner with the initial mode and state.
-    pub fn new(modes: &'static [ScannerMode], match_function: &'static F) -> Self {
-        Scanner {
-            scanner_impl: ScannerImpl::new(modes),
-            match_function,
-        }
-    }
-
-    /// Creates a new `FindMatches` iterator for the given haystack and offset.
-    pub fn find_matches<'a>(
-        &'a self,
-        haystack: &'a str,
-        offset: usize,
-    ) -> crate::internals::find_matches::FindMatches<'a, F> {
-        self.scanner_impl
-            .find_matches(haystack, offset, self.match_function)
-    }
-
-    /// Creates a new `FindMatchesWithPosition` iterator for the given haystack and offset.
-    pub fn find_matches_with_position<'a>(
-        &'a self,
-        haystack: &'a str,
-        offset: usize,
-    ) -> crate::internals::find_matches::FindMatchesWithPosition<'a, F> {
-        self.scanner_impl
-            .find_matches_with_position(haystack, offset, self.match_function)
-    }
 }

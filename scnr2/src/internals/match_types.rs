@@ -1,9 +1,9 @@
 use crate::{Position, Span, internals::position::Positions};
 
-/// A match in the haystack.
+/// A match in the input.
 #[derive(Debug, Clone)]
 pub struct Match {
-    /// The position of the match in the haystack.
+    /// The position of the match in the input.
     pub span: Span,
     /// The type of token matched.
     pub token_type: usize,
