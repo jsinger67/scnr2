@@ -61,7 +61,10 @@ impl Transition {
 #[derive(Debug)]
 pub struct ScannerMode {
     pub name: &'static str,
-    pub transitions: &'static [Transition],
+    /// The transitions for this mode indexed by character class index.
+    /// Each transition is an `Option<Transition>`, where `None` indicates no transition for that
+    /// character class.
+    pub transitions: &'static [Option<Transition>],
     pub dfa: Dfa,
 }
 
@@ -73,7 +76,10 @@ pub struct Dfa {
 /// A state in the DFA, which includes transitions to other states and optional accept data.
 #[derive(Debug, Clone)]
 pub struct DfaState {
-    pub transitions: &'static [DfaTransition],
+    /// The transitions for this state indexed by character class index.
+    /// Each transition is an `Option<DfaTransition>`, where `None` indicates no
+    /// transition for that character class.
+    pub transitions: &'static [Option<DfaTransition>],
     pub accept_data: std::option::Option<AcceptData>,
 }
 /// Data associated with an accepting state in the DFA, including the type of token and lookahead
@@ -94,6 +100,5 @@ pub enum Lookahead {
 /// A transition in the DFA, which includes a character class and the state to transition to.
 #[derive(Debug, Clone)]
 pub struct DfaTransition {
-    pub char_class: usize,
     pub to: usize,
 }

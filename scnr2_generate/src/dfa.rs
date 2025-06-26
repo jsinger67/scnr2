@@ -1,6 +1,9 @@
 use proc_macro2::TokenStream;
 use quote::{ToTokens, quote};
-use std::collections::{BTreeSet, VecDeque};
+use std::{
+    collections::{BTreeSet, VecDeque},
+    vec,
+};
 
 use rustc_hash::{FxHashMap, FxHashSet};
 
@@ -9,7 +12,7 @@ use crate::{
     ids::{DfaStateID, DisjointCharClassID, NfaStateID, StateIDBase},
     minimizer::Minimizer,
     nfa::Nfa,
-    pattern::{AutomatonType, Lookahead, Pattern},
+    pattern::{AutomatonType, Lookahead, Pattern, PatternWithNumberOfCharacterClasses},
 };
 
 /// Represents a Deterministic Finite Automaton (DFA) used for pattern matching.
@@ -160,9 +163,31 @@ impl TryFrom<&Nfa> for Dfa {
     }
 }
 
-impl ToTokens for Dfa {
+#[derive(Debug)]
+pub(crate) struct DfaWithNumberOfCharacterClasses<'a> {
+    pub(crate) dfa: &'a Dfa,
+    pub(crate) character_classes: usize,
+}
+
+impl<'a> DfaWithNumberOfCharacterClasses<'a> {
+    /// Creates a new DFA with the given number of character classes.
+    pub fn new(dfa: &'a Dfa, character_classes: usize) -> Self {
+        Self {
+            dfa,
+            character_classes,
+        }
+    }
+}
+
+impl ToTokens for DfaWithNumberOfCharacterClasses<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let states = self.states.iter().map(|s| s.to_token_stream());
+        let states = self.dfa.states.iter().map(|s| {
+            let state = DfaStateWithNumberOfCharacterClasses {
+                state: s,
+                character_classes: self.character_classes,
+            };
+            state.to_token_stream()
+        });
         tokens.extend(quote! {
             Dfa {
                 states: &[#(#states),*],
@@ -196,16 +221,59 @@ impl DfaState {
     }
 }
 
-impl ToTokens for DfaState {
+#[derive(Debug)]
+pub(crate) struct DfaStateWithNumberOfCharacterClasses<'a> {
+    pub(crate) state: &'a DfaState,
+    pub(crate) character_classes: usize,
+}
+
+impl<'a> DfaStateWithNumberOfCharacterClasses<'a> {
+    /// Creates a new DFA state with the given number of character classes.
+    pub fn new(state: &'a DfaState, character_classes: usize) -> Self {
+        Self {
+            state,
+            character_classes,
+        }
+    }
+}
+
+impl ToTokens for DfaStateWithNumberOfCharacterClasses<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let DfaState {
-            transitions,
-            accept_data,
+        let DfaStateWithNumberOfCharacterClasses {
+            state:
+                DfaState {
+                    transitions,
+                    accept_data,
+                },
+            character_classes,
         } = self;
-        let transitions = transitions.iter().map(|t| t.to_token_stream());
-        let accept_data = accept_data
-            .as_ref()
-            .map_or_else(|| quote! { None }, |ad| quote! { Some(#ad) });
+        let mut transition_opts = vec![None; *character_classes];
+        for transition in transitions {
+            transition_opts[transition.elementary_interval_index.as_usize()] = Some(transition);
+        }
+        // let transitions = transition_opts
+        //     .iter()
+        //     .fold(TokenStream::new(), |mut acc, opt| {
+        //         match opt {
+        //             Some(transition) => acc.extend(quote! {
+        //                 Some(#transition)
+        //             }),
+        //             None => acc.extend(quote! { None }),
+        //         }
+        //         acc
+        //     });
+        let transitions = transition_opts.into_iter().map(|opt| match opt {
+            Some(transition) => quote! { Some(#transition) },
+            None => quote! { None },
+        });
+        let accept_data = accept_data.as_ref().map_or_else(
+            || quote! { None },
+            |ad| {
+                let pattern_with_number_of_character_classes =
+                    PatternWithNumberOfCharacterClasses::new(ad, *character_classes);
+                quote! { Some(#pattern_with_number_of_character_classes) }
+            },
+        );
         tokens.extend(quote! {
             DfaState {
                 transitions: &[#(#transitions),*],
@@ -241,15 +309,10 @@ impl DfaTransition {
 
 impl ToTokens for DfaTransition {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let DfaTransition {
-            elementary_interval_index,
-            target,
-        } = self;
-        let elementary_interval_index = elementary_interval_index.as_usize().to_token_stream();
+        let DfaTransition { target, .. } = self;
         let target = target.as_usize().to_token_stream();
         tokens.extend(quote! {
             DfaTransition {
-                char_class: #elementary_interval_index,
                 to: #target,
             }
         });

@@ -305,6 +305,7 @@ pub(crate) fn next_match<F: FindMatchesTrait + Clone>(find_matches: &mut F) -> O
 /// The caller must do that.
 ///
 /// If no match is found, None is returned.
+#[inline(always)]
 fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Option<Match> {
     let mut state = 0; // Initial state of the DFA
     let mut match_start: Option<MatchStart> = None;
@@ -314,17 +315,18 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
     // Iterate over characters in the input using char_iter
     while let Some(char_item) = find_matches.peek() {
         let character_class = find_matches.get_disjoint_class(char_item.ch);
-        let state_data = &dfa.states[state];
 
         let Some(class_idx) = character_class else {
             break;
         };
-        let Ok(transition_index) = state_data
-            .transitions
-            .binary_search_by_key(&class_idx, |t| t.char_class)
-        else {
+
+        let state_data = &dfa.states[state];
+        if let Some(Some(next_state)) = state_data.transitions.get(class_idx) {
+            state = next_state.to;
+        } else {
             break;
         };
+        let state_data = &dfa.states[state];
 
         // Only now advance the iterator
         find_matches.advance_char_iter();
@@ -333,9 +335,6 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
             match_start =
                 Some(MatchStart::new(char_item.byte_index).with_position(char_item.position));
         }
-
-        state = state_data.transitions[transition_index].to;
-        let state_data = &dfa.states[state];
 
         if let Some(accept_data) = &state_data.accept_data {
             let (lookahead_satisfied, lookahead_len) =

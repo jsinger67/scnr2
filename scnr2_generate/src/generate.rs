@@ -4,7 +4,7 @@ use syn::parse2;
 
 use crate::{
     character_classes::CharacterClasses,
-    dfa::Dfa,
+    dfa::{Dfa, DfaStateWithNumberOfCharacterClasses},
     nfa::Nfa,
     scanner_data::{ScannerData, TransitionToNumericMode},
     scanner_mode::ScannerMode,
@@ -111,6 +111,8 @@ pub fn generate(input: TokenStream) -> TokenStream {
     let scanner_name = syn::Ident::new(&scanner_data.name, proc_macro2::Span::call_site());
     let match_function_code = character_classes.generate("match_function");
 
+    let number_of_character_classes = character_classes.intervals.len();
+
     let modes = scanner_modes.into_iter().enumerate().map(|(index, mode)| {
         let transitions = mode.transitions.iter().map(|transition_to_numeric_mode| {
             match transition_to_numeric_mode {
@@ -126,10 +128,11 @@ pub fn generate(input: TokenStream) -> TokenStream {
                 }
             }
         });
-        let states = dfas[index]
-            .states
-            .iter()
-            .map(|state| state.to_token_stream());
+        let states = dfas[index].states.iter().map(|state| {
+            let dfa_state_with_number_of_character_classes =
+                DfaStateWithNumberOfCharacterClasses::new(state, number_of_character_classes);
+            dfa_state_with_number_of_character_classes.to_token_stream()
+        });
         let mode_name = mode.name;
         quote! {
             ScannerMode {

@@ -3,7 +3,7 @@
 //! Metadata includes the terminal type and a possibly empty lookahead constraint.
 use crate::{
     Result,
-    dfa::Dfa,
+    dfa::{Dfa, DfaWithNumberOfCharacterClasses},
     ids::{TerminalID, TerminalIDBase},
     nfa::Nfa,
 };
@@ -129,15 +129,38 @@ impl syn::parse::Parse for Lookahead {
     }
 }
 
-impl ToTokens for Lookahead {
+#[derive(Debug)]
+pub(crate) struct LookaheadWithNumberOfCharacterClasses {
+    /// The lookahead constraint.
+    pub lookahead: Lookahead,
+    /// The number of character classes in the lookahead automaton.
+    pub character_classes: usize,
+}
+
+impl LookaheadWithNumberOfCharacterClasses {
+    /// Creates a new `LookaheadWithNumberOfCharacterClasses` with the given lookahead and character
+    /// classes.
+    pub fn new(lookahead: Lookahead, character_classes: usize) -> Self {
+        Self {
+            lookahead,
+            character_classes,
+        }
+    }
+}
+
+impl ToTokens for LookaheadWithNumberOfCharacterClasses {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let lookahead_tokens = match self {
+        let lookahead_tokens = match &self.lookahead {
             Lookahead::None => quote! { Lookahead::None },
             Lookahead::Positive(AutomatonType::Dfa(dfa)) => {
-                quote! { Lookahead::Positive(#dfa) }
+                let dfa_with_classes =
+                    DfaWithNumberOfCharacterClasses::new(dfa, self.character_classes);
+                quote! { Lookahead::Positive(#dfa_with_classes) }
             }
             Lookahead::Negative(AutomatonType::Dfa(dfa)) => {
-                quote! { Lookahead::Negative(#dfa) }
+                let dfa_with_classes =
+                    DfaWithNumberOfCharacterClasses::new(dfa, self.character_classes);
+                quote! { Lookahead::Negative(#dfa_with_classes) }
             }
             _ => panic!("Unexpected lookahead type in Lookahead: {:?}", self),
         };
@@ -243,20 +266,42 @@ impl syn::parse::Parse for Pattern {
     }
 }
 
-impl ToTokens for Pattern {
+#[derive(Debug)]
+pub(crate) struct PatternWithNumberOfCharacterClasses<'a> {
+    /// The pattern itself.
+    pub pattern: &'a Pattern,
+    /// The number of character classes in the pattern.
+    pub character_classes: usize,
+}
+
+impl<'a> PatternWithNumberOfCharacterClasses<'a> {
+    /// Creates a new `PatternWithNumberOfCharacterClasses` with the given pattern and character
+    /// classes.
+    pub fn new(pattern: &'a Pattern, character_classes: usize) -> Self {
+        Self {
+            pattern,
+            character_classes,
+        }
+    }
+}
+
+impl ToTokens for PatternWithNumberOfCharacterClasses<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let Pattern {
-            terminal_type,
-            lookahead,
-            ..
+        let PatternWithNumberOfCharacterClasses {
+            pattern,
+            character_classes,
         } = self;
-        let terminal_type = terminal_type.as_usize().to_token_stream();
-        let priority = self.priority.to_token_stream();
+        let terminal_type = pattern.terminal_type.as_usize().to_token_stream();
+        let priority = pattern.priority.to_token_stream();
+        let lookahead_with_number_of_character_classes = LookaheadWithNumberOfCharacterClasses::new(
+            pattern.lookahead.clone(),
+            *character_classes,
+        );
         tokens.extend(quote! {
             AcceptData {
                 token_type: #terminal_type,
                 priority: #priority,
-                lookahead: #lookahead,
+                lookahead: #lookahead_with_number_of_character_classes,
             }
         });
     }

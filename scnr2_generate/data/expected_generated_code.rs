@@ -10,249 +10,81 @@ pub mod test_scanner {
                 states: &[
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 0usize,
-                                to: 22usize,
-                            },
-                            DfaTransition {
-                                char_class: 1usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 2usize,
-                                to: 3usize,
-                            },
-                            DfaTransition {
-                                char_class: 3usize,
-                                to: 4usize,
-                            },
-                            DfaTransition {
-                                char_class: 4usize,
-                                to: 12usize,
-                            },
-                            DfaTransition {
-                                char_class: 5usize,
-                                to: 9usize,
-                            },
-                            DfaTransition {
-                                char_class: 6usize,
-                                to: 22usize,
-                            },
-                            DfaTransition {
-                                char_class: 7usize,
-                                to: 23usize,
-                            },
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 22usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 19usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 20usize,
-                            },
-                            DfaTransition {
-                                char_class: 12usize,
-                                to: 22usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            Some(DfaTransition { to: 22usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 3usize }),
+                            Some(DfaTransition { to: 4usize }),
+                            Some(DfaTransition { to: 12usize }),
+                            Some(DfaTransition { to: 9usize }),
+                            Some(DfaTransition { to: 22usize }),
+                            Some(DfaTransition { to: 23usize }),
+                            Some(DfaTransition { to: 22usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 19usize }),
+                            Some(DfaTransition { to: 20usize }),
+                            Some(DfaTransition { to: 22usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: None,
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 0usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 1usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 2usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 3usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 4usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 5usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 6usize,
-                                to: 2usize,
-                            },
-                            DfaTransition {
-                                char_class: 7usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 12usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 1usize,
-                            },
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 2usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
                         ],
                         accept_data: None,
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 0usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 1usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 2usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 3usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 4usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 5usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 6usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 7usize,
-                                to: 8usize,
-                            },
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 12usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 1usize,
-                            },
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 8usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 1usize }),
                         ],
                         accept_data: None,
                     },
                     DfaState {
-                        transitions: &[],
+                        transitions: &[
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 1usize,
                             priority: 0usize,
@@ -260,10 +92,27 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[DfaTransition {
-                            char_class: 2usize,
-                            to: 3usize,
-                        }],
+                        transitions: &[
+                            None,
+                            None,
+                            Some(DfaTransition { to: 3usize }),
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 1usize,
                             priority: 0usize,
@@ -271,10 +120,27 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[DfaTransition {
-                            char_class: 1usize,
-                            to: 5usize,
-                        }],
+                        transitions: &[
+                            None,
+                            Some(DfaTransition { to: 5usize }),
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 2usize,
                             priority: 1usize,
@@ -282,91 +148,9 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[],
-                        accept_data: Some(AcceptData {
-                            token_type: 3usize,
-                            priority: 2usize,
-                            lookahead: Lookahead::None,
-                        }),
-                    },
-                    DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 0usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 1usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 2usize,
-                                to: 6usize,
-                            },
-                            DfaTransition {
-                                char_class: 3usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 4usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 5usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 6usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 7usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 12usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 7usize,
-                            },
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 3usize,
@@ -375,7 +159,38 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[],
+                        transitions: &[
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 6usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 7usize }),
+                        ],
+                        accept_data: Some(AcceptData {
+                            token_type: 3usize,
+                            priority: 2usize,
+                            lookahead: Lookahead::None,
+                        }),
+                    },
+                    DfaState {
+                        transitions: &[
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 4usize,
                             priority: 3usize,
@@ -383,7 +198,10 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[],
+                        transitions: &[
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 8usize,
                             priority: 4usize,
@@ -392,46 +210,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 9usize,
@@ -441,46 +238,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 10usize,
@@ -489,21 +265,45 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[],
+                        transitions: &[
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 12usize,
                             priority: 8usize,
                             lookahead: Lookahead::Negative(Dfa {
                                 states: &[
                                     DfaState {
-                                        transitions: &[DfaTransition {
-                                            char_class: 4usize,
-                                            to: 1usize,
-                                        }],
+                                        transitions: &[
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            Some(DfaTransition { to: 1usize }),
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                            None,
+                                        ],
                                         accept_data: None,
                                     },
                                     DfaState {
-                                        transitions: &[],
+                                        transitions: &[
+                                            None, None, None, None, None, None, None, None, None,
+                                            None, None, None, None, None, None, None, None, None,
+                                            None,
+                                        ],
                                         accept_data: Some(AcceptData {
                                             token_type: 4294967295usize,
                                             priority: 0usize,
@@ -516,46 +316,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 11usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 11usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -565,46 +344,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 10usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 10usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -614,46 +372,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 13usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 13usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -663,46 +400,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 14usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 14usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -712,46 +428,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 16usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 16usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -761,46 +456,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 15usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 15usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -810,46 +484,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 17usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 17usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -859,46 +512,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 18usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 18usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -908,46 +540,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 21usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 21usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            None,
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
+                            Some(DfaTransition { to: 21usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 13usize,
@@ -956,7 +567,10 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[],
+                        transitions: &[
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 14usize,
                             priority: 10usize,
@@ -965,14 +579,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 6usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 7usize,
-                                to: 7usize,
-                            },
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 14usize,
@@ -990,111 +615,81 @@ pub mod test_scanner {
                 states: &[
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 0usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 1usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 2usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 3usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 4usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 5usize,
-                                to: 6usize,
-                            },
-                            DfaTransition {
-                                char_class: 6usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 7usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 12usize,
-                                to: 7usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 5usize,
-                            },
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 6usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 7usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
                         ],
                         accept_data: None,
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 1usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 2usize,
-                                to: 4usize,
-                            },
-                            DfaTransition {
-                                char_class: 3usize,
-                                to: 2usize,
-                            },
+                            None,
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 4usize }),
+                            Some(DfaTransition { to: 2usize }),
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
                         ],
                         accept_data: None,
                     },
                     DfaState {
-                        transitions: &[DfaTransition {
-                            char_class: 2usize,
-                            to: 4usize,
-                        }],
+                        transitions: &[
+                            None,
+                            None,
+                            Some(DfaTransition { to: 4usize }),
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                        ],
                         accept_data: None,
                     },
                     DfaState {
-                        transitions: &[],
+                        transitions: &[
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 5usize,
                             priority: 0usize,
@@ -1102,7 +697,10 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[],
+                        transitions: &[
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 6usize,
                             priority: 1usize,
@@ -1111,74 +709,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 0usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 1usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 2usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 3usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 4usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 6usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 7usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 8usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 9usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 10usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 11usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 14usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 15usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 16usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 17usize,
-                                to: 5usize,
-                            },
-                            DfaTransition {
-                                char_class: 18usize,
-                                to: 5usize,
-                            },
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            None,
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            None,
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
+                            Some(DfaTransition { to: 5usize }),
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 7usize,
@@ -1187,7 +736,10 @@ pub mod test_scanner {
                         }),
                     },
                     DfaState {
-                        transitions: &[],
+                        transitions: &[
+                            None, None, None, None, None, None, None, None, None, None, None, None,
+                            None, None, None, None, None, None, None,
+                        ],
                         accept_data: Some(AcceptData {
                             token_type: 8usize,
                             priority: 3usize,
@@ -1196,30 +748,25 @@ pub mod test_scanner {
                     },
                     DfaState {
                         transitions: &[
-                            DfaTransition {
-                                char_class: 1usize,
-                                to: 1usize,
-                            },
-                            DfaTransition {
-                                char_class: 2usize,
-                                to: 4usize,
-                            },
-                            DfaTransition {
-                                char_class: 3usize,
-                                to: 2usize,
-                            },
-                            DfaTransition {
-                                char_class: 5usize,
-                                to: 3usize,
-                            },
-                            DfaTransition {
-                                char_class: 12usize,
-                                to: 3usize,
-                            },
-                            DfaTransition {
-                                char_class: 13usize,
-                                to: 3usize,
-                            },
+                            None,
+                            Some(DfaTransition { to: 1usize }),
+                            Some(DfaTransition { to: 4usize }),
+                            Some(DfaTransition { to: 2usize }),
+                            None,
+                            Some(DfaTransition { to: 3usize }),
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            Some(DfaTransition { to: 3usize }),
+                            Some(DfaTransition { to: 3usize }),
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
                         ],
                         accept_data: Some(AcceptData {
                             token_type: 14usize,

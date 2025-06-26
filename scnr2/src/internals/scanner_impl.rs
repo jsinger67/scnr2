@@ -101,6 +101,13 @@ impl ScannerImpl {
                 .map(|mode| {
                     mode.transitions
                         .iter()
+                        .filter_map(|transition| {
+                            if let Some(transition) = transition {
+                                Some(transition)
+                            } else {
+                                None
+                            }
+                        })
                         .map(|transition| (transition.token_type(), transition.clone()))
                         .collect()
                 })
