@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::{Position, Span, internals::position::Positions};
 
 /// A match in the input.
@@ -26,6 +28,23 @@ impl Match {
     pub fn with_positions(mut self, positions: Option<Positions>) -> Self {
         self.positions = positions;
         self
+    }
+}
+
+impl Display for Match {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "[{}..{}] tok {}{}",
+            self.span.start,
+            self.span.end,
+            self.token_type,
+            if let Some(pos) = self.positions.as_ref() {
+                format!(" at {}", pos)
+            } else {
+                String::new()
+            }
+        )
     }
 }
 

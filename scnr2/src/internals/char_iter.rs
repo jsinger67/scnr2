@@ -29,13 +29,18 @@ impl CharItem {
     }
 }
 
+#[derive(Debug, Clone)]
+struct SavedCharIterState<'a> {
+    char_indices: CharIndices<'a>,
+}
+
 /// An iterator over characters in a string slice, yielding tuples of (char_index, char, Position).
 /// The `CharIter` struct provides an iterator that tracks the position of characters in a string,
 /// including their byte index, line number, and column number.
 #[derive(Debug, Clone)]
 pub struct CharIter<'a> {
     char_indices: CharIndices<'a>,
-    offset: usize,
+    saved_state: Option<SavedCharIterState<'a>>, // To save the state of line and column
 }
 
 impl<'a> CharIter<'a> {
@@ -48,7 +53,7 @@ impl<'a> CharIter<'a> {
         };
         CharIter {
             char_indices,
-            offset: 0,
+            saved_state: None,
         }
     }
 
@@ -58,6 +63,21 @@ impl<'a> CharIter<'a> {
             Some(CharItem::new(byte_index, ch))
         } else {
             None
+        }
+    }
+
+    pub(crate) fn save_state(&mut self) {
+        // Save the current state of the iterator
+        let saved_state = SavedCharIterState {
+            char_indices: self.char_indices.clone(),
+        };
+        self.saved_state = Some(saved_state);
+    }
+
+    pub(crate) fn restore_state(&mut self) {
+        // Restore the saved state of the iterator
+        if let Some(saved) = self.saved_state.take() {
+            self.char_indices = saved.char_indices;
         }
     }
 }
@@ -70,12 +90,18 @@ impl Iterator for CharIter<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some((byte_index, ch)) = self.char_indices.next() {
-            self.offset = byte_index + ch.len_utf8();
             Some(CharItem::new(byte_index, ch))
         } else {
             None
         }
     }
+}
+
+#[derive(Debug, Clone)]
+struct SavedCharIterWithPositionState<'a> {
+    char_indices: CharIndices<'a>,
+    line: usize,
+    column: usize,
 }
 
 /// An iterator over characters in a string slice, yielding tuples of (char_index, char, Position).
@@ -84,9 +110,9 @@ impl Iterator for CharIter<'_> {
 #[derive(Debug, Clone)]
 pub struct CharIterWithPosition<'a> {
     char_indices: CharIndices<'a>,
-    offset: usize,
     line: usize,
     column: usize,
+    saved_state: Option<SavedCharIterWithPositionState<'a>>, // To save the state of line and column
 }
 
 impl<'a> CharIterWithPosition<'a> {
@@ -99,9 +125,9 @@ impl<'a> CharIterWithPosition<'a> {
         };
         CharIterWithPosition {
             char_indices,
-            offset: 0,
             line: 1,
             column: 0,
+            saved_state: None,
         }
     }
 
@@ -123,6 +149,23 @@ impl<'a> CharIterWithPosition<'a> {
             None
         }
     }
+
+    pub(crate) fn save_state(&mut self) {
+        let saved_state = SavedCharIterWithPositionState {
+            char_indices: self.char_indices.clone(),
+            line: self.line,
+            column: self.column,
+        };
+        self.saved_state = Some(saved_state);
+    }
+
+    pub(crate) fn restore_state(&mut self) {
+        if let Some(saved) = self.saved_state.take() {
+            self.char_indices = saved.char_indices;
+            self.line = saved.line;
+            self.column = saved.column;
+        }
+    }
 }
 
 // CharIter implements an iterator over characters in a string slice,
@@ -138,7 +181,6 @@ impl Iterator for CharIterWithPosition<'_> {
             } else {
                 (self.line, self.column + 1)
             };
-            self.offset = byte_index + ch.len_utf8();
             self.line = line;
             self.column = column;
             Some(CharItem::new(byte_index, ch).with_position(Position::new(line, column)))

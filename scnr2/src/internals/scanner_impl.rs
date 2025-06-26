@@ -6,6 +6,8 @@ use std::{
     rc::Rc,
 };
 
+use log::trace;
+
 use crate::{
     Transition,
     internals::find_matches::{FindMatches, FindMatchesWithPosition},
@@ -75,16 +77,29 @@ impl ScannerImpl {
         if let Some(transition) = self.transition_for_token_type(token_type) {
             match transition {
                 crate::Transition::SetMode(_, m) => {
+                    trace!("Setting mode to {}", m);
                     *self.current_mode.borrow_mut() = *m;
                 }
                 crate::Transition::PushMode(_, m) => {
+                    trace!(
+                        "Pushing mode {} onto stack, switching to {}",
+                        mode_index,
+                        self.mode_name(*m).unwrap_or("UNKNOWN")
+                    );
                     self.mode_stack.borrow_mut().push(mode_index);
                     *self.current_mode.borrow_mut() = *m;
                 }
                 crate::Transition::PopMode(_) => {
                     if let Some(previous_mode_index) = self.mode_stack.borrow_mut().pop() {
+                        trace!(
+                            "Popping mode from stack, switching back to {}",
+                            self.mode_name(previous_mode_index).unwrap_or("UNKNOWN")
+                        );
                         *self.current_mode.borrow_mut() = previous_mode_index;
                     } else {
+                        trace!(
+                            "Popping mode from stack, but stack is empty. Staying in current mode."
+                        );
                         // If the stack is empty, we stay in the current mode.
                         // This is a no-op, but it ensures we don't panic.
                     }

@@ -22,14 +22,20 @@ pub trait FindMatchesTrait {
 
     fn peek(&mut self) -> Option<CharItem>;
 
+    /// Returns the character class for the given character.
+    fn get_disjoint_class(&self, ch: char) -> Option<usize>;
+
     /// Advances the character iterator to the next character.
     /// This method is used to move the iterator forward in the input string slice.
     /// It should return `true` if the iterator was advanced successfully, or `false` if it has
     /// reached the end of the input string slice.
     fn advance_char_iter(&mut self) -> bool;
 
-    /// Returns the character class for the given character.
-    fn get_disjoint_class(&self, ch: char) -> Option<usize>;
+    /// Saves the current character iterator state.
+    fn save_char_iter(&mut self);
+
+    /// Restores the saved character iterator state.
+    fn restore_saved_char_iter(&mut self);
 }
 
 /// A structure that represents an iterator over character matches in a string slice.
@@ -134,6 +140,16 @@ where
     #[inline(always)]
     fn get_disjoint_class(&self, ch: char) -> Option<usize> {
         (self.match_function)(ch)
+    }
+
+    /// Saves the current character iterator state.
+    fn save_char_iter(&mut self) {
+        self.char_iter.save_state();
+    }
+
+    /// Restores the saved character iterator state.
+    fn restore_saved_char_iter(&mut self) {
+        self.char_iter.restore_state();
     }
 }
 
@@ -242,6 +258,16 @@ where
     fn get_disjoint_class(&self, ch: char) -> Option<usize> {
         (self.match_function)(ch)
     }
+
+    /// Saves the current character iterator state.
+    fn save_char_iter(&mut self) {
+        self.char_iter.save_state();
+    }
+
+    /// Restores the saved character iterator state.
+    fn restore_saved_char_iter(&mut self) {
+        self.char_iter.restore_state();
+    }
 }
 
 /// Evaluates the lookahead condition for the current match.
@@ -313,6 +339,8 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
     let mut start_set = false;
     let mut end_set = false;
 
+    find_matches.save_char_iter(); // Save the current state of the iterator
+
     // Iterate over characters in the input using char_iter
     while let Some(char_item) = find_matches.peek() {
         let character_class = find_matches.get_disjoint_class(char_item.ch);
@@ -361,6 +389,7 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
                                     .map(|p| Position::new(p.line, p.column + 1)),
                             );
                     end_set = true;
+                    find_matches.save_char_iter();
                 }
             }
         }
@@ -368,6 +397,7 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
 
     if end_set {
         let span: crate::Span = match_start.byte_index..match_end.byte_index;
+        find_matches.restore_saved_char_iter();
         Some(
             Match::new(span, match_end.token_type).with_positions(
                 match_start
@@ -377,6 +407,7 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
             ),
         )
     } else {
+        find_matches.restore_saved_char_iter();
         None
     }
 }

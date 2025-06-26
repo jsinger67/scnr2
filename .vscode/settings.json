@@ -13,6 +13,7 @@
         "nfas",
         "osive",
         "peekable",
+        "println",
         "rstest",
         "scnr"
     ],

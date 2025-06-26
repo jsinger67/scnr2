@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 /// A position in the input.
 /// The position is represented by a line and column number.
 /// The line and column numbers are 1-based.
@@ -46,5 +48,12 @@ impl Positions {
             start_position,
             end_position,
         }
+    }
+}
+
+impl Display for Positions {
+    /// Formats the positions as "start_line:start_column - end_line:end_column".
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}-{}", self.start_position, self.end_position)
     }
 }
