@@ -16,4 +16,10 @@ The scanners support multiple scanner modes out of the box.
 
 It is intended as the successor of [scnr](https://github.com/jsinger67/scnr).
 
-In contrast to scnr this crate uses code generation during compile time by leveraging rust macros.
+The successor to scnr places greater emphasis on simplicity and speed. It relies on compile-time
+code generation using Rust macros. The macro syntax used offers the possibility of defining
+transitions between scanner modes in various ways. Specifically, there are three types of
+transitions: set, push, and pop. Furthermore, as with scnr, you can define a positive or negative
+lookahead for each terminal.
+
+Additionally, scnr2 offers more support for regex features such as case insensitivity.
