@@ -61,10 +61,7 @@ impl Transition {
 #[derive(Debug)]
 pub struct ScannerMode {
     pub name: &'static str,
-    /// The transitions for this mode indexed by character class index.
-    /// Each transition is an `Option<Transition>`, where `None` indicates no transition for that
-    /// character class.
-    pub transitions: &'static [Option<Transition>],
+    pub transitions: &'static [Transition],
     pub dfa: Dfa,
 }
 
