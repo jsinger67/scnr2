@@ -308,9 +308,10 @@ pub(crate) fn next_match<F: FindMatchesTrait + Clone>(find_matches: &mut F) -> O
 #[inline(always)]
 fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Option<Match> {
     let mut state = 0; // Initial state of the DFA
-    let mut match_start: Option<MatchStart> = None;
-
-    let mut match_end: Option<MatchEnd> = None;
+    let mut match_start = MatchStart::default();
+    let mut match_end = MatchEnd::default();
+    let mut start_set = false;
+    let mut end_set = false;
 
     // Iterate over characters in the input using char_iter
     while let Some(char_item) = find_matches.peek() {
@@ -331,9 +332,9 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
         // Only now advance the iterator
         find_matches.advance_char_iter();
 
-        if match_start.is_none() {
-            match_start =
-                Some(MatchStart::new(char_item.byte_index).with_position(char_item.position));
+        if !start_set {
+            match_start = MatchStart::new(char_item.byte_index).with_position(char_item.position);
+            start_set = true;
         }
 
         if let Some(accept_data) = &state_data.accept_data {
@@ -344,33 +345,28 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
                     (true, 0)
                 };
             if lookahead_satisfied {
-                let match_start = match_start.as_ref().unwrap();
                 let new_byte_index = char_item.byte_index + lookahead_len + char_item.ch.len_utf8();
                 let new_len = new_byte_index - match_start.byte_index;
-                let update = match &match_end {
-                    Some(me) => {
-                        let old_len = me.byte_index - match_start.byte_index;
-                        new_len > old_len
-                            || (new_len == old_len && accept_data.priority < me.priority)
-                    }
-                    None => true,
+                let update = !end_set || {
+                    let old_len = match_end.byte_index - match_start.byte_index;
+                    new_len > old_len
+                        || (new_len == old_len && accept_data.priority < match_end.priority)
                 };
                 if update {
-                    match_end = Some(
+                    match_end =
                         MatchEnd::new(new_byte_index, accept_data.token_type, accept_data.priority)
                             .with_position(
                                 char_item
                                     .position
                                     .map(|p| Position::new(p.line, p.column + 1)),
-                            ),
-                    );
+                            );
+                    end_set = true;
                 }
             }
         }
     }
 
-    if let Some(match_end) = match_end {
-        let match_start = match_start.unwrap();
+    if end_set {
         let span: crate::Span = match_start.byte_index..match_end.byte_index;
         Some(
             Match::new(span, match_end.token_type).with_positions(

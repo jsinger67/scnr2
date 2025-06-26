@@ -30,6 +30,7 @@ impl Match {
 }
 
 /// Helper structures to manage the start and end of matches with their positions.
+#[derive(Debug, Default)]
 pub(crate) struct MatchStart {
     pub(crate) byte_index: usize,
     pub(crate) position: Option<Position>,
@@ -52,6 +53,7 @@ impl MatchStart {
 }
 
 /// Helper structure to manage the end of matches with their positions, token type, and priority.
+#[derive(Debug, Default)]
 pub(crate) struct MatchEnd {
     pub(crate) byte_index: usize,
     pub(crate) position: Option<Position>,
