@@ -1,3 +1,4 @@
+//! Module for position types used in the scanner.
 use std::fmt::Display;
 
 /// A position in the input.

@@ -46,7 +46,7 @@ where
 {
     /// An iterator over characters in the input string slice, starting from the given offset.
     char_iter: CharIter<'a>,
-    /// The creating scanner implementation, wrapped in an Rc<RefCell> for thread safety.
+    /// The creating scanner implementation, wrapped in an `Rc<RefCell>` for thread safety.
     scanner_impl: Rc<RefCell<ScannerImpl>>,
     /// A reference to the match function that returns the character class for a given character.
     match_function: &'static F,
@@ -163,7 +163,7 @@ where
 {
     /// An iterator over characters in the input string slice, starting from the given offset.
     char_iter: CharIterWithPosition<'a>,
-    /// The creating scanner implementation, wrapped in an Rc<RefCell> for thread safety.
+    /// The creating scanner implementation, wrapped in an `Rc<RefCell>` for thread safety.
     scanner_impl: Rc<RefCell<ScannerImpl>>,
     /// A reference to the match function that returns the character class for a given character.
     match_function: &'static F,

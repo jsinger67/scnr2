@@ -1,3 +1,4 @@
+//! Module for match types used in the scanner.
 use std::fmt::Display;
 
 use crate::{Position, Span, internals::position::Positions};
