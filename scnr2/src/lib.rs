@@ -25,7 +25,7 @@ pub use crate::internals::{
 /// A range type representing a span in the source code, typically used for token match positions.
 pub type Span = core::ops::Range<usize>;
 
-/// A transition in the scanner
+/// A transition in the scanner.
 #[derive(Debug, Clone)]
 pub enum Transition {
     /// A transition to a new scanner mode triggered by a token type number.
@@ -70,6 +70,7 @@ pub struct ScannerMode {
 pub struct Dfa {
     pub states: &'static [DfaState],
 }
+
 /// A state in the DFA, which includes transitions to other states and optional accept data.
 #[derive(Debug, Clone)]
 pub struct DfaState {
@@ -79,6 +80,7 @@ pub struct DfaState {
     pub transitions: &'static [Option<DfaTransition>],
     pub accept_data: std::option::Option<AcceptData>,
 }
+
 /// Data associated with an accepting state in the DFA, including the type of token and lookahead
 /// information.
 #[derive(Debug, Clone)]
@@ -87,6 +89,7 @@ pub struct AcceptData {
     pub priority: usize,
     pub lookahead: Lookahead,
 }
+
 /// Lookahead information for the DFA, which can be positive or negative.
 #[derive(Debug, Clone)]
 pub enum Lookahead {
@@ -94,8 +97,10 @@ pub enum Lookahead {
     Positive(Dfa),
     Negative(Dfa),
 }
-/// A transition in the DFA, which includes a character class and the state to transition to.
+
+/// A transition in the DFA to another state.
 #[derive(Debug, Clone)]
 pub struct DfaTransition {
+    /// The index of the target state to transition to.
     pub to: usize,
 }

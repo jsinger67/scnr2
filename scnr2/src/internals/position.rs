@@ -32,12 +32,12 @@ impl std::fmt::Display for Position {
     }
 }
 
-/// A match in the input.
+/// Represents the start and end positions of a match in the input.
 #[derive(Debug, Clone, Default)]
 pub struct Positions {
-    /// The line and column number where the match started.
+    /// The line and column number where the match started (inclusive).
     pub start_position: Position,
-    /// The line and column number where the match ended.
+    /// The line and column number where the match ended (exclusive).
     pub end_position: Position,
 }
 
@@ -52,7 +52,7 @@ impl Positions {
 }
 
 impl Display for Positions {
-    /// Formats the positions as "start_line:start_column - end_line:end_column".
+    /// Formats the positions as "start_line:start_column-end_line:end_column".
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}-{}", self.start_position, self.end_position)
     }

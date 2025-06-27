@@ -48,7 +48,7 @@ impl Display for Match {
     }
 }
 
-/// Helper structures to manage the start and end of matches with their positions.
+/// Helper structure to manage the start of matches with their positions.
 #[derive(Debug, Default)]
 pub(crate) struct MatchStart {
     pub(crate) byte_index: usize,
@@ -56,7 +56,7 @@ pub(crate) struct MatchStart {
 }
 
 impl MatchStart {
-    /// Creates a new `MatchStart` with the given byte index and position.
+    /// Creates a new `MatchStart` with the given byte index.
     pub(crate) fn new(byte_index: usize) -> Self {
         MatchStart {
             byte_index,

@@ -56,7 +56,7 @@ impl<'a, F> FindMatches<'a, F>
 where
     F: Fn(char) -> Option<usize> + 'static + Clone,
 {
-    /// Creates a new `FindIter` from the given string slice and start position.
+    /// Creates a new `FindMatches` from the given string slice and start position.
     pub(crate) fn new(
         input: &'a str,
         offset: usize,
@@ -70,7 +70,7 @@ where
         }
     }
 
-    /// returns the name of the current mode.
+    /// Returns the name of the current mode.
     #[inline]
     pub fn current_mode_name(&self) -> Option<&'static str> {
         let scanner_impl = self.scanner_impl.borrow();
@@ -187,7 +187,7 @@ where
         }
     }
 
-    /// returns the name of the current mode.
+    /// Returns the name of the current mode.
     #[inline]
     pub fn current_mode_name(&self) -> Option<&'static str> {
         let scanner_impl = self.scanner_impl.borrow();

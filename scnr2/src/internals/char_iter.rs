@@ -12,7 +12,7 @@ pub struct CharItem {
 }
 
 impl CharItem {
-    /// Creates a new `CharItem` with the given character index, character, and position.
+    /// Creates a new `CharItem` with the given byte index and character.
     #[inline]
     pub fn new(char_index: usize, ch: char) -> Self {
         CharItem {
@@ -34,9 +34,8 @@ struct SavedCharIterState<'a> {
     char_indices: CharIndices<'a>,
 }
 
-/// An iterator over characters in a string slice, yielding tuples of (char_index, char, Position).
-/// The `CharIter` struct provides an iterator that tracks the position of characters in a string,
-/// including their byte index, line number, and column number.
+/// An iterator over characters in a string slice, yielding `CharItem` objects.
+/// The `CharIter` struct provides an iterator that tracks the byte index of characters in a string.
 #[derive(Debug, Clone)]
 pub struct CharIter<'a> {
     char_indices: CharIndices<'a>,
@@ -83,8 +82,7 @@ impl<'a> CharIter<'a> {
 }
 
 // CharIter implements an iterator over characters in a string slice,
-// yielding tuples of (char_index, char) where Position
-// contains the line and column numbers of the character.
+// yielding CharItem objects with byte index and character.
 impl Iterator for CharIter<'_> {
     type Item = CharItem;
 
@@ -104,8 +102,8 @@ struct SavedCharIterWithPositionState<'a> {
     column: usize,
 }
 
-/// An iterator over characters in a string slice, yielding tuples of (char_index, char, Position).
-/// The `CharIter` struct provides an iterator that tracks the position of characters in a string,
+/// An iterator over characters in a string slice, yielding `CharItem` objects with position tracking.
+/// The `CharIterWithPosition` struct provides an iterator that tracks the position of characters in a string,
 /// including their byte index, line number, and column number.
 #[derive(Debug, Clone)]
 pub struct CharIterWithPosition<'a> {
@@ -116,7 +114,7 @@ pub struct CharIterWithPosition<'a> {
 }
 
 impl<'a> CharIterWithPosition<'a> {
-    /// Creates a new `CharIter` from the given string slice.
+    /// Creates a new `CharIterWithPosition` from the given string slice.
     pub fn new(input: &'a str, offset: usize) -> Self {
         let char_indices = if offset <= input.len() {
             input[offset..].char_indices()
@@ -168,9 +166,8 @@ impl<'a> CharIterWithPosition<'a> {
     }
 }
 
-// CharIter implements an iterator over characters in a string slice,
-// yielding tuples of (char_index, char, Position) where Position
-// contains the line and column numbers of the character.
+// CharIterWithPosition implements an iterator over characters in a string slice,
+// yielding CharItem objects with byte index, character, and position information.
 impl Iterator for CharIterWithPosition<'_> {
     type Item = CharItem;
 

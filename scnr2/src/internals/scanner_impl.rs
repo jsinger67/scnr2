@@ -1,4 +1,4 @@
-// ScannerImpl struct and its implementation
+//! ScannerImpl struct and its implementation
 
 use std::{
     cell::{OnceCell, RefCell},
@@ -17,10 +17,11 @@ use crate::{
 pub struct ScannerImpl {
     /// The current mode index, wrapped in a `RefCell` for interior mutability.
     pub(crate) current_mode: Rc<RefCell<usize>>,
-    /// The mode stack
+    /// The mode stack.
     pub(crate) mode_stack: Rc<RefCell<Vec<usize>>>,
+    /// The scanner modes available to this scanner implementation.
     pub(crate) modes: &'static [crate::ScannerMode],
-    // For each mode we store a map of token types to their transitions.
+    /// For each mode, stores a map of token types to their transitions.
     transition_map: OnceCell<Vec<HashMap<usize, Transition>>>,
 }
 
@@ -133,7 +134,7 @@ impl ScannerImpl {
         *self.current_mode.borrow()
     }
 
-    /// Returns the name of the given mode.
+    /// Returns the name of the given mode, or "Unknown" if the index is out of bounds.
     pub fn mode_name(&self, index: usize) -> Option<&'static str> {
         Some(
             self.modes
@@ -142,7 +143,7 @@ impl ScannerImpl {
         )
     }
 
-    /// returns the name of the current mode.
+    /// Returns the name of the current mode.
     pub fn current_mode_name(&self) -> &'static str {
         self.mode_name(self.current_mode_index())
             .unwrap_or("Unknown")
