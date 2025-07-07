@@ -48,7 +48,7 @@ scanner! {
         mode COMMENT {
             token r#"""# => 5; // "StringDelimiter"
             token r"\*/" => 7; // "CommentEnd"
-            token r"([^\u{2a}\u{22}]|\u{2a}[^\u{2f}])*" => 8; // "CommentText"
+            token r#"([^*"]|\*[^\/])*"# => 8; // "CommentText"
             on 5 push STRING;
             on 7 enter INITIAL;
         }
