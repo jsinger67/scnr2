@@ -110,7 +110,7 @@ To specify lookahead conditions on tokens you can use the following macro syntax
 scanner! {
     TestScanner {
         mode INITIAL {
-            token r"r"[a-zA-Z_][a-zA-Z0-9_]*"" followed by r"\(" => 1; // Function call
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" followed by r"\(" => 1; // Function call
             token r">:" not followed by ":" => 2; // Operator x
         }
     }
