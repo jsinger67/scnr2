@@ -45,7 +45,7 @@ impl ScannerMode {
         debug_assert!(
             transitions
                 .windows(2)
-                .all(|w| w[0].token_type() < w[1].token_type()),
+                .all(|w| w[0].token_types()[0] < w[1].token_types()[0]),
             "Transitions are not sorted by token type number."
         );
         Self {

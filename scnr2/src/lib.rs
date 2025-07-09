@@ -28,29 +28,52 @@ pub type Span = core::ops::Range<usize>;
 #[derive(Debug, Clone)]
 pub enum Transition {
     /// A transition to a new scanner mode triggered by a token type number.
-    /// The first element is the token type number, and the second element is the new scanner mode
-    /// index.
+    /// The first element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to set the current scanner mode.
-    SetMode(usize, usize),
+    SetMode(&'static [usize], usize),
     /// A transition to a new scanner mode triggered by a token type number.
-    /// The first element is the token type number, and the second element is the new scanner mode
-    /// index.
+    /// The first element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to push the current mode on the mode stack to be able to return to
     /// it later.
-    PushMode(usize, usize),
+    PushMode(&'static [usize], usize),
     /// A transition back to a formerly pushed scanner mode triggered by a token type number.
+    /// The single element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to pop the current scanner mode from the stack.
     /// If the mode stack is empty, it stays in the current mode.
-    PopMode(usize),
+    PopMode(&'static [usize]),
 }
 
 impl Transition {
     /// Returns the token type number of this transition.
-    pub fn token_type(&self) -> usize {
+    pub fn token_types(&self) -> &'static [usize] {
         match self {
-            Transition::SetMode(token_type, _)
-            | Transition::PushMode(token_type, _)
-            | Transition::PopMode(token_type) => *token_type,
+            Transition::SetMode(token_types, _)
+            | Transition::PushMode(token_types, _)
+            | Transition::PopMode(token_types) => token_types,
+        }
+    }
+
+    /// Sets the new token type sequence and returns modified transition.
+    #[inline]
+    pub fn set_token_types(&mut self, token_types: &'static [usize]) {
+        match self {
+            Transition::SetMode(s, _) | Transition::PushMode(s, _) | Transition::PopMode(s) => {
+                *s = token_types;
+            }
+        }
+    }
+
+    /// Consumes the transition, sets the new token type sequence and returns modified transition.
+    #[inline]
+    #[must_use]
+    pub fn with_token_types(self, token_types: &'static [usize]) -> Self {
+        match self {
+            Transition::SetMode(_, mode_index) => Transition::SetMode(token_types, mode_index),
+            Transition::PushMode(_, mode_index) => Transition::PushMode(token_types, mode_index),
+            Transition::PopMode(_) => Transition::PopMode(token_types),
         }
     }
 }

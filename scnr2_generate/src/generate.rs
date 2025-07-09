@@ -117,14 +117,14 @@ pub fn generate(input: TokenStream) -> TokenStream {
         let transitions = mode.transitions.iter().map(|transition_to_numeric_mode| {
             match transition_to_numeric_mode {
                 // Convert the transition to a token type and new mode index
-                TransitionToNumericMode::SetMode(token_type, new_mode_index) => {
-                    quote! { Transition::SetMode(#token_type, #new_mode_index) }
+                TransitionToNumericMode::SetMode(token_types, new_mode_index) => {
+                    quote! { Transition::SetMode(&[#(#token_types),*], #new_mode_index) }
                 }
-                TransitionToNumericMode::PushMode(token_type, new_mode_index) => {
-                    quote! { Transition::PushMode(#token_type, #new_mode_index) }
+                TransitionToNumericMode::PushMode(token_types, new_mode_index) => {
+                    quote! { Transition::PushMode(&[#(#token_types),*], #new_mode_index) }
                 }
-                TransitionToNumericMode::PopMode(token_type) => {
-                    quote! { Transition::PopMode(#token_type) }
+                TransitionToNumericMode::PopMode(token_types) => {
+                    quote! { Transition::PopMode(&[#(#token_types),*]) }
                 }
             }
         });

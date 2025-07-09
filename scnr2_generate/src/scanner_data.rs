@@ -16,25 +16,29 @@ macro_rules! parse_ident {
 #[derive(Debug, Clone)]
 pub enum TransitionToNumericMode {
     /// A transition to a new scanner mode triggered by a token type number.
-    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// The first element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to set the current scanner mode.
-    SetMode(usize, usize),
+    SetMode(Vec<usize>, usize),
     /// A transition to a new scanner mode triggered by a token type number.
-    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// The first element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to push the current mode on the mode stack o be able to return to it later.
-    PushMode(usize, usize),
+    PushMode(Vec<usize>, usize),
     /// A transition back to a formerly pushed scanner mode triggered by a token type number.
+    /// The single element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to pop the current scanner mode from the stack.
-    PopMode(usize),
+    PopMode(Vec<usize>),
 }
 
 impl TransitionToNumericMode {
     /// Returns the token type number of this transition.
-    pub fn token_type(&self) -> usize {
+    pub fn token_types(&self) -> &[usize] {
         match self {
             TransitionToNumericMode::SetMode(token_type, _)
             | TransitionToNumericMode::PushMode(token_type, _)
-            | TransitionToNumericMode::PopMode(token_type) => *token_type,
+            | TransitionToNumericMode::PopMode(token_type) => token_type,
         }
     }
 }
@@ -90,16 +94,20 @@ impl Eq for TransitionToNumericMode {}
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum TransitionToNamedMode {
     /// A transition to a new scanner mode triggered by a token type number.
-    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// The first element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to set the current scanner mode.
-    SetMode(usize, String),
+    SetMode(Vec<usize>, String),
     /// A transition to a new scanner mode triggered by a token type number.
-    /// The first element is the token type number, and the second element is the new scanner mode name.
+    /// The first element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to push the current mode on the mode stack o be able to return to it later.
-    PushMode(usize, String),
+    PushMode(Vec<usize>, String),
     /// A transition back to a formerly pushed scanner mode triggered by a token type number.
+    /// The single element is a non-empty sequence of token type numbers, and the second element is
+    /// the new scanner mode index.
     /// This transition is used to pop the current scanner mode from the stack.
-    PopMode(usize),
+    PopMode(Vec<usize>),
 }
 
 #[derive(Debug)]
@@ -127,29 +135,37 @@ impl ScannerModeWithNamedTransitions {
         let mut transitions = Vec::new();
         for transition in &self.transitions {
             match transition {
-                TransitionToNamedMode::SetMode(token_type, new_mode) => {
+                TransitionToNamedMode::SetMode(token_types, new_mode) => {
                     let new_mode_id = scanner_names
                         .iter()
                         .position(|name| name == new_mode)
                         .unwrap_or_else(|| panic!("Scanner mode '{}' not found", new_mode));
-                    transitions.push(TransitionToNumericMode::SetMode(*token_type, new_mode_id));
+                    transitions.push(TransitionToNumericMode::SetMode(
+                        token_types.clone(),
+                        new_mode_id,
+                    ));
                 }
                 TransitionToNamedMode::PushMode(token_type, new_mode) => {
                     let new_mode_id = scanner_names
                         .iter()
                         .position(|name| name == new_mode)
                         .unwrap_or_else(|| panic!("Scanner mode '{}' not found", new_mode));
-                    transitions.push(TransitionToNumericMode::PushMode(*token_type, new_mode_id));
+                    transitions.push(TransitionToNumericMode::PushMode(
+                        token_type.clone(),
+                        new_mode_id,
+                    ));
                 }
                 TransitionToNamedMode::PopMode(token_type) => {
-                    transitions.push(TransitionToNumericMode::PopMode(*token_type));
+                    transitions.push(TransitionToNumericMode::PopMode(token_type.clone()));
                 }
             }
         }
         transitions.sort_by_key(|t| match t {
             TransitionToNumericMode::SetMode(token_type, _)
             | TransitionToNumericMode::PushMode(token_type, _)
-            | TransitionToNumericMode::PopMode(token_type) => *token_type,
+            | TransitionToNumericMode::PopMode(token_type) => {
+                token_type.first().cloned().unwrap_or(0)
+            }
         });
         transitions
     }
@@ -203,8 +219,23 @@ impl syn::parse::Parse for ScannerModeWithNamedTransitions {
                 let pattern: Pattern = content.parse()?;
                 patterns.push(pattern);
             } else if token_or_transition == "on" {
+                // Parse a non-empty sequence of token type numbers separated by commas with
+                // optional trailing comma.
+
+                let mut token_types: Vec<usize> = vec![];
                 let token_type: syn::LitInt = content.parse()?;
                 let token_type = token_type.base10_parse::<usize>()?;
+                token_types.push(token_type);
+                while content.peek(syn::Token![,]) {
+                    content.parse::<syn::Token![,]>()?;
+                    if content.peek(syn::LitInt) {
+                        let token_type: syn::LitInt = content.parse()?;
+                        let token_type = token_type.base10_parse::<usize>()?;
+                        token_types.push(token_type);
+                    } else {
+                        return Err(content.error("expected a token type number"));
+                    }
+                }
                 let transition_kind: syn::Ident = parse_ident!(content, transition_kind);
                 match transition_kind.to_string().as_str() {
                     "enter" => {
@@ -213,7 +244,7 @@ impl syn::parse::Parse for ScannerModeWithNamedTransitions {
                         if new_mode.is_empty() {
                             return Err(content.error("expected a mode name"));
                         }
-                        transitions.push(TransitionToNamedMode::SetMode(token_type, new_mode));
+                        transitions.push(TransitionToNamedMode::SetMode(token_types, new_mode));
                     }
                     "push" => {
                         let new_mode: syn::Ident = parse_ident!(content, new_mode);
@@ -221,10 +252,10 @@ impl syn::parse::Parse for ScannerModeWithNamedTransitions {
                         if new_mode.is_empty() {
                             return Err(content.error("expected a mode name"));
                         }
-                        transitions.push(TransitionToNamedMode::PushMode(token_type, new_mode));
+                        transitions.push(TransitionToNamedMode::PushMode(token_types, new_mode));
                     }
                     "pop" => {
-                        transitions.push(TransitionToNamedMode::PopMode(token_type));
+                        transitions.push(TransitionToNamedMode::PopMode(token_types));
                     }
                     _ => {
                         return Err(content.error("expected 'enter', 'push' or 'pop'"));
@@ -344,7 +375,7 @@ mod tests {
         assert_eq!(mode_initial.patterns.len(), 11);
         assert_eq!(mode_initial.transitions.len(), 1);
         assert_eq!(
-            TransitionToNamedMode::SetMode(8, "STRING".to_string()),
+            TransitionToNamedMode::SetMode(vec![8], "STRING".to_string()),
             mode_initial.transitions[0]
         );
         let mode_initial_patterns = &mode_initial.patterns;
@@ -393,7 +424,7 @@ mod tests {
         assert_eq!(mode_string.patterns.len(), 5);
         assert_eq!(mode_string.transitions.len(), 1);
         assert_eq!(
-            TransitionToNamedMode::SetMode(8, "INITIAL".to_string()),
+            TransitionToNamedMode::SetMode(vec![8], "INITIAL".to_string()),
             mode_string.transitions[0]
         );
         let mode_string_patterns = &mode_string.patterns;
