@@ -15,12 +15,20 @@ use crate::{
 
 #[derive(Debug, Clone)]
 pub struct ScannerImpl {
-    /// The current mode index, wrapped in a `RefCell` for interior mutability.
-    pub(crate) current_mode: Rc<RefCell<usize>>,
+    /// The current mode index, wrapped in a `RefCell` for interior mutability and shared ownership.
+    ///
+    /// * The Scanner and the FindMatches/FindMatchesWithPosition iterators that it creates share
+    ///   this state!
+    current_mode: Rc<RefCell<usize>>,
     /// The mode stack.
-    pub(crate) mode_stack: Rc<RefCell<Vec<usize>>>,
+    ///
+    /// The Scanner and the FindMatches/FindMatchesWithPosition iterators share this state.
+    mode_stack: Rc<RefCell<Vec<usize>>>,
     /// The scanner modes available to this scanner implementation.
-    pub(crate) modes: &'static [crate::ScannerMode],
+    ///
+    /// * The Scanner and the FindMatches/FindMatchesWithPosition iterators that it creates share
+    ///   this state!
+    modes: &'static [crate::ScannerMode],
     /// For each mode, stores a map of token types to their transitions.
     /// The key is the token first token type number of a possible sequence of token types,
     /// and the value is a tuple containing the sequence of token type numbers and the transition.
@@ -28,6 +36,9 @@ pub struct ScannerImpl {
     /// Transitions that are currently under progress.
     /// This is used to handle transitions that are not yet completed because there need to be a
     /// sequence of token types matched before the transition can be completed.
+    ///
+    /// * The Scanner and the FindMatches/FindMatchesWithPosition iterators that it creates share
+    ///   this state!
     transitions_under_progress: Rc<RefCell<Vec<Transition>>>,
 }
 
@@ -41,6 +52,12 @@ impl ScannerImpl {
             transition_map: OnceCell::new(),
             transitions_under_progress: Rc::new(RefCell::new(vec![])),
         }
+    }
+
+    /// Returns a reference to the modes of this scanner implementation.
+    #[inline(always)]
+    pub fn modes(&self) -> &'static [crate::ScannerMode] {
+        self.modes
     }
 
     /// Creates a new `FindMatches` iterator for the given input and offset.
@@ -83,7 +100,11 @@ impl ScannerImpl {
     fn execute_transition(&self, transition: &Transition) {
         match transition {
             crate::Transition::SetMode(_, m) => {
-                trace!("Setting mode to {}", m);
+                trace!(
+                    "Setting mode to {} ({})",
+                    self.mode_name(*m).unwrap_or("Unknown"),
+                    m
+                );
                 *self.current_mode.borrow_mut() = *m;
             }
             crate::Transition::PushMode(_, m) => {
@@ -96,10 +117,9 @@ impl ScannerImpl {
                 *self.current_mode.borrow_mut() = *m;
             }
             crate::Transition::PopMode(_) => {
-                trace!("Popping mode from stack");
                 if let Some(previous_mode_index) = self.mode_stack.borrow_mut().pop() {
                     trace!(
-                        "Popped mode {}, switching back to {}",
+                        "Popping mode {}, switching back to {}",
                         previous_mode_index,
                         self.mode_name(previous_mode_index).unwrap_or("UNKNOWN")
                     );
@@ -123,48 +143,41 @@ impl ScannerImpl {
             self.current_mode_name()
         );
         // First handle transitions under progress.
-        let mode_switched_or_sequence_updated = {
-            let mut transitions_under_progress = self.transitions_under_progress.borrow_mut();
+        let mut transitions_to_keep = Vec::new();
+        let mut handled = false;
 
-            // Retain only transitions that can possibly be completed.
-            transitions_under_progress
-                .retain(|transition| transition.token_types().first() == Some(&token_type));
-
-            let mode_switched_or_sequence_updated = !transitions_under_progress.is_empty();
-            trace!(
-                "Handling {} transitions under progress, current mode is {}",
-                transitions_under_progress.len(),
-                self.current_mode_name()
-            );
-
-            for t in transitions_under_progress.iter_mut() {
-                let remaining_token_types = &t.token_types()[1..];
-                if remaining_token_types.is_empty() {
-                    self.execute_transition(t);
-                } else {
-                    t.set_token_types(remaining_token_types);
+        {
+            let mut transitions = self.transitions_under_progress.borrow_mut();
+            for mut t in transitions.drain(..) {
+                if t.token_types().first() == Some(&token_type) {
+                    let remaining = &t.token_types()[1..];
+                    if remaining.is_empty() {
+                        self.execute_transition(&t);
+                    } else {
+                        t.set_token_types(remaining);
+                        transitions_to_keep.push(t);
+                    }
+                    handled = true;
                 }
             }
-            mode_switched_or_sequence_updated
-        };
+            *transitions = transitions_to_keep;
+        }
 
-        if mode_switched_or_sequence_updated {
+        if handled {
+            // Ignore incoming transitions if a transition under progress was handled.
+            // This prevents unwanted interference with the current transition.
             return;
         }
 
-        // Handle incoming transitions if no transitions are under progress.
         if let Some(transition) = self.transition_for_token_type(token_type) {
-            let remaining_token_types = &transition.token_types()[1..];
-            if remaining_token_types.is_empty() {
+            let remaining = &transition.token_types()[1..];
+            if remaining.is_empty() {
                 self.execute_transition(&transition);
             } else {
-                trace!(
-                    "Transitioning with remaining token types: {:?}",
-                    remaining_token_types
-                );
+                trace!("Transitioning with remaining token types: {:?}", remaining);
                 self.transitions_under_progress
                     .borrow_mut()
-                    .push(transition.with_token_types(remaining_token_types));
+                    .push(transition.with_token_types(remaining));
             }
         } else {
             trace!("No transition found for token type {}", token_type);
@@ -192,11 +205,13 @@ impl ScannerImpl {
     }
 
     /// Returns the current mode index.
+    #[inline]
     pub fn current_mode_index(&self) -> usize {
         *self.current_mode.borrow()
     }
 
     /// Returns the name of the given mode, or "Unknown" if the index is out of bounds.
+    #[inline]
     pub fn mode_name(&self, index: usize) -> Option<&'static str> {
         Some(
             self.modes
@@ -206,6 +221,7 @@ impl ScannerImpl {
     }
 
     /// Returns the name of the current mode.
+    #[inline]
     pub fn current_mode_name(&self) -> &'static str {
         self.mode_name(self.current_mode_index())
             .unwrap_or("Unknown")

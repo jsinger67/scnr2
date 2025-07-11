@@ -74,7 +74,7 @@ where
     #[inline]
     pub fn current_mode_name(&self) -> Option<&'static str> {
         let scanner_impl = self.scanner_impl.borrow();
-        let current_mode_index = *scanner_impl.current_mode.borrow();
+        let current_mode_index = scanner_impl.current_mode_index();
         scanner_impl.mode_name(current_mode_index)
     }
 
@@ -86,8 +86,8 @@ where
 
     /// Returns the current mode index.
     #[inline]
-    pub fn current_mode(&self) -> usize {
-        *self.scanner_impl.borrow().current_mode.borrow()
+    pub fn current_mode_index(&self) -> usize {
+        self.scanner_impl.borrow().current_mode_index()
     }
 }
 
@@ -111,7 +111,7 @@ where
     #[inline(always)]
     fn current_dfa(&self) -> &'static Dfa {
         let scanner_impl = self.scanner_impl.borrow();
-        &scanner_impl.modes[*scanner_impl.current_mode.borrow()].dfa
+        &scanner_impl.modes()[scanner_impl.current_mode_index()].dfa
     }
 
     /// Handles the transition to a new mode based on the token type.
@@ -191,7 +191,7 @@ where
     #[inline]
     pub fn current_mode_name(&self) -> Option<&'static str> {
         let scanner_impl = self.scanner_impl.borrow();
-        let current_mode_index = *scanner_impl.current_mode.borrow();
+        let current_mode_index = scanner_impl.current_mode_index();
         scanner_impl.mode_name(current_mode_index)
     }
 
@@ -204,7 +204,7 @@ where
     /// Returns the current mode index.
     #[inline]
     pub fn current_mode(&self) -> usize {
-        *self.scanner_impl.borrow().current_mode.borrow()
+        self.scanner_impl.borrow().current_mode_index()
     }
 }
 
@@ -228,7 +228,7 @@ where
     #[inline(always)]
     fn current_dfa(&self) -> &'static Dfa {
         let scanner_impl = self.scanner_impl.borrow();
-        &scanner_impl.modes[*scanner_impl.current_mode.borrow()].dfa
+        &scanner_impl.modes()[scanner_impl.current_mode_index()].dfa
     }
 
     /// Handles the transition to a new mode based on the token type.
