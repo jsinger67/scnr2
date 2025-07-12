@@ -48,6 +48,7 @@ pub enum Transition {
 
 impl Transition {
     /// Returns the token type number of this transition.
+    #[inline]
     pub fn token_types(&self) -> &'static [usize] {
         match self {
             Transition::SetMode(token_types, _)
