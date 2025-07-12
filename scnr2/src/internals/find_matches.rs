@@ -39,7 +39,7 @@ pub trait FindMatchesTrait {
 }
 
 /// A structure that represents an iterator over character matches in a string slice.
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct FindMatches<'a, F>
 where
     F: Fn(char) -> Option<usize> + 'static + Clone,
@@ -72,10 +72,9 @@ where
 
     /// Returns the name of the current mode.
     #[inline]
-    pub fn current_mode_name(&self) -> Option<&'static str> {
+    pub fn current_mode_name(&self) -> &'static str {
         let scanner_impl = self.scanner_impl.borrow();
-        let current_mode_index = scanner_impl.current_mode_index();
-        scanner_impl.mode_name(current_mode_index)
+        scanner_impl.current_mode_name()
     }
 
     /// Returns the name of the given mode.
@@ -156,7 +155,7 @@ where
 /// A structure that represents an iterator over character matches with positions in a string slice.
 /// It uses the `FindMatches` struct for implementation, but includes additional position
 /// information for each match.
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct FindMatchesWithPosition<'a, F>
 where
     F: Fn(char) -> Option<usize> + 'static + Clone,
