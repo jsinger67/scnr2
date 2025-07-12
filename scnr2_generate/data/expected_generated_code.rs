@@ -781,13 +781,13 @@ pub mod test_scanner {
     #[doc = r" The scanner type generated for this grammar."]
     pub struct TestScanner {
         #[doc = r" The member that handles the actual scanning logic."]
-        pub scanner_impl: ScannerImpl,
+        pub scanner_impl: std::rc::Rc<std::cell::RefCell<ScannerImpl>>,
     }
     impl TestScanner {
         #[doc = r" Creates a new instance of the scanner."]
         pub fn new() -> Self {
             TestScanner {
-                scanner_impl: ScannerImpl::new(MODES),
+                scanner_impl: std::rc::Rc::new(std::cell::RefCell::new(ScannerImpl::new(MODES))),
             }
         }
         #[doc = r" Returns the disjunct character classes of the given character."]
@@ -2457,7 +2457,8 @@ pub mod test_scanner {
             input: &'a str,
             offset: usize,
         ) -> scnr2::FindMatches<'a, fn(char) -> Option<usize>> {
-            self.scanner_impl.find_matches(
+            ScannerImpl::find_matches(
+                self.scanner_impl.clone(),
                 input,
                 offset,
                 &(Self::match_function as fn(char) -> Option<usize>),
@@ -2469,7 +2470,8 @@ pub mod test_scanner {
             input: &'a str,
             offset: usize,
         ) -> scnr2::FindMatchesWithPosition<'a, fn(char) -> Option<usize>> {
-            self.scanner_impl.find_matches_with_position(
+            ScannerImpl::find_matches_with_position(
+                self.scanner_impl.clone(),
                 input,
                 offset,
                 &(Self::match_function as fn(char) -> Option<usize>),
@@ -2477,15 +2479,15 @@ pub mod test_scanner {
         }
         #[doc = r" Returns the current mode index."]
         pub fn current_mode_index(&self) -> usize {
-            self.scanner_impl.current_mode_index()
+            self.scanner_impl.borrow().current_mode_index()
         }
         #[doc = r" Returns the name of the given mode."]
         pub fn mode_name(&self, index: usize) -> Option<&'static str> {
-            self.scanner_impl.mode_name(index)
+            self.scanner_impl.borrow().mode_name(index)
         }
         #[doc = r" returns the name of the current mode."]
         pub fn current_mode_name(&self) -> &'static str {
-            self.scanner_impl.current_mode_name()
+            self.scanner_impl.borrow().current_mode_name()
         }
     }
 }

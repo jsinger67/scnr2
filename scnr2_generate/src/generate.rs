@@ -154,13 +154,13 @@ pub fn generate(input: TokenStream) -> TokenStream {
             /// The scanner type generated for this grammar.
             pub struct #scanner_name {
                 /// The member that handles the actual scanning logic.
-                pub scanner_impl: ScannerImpl,
+                pub scanner_impl: std::rc::Rc<std::cell::RefCell<ScannerImpl>>,
             }
             impl #scanner_name {
                 /// Creates a new instance of the scanner.
                 pub fn new() -> Self {
                     #scanner_name {
-                        scanner_impl: ScannerImpl::new(MODES),
+                        scanner_impl: std::rc::Rc::new(std::cell::RefCell::new(ScannerImpl::new(MODES))),
                     }
                 }
                 /// Returns the disjunct character classes of the given character.
@@ -172,7 +172,12 @@ pub fn generate(input: TokenStream) -> TokenStream {
                     input: &'a str,
                     offset: usize,
                 ) -> scnr2::FindMatches<'a, fn(char) -> Option<usize>> {
-                    self.scanner_impl.find_matches(input, offset, &(Self::match_function as fn(char) -> Option<usize>))
+                    ScannerImpl::find_matches(
+                        self.scanner_impl.clone(),
+                        input,
+                        offset,
+                        &(Self::match_function as fn(char) -> Option<usize>)
+                    )
                 }
 
                 /// Creates a find_matches_with_position iterator for the given input and offset.
@@ -181,22 +186,27 @@ pub fn generate(input: TokenStream) -> TokenStream {
                     input: &'a str,
                     offset: usize,
                 ) -> scnr2::FindMatchesWithPosition<'a, fn(char) -> Option<usize>> {
-                    self.scanner_impl.find_matches_with_position(input, offset, &(Self::match_function as fn(char) -> Option<usize>))
+                    ScannerImpl::find_matches_with_position(
+                        self.scanner_impl.clone(),
+                        input,
+                        offset,
+                        &(Self::match_function as fn(char) -> Option<usize>)
+                    )
                 }
 
                 /// Returns the current mode index.
                 pub fn current_mode_index(&self) -> usize {
-                    self.scanner_impl.current_mode_index()
+                    self.scanner_impl.borrow().current_mode_index()
                 }
 
                 /// Returns the name of the given mode.
                 pub fn mode_name(&self, index: usize) -> Option<&'static str> {
-                    self.scanner_impl.mode_name(index)
+                    self.scanner_impl.borrow().mode_name(index)
                 }
 
                 /// returns the name of the current mode.
                 pub fn current_mode_name(&self) -> &'static str {
-                    self.scanner_impl.current_mode_name()
+                    self.scanner_impl.borrow().current_mode_name()
                 }
             }
         }
