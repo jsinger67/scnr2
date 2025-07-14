@@ -11,6 +11,7 @@ scnr2_generate = { path = "../scnr2_generate" }
 [dev-dependencies]
 codspeed-criterion-compat = "2.7.0"
 criterion = "0.6"
+
 env_logger = "0.11.8"
 
 [package.metadata.release]
@@ -23,4 +24,9 @@ name = "bench"
 [[test]]
 name = "mode_switch_tests"
 path = "mode_switch_tests.rs"
+
+
+[[test]]
+name = "match_test"
+path = "match_test.rs"
 

@@ -1,23 +1,23 @@
 {
-    "cSpell.words": [
-        "bfnt",
-        "codegen",
-        "codspeed",
-        "Eschaton",
-        "expl",
-        "hirs",
-        "Hirsz",
-        "immanentized",
-        "lookaheads",
-        "Maciej",
-        "nfas",
-        "osive",
-        "peekable",
-        "println",
-        "rstest",
-        "scnr"
-    ],
-    "cSpell.ignoreRegExpList": [
-        "\\u\\{[0-9a-f]+\\}"
-    ]
+  "cSpell.words": [
+    "bfnt",
+    "codegen",
+    "codspeed",
+    "Eschaton",
+    "expl",
+    "hirs",
+    "Hirsz",
+    "immanentized",
+    "Kosako",
+    "lookaheads",
+    "Maciej",
+    "nfas",
+    "osive",
+    "peekable",
+    "println",
+    "rstest",
+    "scnr"
+],
+  "cSpell.ignoreRegExpList": ["\\u\\{[0-9a-f]+\\}"],
+  "cSpell.ignorePaths": ["tests/match_test.rs"]
 }
