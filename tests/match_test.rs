@@ -1631,18 +1631,30 @@ fn test_match_85() {
 // x2("[[:\\]:]]*", ":]", 0, 2);
 // td!(r#"[[:\]:]]*"#, ":]", &[(":]", 0, 2)], 86),
 scanner! { S86 { mode M { token r#"[[:\]:]]*"# => 0; } } }
-// #[test] fn test_match_86() {
-//   use s86::S86 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches(":]", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[(":]", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "86: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "86: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "86: Match end does not match");
-//       assert_eq!(&":]"[ma.1..ma.2], ma.0, "86: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_86() {
+    use s86::S86 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches(":]", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[(":]", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "86: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "86: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "86: Match end does not match");
+        assert_eq!(
+            &":]"[ma.1..ma.2],
+            ma.0,
+            "86: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[[:\\[:]]*", ":[", 0, 2);
@@ -6165,7 +6177,7 @@ fn test_match_360() {
 //       assert_eq!(matches[i].span.end, ma.2, "361: Match end does not match");
 //       assert_eq!(&"zzf"[ma.1..ma.2], ma.0, "361: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("abc|(?!zz)..f", "abf", 0, 3);
@@ -6182,7 +6194,7 @@ fn test_match_360() {
 //       assert_eq!(matches[i].span.end, ma.2, "362: Match end does not match");
 //       assert_eq!(&"abf"[ma.1..ma.2], ma.0, "362: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?=za)..a|(?=zz)..a", "zza", 0, 3);
@@ -6199,7 +6211,7 @@ fn test_match_360() {
 //       assert_eq!(matches[i].span.end, ma.2, "363: Match end does not match");
 //       assert_eq!(&"zza"[ma.1..ma.2], ma.0, "363: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?>a|abd)c", "abdc");
@@ -6211,7 +6223,7 @@ fn test_match_360() {
 //   let matches = scanner.find_matches("abdc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "364: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?>abd|a)c", "abdc", 0, 4);
@@ -6228,65 +6240,99 @@ fn test_match_360() {
 //       assert_eq!(matches[i].span.end, ma.2, "365: Match end does not match");
 //       assert_eq!(&"abdc"[ma.1..ma.2], ma.0, "365: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a?|b", "a", 0, 1);
 // td!(r#"a?|b"#, "a", &[("a", 0, 1)], 366),
 scanner! { S366 { mode M { token r#"a?|b"# => 0; } } }
-// #[test] fn test_match_366() {
-//   use s366::S366 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "366: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "366: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "366: Match end does not match");
-//       assert_eq!(&"a"[ma.1..ma.2], ma.0, "366: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_366() {
+    use s366::S366 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "366: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "366: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "366: Match end does not match");
+        assert_eq!(
+            &"a"[ma.1..ma.2],
+            ma.0,
+            "366: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("a?|b", "b", 0, 0);
 // td!(r#"a?|b"#, "b", &[], 367),
 scanner! { S367 { mode M { token r#"a?|b"# => 0; } } }
-// #[test] fn test_match_367() {
-//   use s367::S367 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("b", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "367: Unexpected match count");
-//}
+#[test]
+fn test_match_367() {
+    use s367::S367 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("b", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("b", 0, 1)]; // Oniguruma: no match
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "367: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("a?|b", "", 0, 0);
 // td!(r#"a?|b"#, "", &[], 368),
 scanner! { S368 { mode M { token r#"a?|b"# => 0; } } }
-// #[test] fn test_match_368() {
-//   use s368::S368 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "368: Unexpected match count");
-//}
+#[test]
+fn test_match_368() {
+    use s368::S368 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "368: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("a*|b", "aa", 0, 2);
 // td!(r#"a*|b"#, "aa", &[("aa", 0, 2)], 369),
 scanner! { S369 { mode M { token r#"a*|b"# => 0; } } }
-// #[test] fn test_match_369() {
-//   use s369::S369 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aa", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "369: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "369: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "369: Match end does not match");
-//       assert_eq!(&"aa"[ma.1..ma.2], ma.0, "369: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_369() {
+    use s369::S369 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aa", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "369: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "369: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "369: Match end does not match");
+        assert_eq!(
+            &"aa"[ma.1..ma.2],
+            ma.0,
+            "369: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("a*|b*", "ba", 0, 0);
@@ -6298,7 +6344,7 @@ scanner! { S370 { mode M { token r#"a*|b*"# => 0; } } }
 //   let matches = scanner.find_matches("ba", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "370: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a*|b*", "ab", 0, 1);
@@ -6315,36 +6361,53 @@ scanner! { S371 { mode M { token r#"a*|b*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "371: Match end does not match");
 //       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "371: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a+|b*", "", 0, 0);
 // td!(r#"a+|b*"#, "", &[], 372),
 scanner! { S372 { mode M { token r#"a+|b*"# => 0; } } }
-// #[test] fn test_match_372() {
-//   use s372::S372 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "372: Unexpected match count");
-//}
+#[test]
+fn test_match_372() {
+    use s372::S372 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "372: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("a+|b*", "bbb", 0, 3);
 // td!(r#"a+|b*"#, "bbb", &[("bbb", 0, 3)], 373),
 scanner! { S373 { mode M { token r#"a+|b*"# => 0; } } }
-// #[test] fn test_match_373() {
-//   use s373::S373 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("bbb", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("bbb", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "373: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "373: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "373: Match end does not match");
-//       assert_eq!(&"bbb"[ma.1..ma.2], ma.0, "373: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_373() {
+    use s373::S373 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("bbb", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("bbb", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "373: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "373: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "373: Match end does not match");
+        assert_eq!(
+            &"bbb"[ma.1..ma.2],
+            ma.0,
+            "373: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("a+|b*", "abbb", 0, 1);
@@ -6361,104 +6424,169 @@ scanner! { S374 { mode M { token r#"a+|b*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "374: Match end does not match");
 //       assert_eq!(&"abbb"[ma.1..ma.2], ma.0, "374: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("a+|b+", "");
 // td!(r#"a+|b+"#, "", &[], 375),
 scanner! { S375 { mode M { token r#"a+|b+"# => 0; } } }
-// #[test] fn test_match_375() {
-//   use s375::S375 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "375: Unexpected match count");
-//}
+#[test]
+fn test_match_375() {
+    use s375::S375 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "375: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(a|b)?", "b", 0, 1);
 // td!(r#"(a|b)?"#, "b", &[("b", 0, 1)], 376),
 scanner! { S376 { mode M { token r#"(a|b)?"# => 0; } } }
-// #[test] fn test_match_376() {
-//   use s376::S376 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("b", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("b", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "376: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "376: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "376: Match end does not match");
-//       assert_eq!(&"b"[ma.1..ma.2], ma.0, "376: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_376() {
+    use s376::S376 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("b", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("b", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "376: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "376: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "376: Match end does not match");
+        assert_eq!(
+            &"b"[ma.1..ma.2],
+            ma.0,
+            "376: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(a|b)*", "ba", 0, 2);
 // td!(r#"(a|b)*"#, "ba", &[("ba", 0, 2)], 377),
 scanner! { S377 { mode M { token r#"(a|b)*"# => 0; } } }
-// #[test] fn test_match_377() {
-//   use s377::S377 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ba", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ba", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "377: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "377: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "377: Match end does not match");
-//       assert_eq!(&"ba"[ma.1..ma.2], ma.0, "377: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_377() {
+    use s377::S377 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ba", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ba", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "377: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "377: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "377: Match end does not match");
+        assert_eq!(
+            &"ba"[ma.1..ma.2],
+            ma.0,
+            "377: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(a|b)+", "bab", 0, 3);
 // td!(r#"(a|b)+"#, "bab", &[("bab", 0, 3)], 378),
 scanner! { S378 { mode M { token r#"(a|b)+"# => 0; } } }
-// #[test] fn test_match_378() {
-//   use s378::S378 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("bab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("bab", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "378: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "378: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "378: Match end does not match");
-//       assert_eq!(&"bab"[ma.1..ma.2], ma.0, "378: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_378() {
+    use s378::S378 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("bab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("bab", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "378: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "378: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "378: Match end does not match");
+        assert_eq!(
+            &"bab"[ma.1..ma.2],
+            ma.0,
+            "378: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(ab|ca)+", "caabbc", 0, 4);
 // td!(r#"(ab|ca)+"#, "caabbc", &[("caab", 0, 4)], 379),
 scanner! { S379 { mode M { token r#"(ab|ca)+"# => 0; } } }
-// #[test] fn test_match_379() {
-//   use s379::S379 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("caabbc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("caab", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "379: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "379: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "379: Match end does not match");
-//       assert_eq!(&"caabbc"[ma.1..ma.2], ma.0, "379: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_379() {
+    use s379::S379 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("caabbc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("caab", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "379: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "379: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "379: Match end does not match");
+        assert_eq!(
+            &"caabbc"[ma.1..ma.2],
+            ma.0,
+            "379: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(ab|ca)+", "aabca", 1, 5);
 // td!(r#"(ab|ca)+"#, "aabca", &[("abca", 1, 5)], 380),
 scanner! { S380 { mode M { token r#"(ab|ca)+"# => 0; } } }
-// #[test] fn test_match_380() {
-//   use s380::S380 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aabca", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abca", 1, 5)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "380: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "380: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "380: Match end does not match");
-//       assert_eq!(&"aabca"[ma.1..ma.2], ma.0, "380: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_380() {
+    use s380::S380 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aabca", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abca", 1, 5)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "380: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "380: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "380: Match end does not match");
+        assert_eq!(
+            &"aabca"[ma.1..ma.2],
+            ma.0,
+            "380: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(ab|ca)+", "abzca", 0, 2);
@@ -6475,41 +6603,65 @@ scanner! { S381 { mode M { token r#"(ab|ca)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "381: Match end does not match");
 //       assert_eq!(&"abzca"[ma.1..ma.2], ma.0, "381: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a|bab)+", "ababa", 0, 5);
 // td!(r#"(a|bab)+"#, "ababa", &[("ababa", 0, 5)], 382),
 scanner! { S382 { mode M { token r#"(a|bab)+"# => 0; } } }
-// #[test] fn test_match_382() {
-//   use s382::S382 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ababa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ababa", 0, 5)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "382: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "382: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "382: Match end does not match");
-//       assert_eq!(&"ababa"[ma.1..ma.2], ma.0, "382: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_382() {
+    use s382::S382 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ababa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ababa", 0, 5)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "382: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "382: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "382: Match end does not match");
+        assert_eq!(
+            &"ababa"[ma.1..ma.2],
+            ma.0,
+            "382: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(a|bab)+", "ba", 1, 2);
 // td!(r#"(a|bab)+"#, "ba", &[("a", 1, 2)], 383),
 scanner! { S383 { mode M { token r#"(a|bab)+"# => 0; } } }
-// #[test] fn test_match_383() {
-//   use s383::S383 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ba", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 1, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "383: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "383: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "383: Match end does not match");
-//       assert_eq!(&"ba"[ma.1..ma.2], ma.0, "383: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_383() {
+    use s383::S383 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ba", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 1, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "383: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "383: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "383: Match end does not match");
+        assert_eq!(
+            &"ba"[ma.1..ma.2],
+            ma.0,
+            "383: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(a|bab)+", "baaaba", 1, 4);
@@ -6526,24 +6678,36 @@ scanner! { S384 { mode M { token r#"(a|bab)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "384: Match end does not match");
 //       assert_eq!(&"baaaba"[ma.1..ma.2], ma.0, "384: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:a|b)(?:a|b)", "ab", 0, 2);
 // td!(r#"(?:a|b)(?:a|b)"#, "ab", &[("ab", 0, 2)], 385),
 scanner! { S385 { mode M { token r#"(?:a|b)(?:a|b)"# => 0; } } }
-// #[test] fn test_match_385() {
-//   use s385::S385 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ab", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "385: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "385: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "385: Match end does not match");
-//       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "385: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_385() {
+    use s385::S385 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ab", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "385: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "385: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "385: Match end does not match");
+        assert_eq!(
+            &"ab"[ma.1..ma.2],
+            ma.0,
+            "385: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:a*|b*)(?:a*|b*)", "aaabbb", 0, 3);
@@ -6560,99 +6724,157 @@ scanner! { S386 { mode M { token r#"(?:a*|b*)(?:a*|b*)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "386: Match end does not match");
 //       assert_eq!(&"aaabbb"[ma.1..ma.2], ma.0, "386: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:a*|b*)(?:a+|b+)", "aaabbb", 0, 6);
 // td!(r#"(?:a*|b*)(?:a+|b+)"#, "aaabbb", &[("aaabbb", 0, 6)], 387),
 scanner! { S387 { mode M { token r#"(?:a*|b*)(?:a+|b+)"# => 0; } } }
-// #[test] fn test_match_387() {
-//   use s387::S387 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaabbb", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaabbb", 0, 6)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "387: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "387: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "387: Match end does not match");
-//       assert_eq!(&"aaabbb"[ma.1..ma.2], ma.0, "387: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_387() {
+    use s387::S387 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaabbb", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaabbb", 0, 6)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "387: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "387: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "387: Match end does not match");
+        assert_eq!(
+            &"aaabbb"[ma.1..ma.2],
+            ma.0,
+            "387: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:a+|b+){2}", "aaabbb", 0, 6);
 // td!(r#"(?:a+|b+){2}"#, "aaabbb", &[("aaabbb", 0, 6)], 388),
 scanner! { S388 { mode M { token r#"(?:a+|b+){2}"# => 0; } } }
-// #[test] fn test_match_388() {
-//   use s388::S388 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaabbb", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaabbb", 0, 6)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "388: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "388: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "388: Match end does not match");
-//       assert_eq!(&"aaabbb"[ma.1..ma.2], ma.0, "388: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_388() {
+    use s388::S388 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaabbb", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaabbb", 0, 6)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "388: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "388: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "388: Match end does not match");
+        assert_eq!(
+            &"aaabbb"[ma.1..ma.2],
+            ma.0,
+            "388: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("h{0,}", "hhhh", 0, 4);
 // td!(r#"h{0,}"#, "hhhh", &[("hhhh", 0, 4)], 389),
 scanner! { S389 { mode M { token r#"h{0,}"# => 0; } } }
-// #[test] fn test_match_389() {
-//   use s389::S389 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("hhhh", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("hhhh", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "389: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "389: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "389: Match end does not match");
-//       assert_eq!(&"hhhh"[ma.1..ma.2], ma.0, "389: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_389() {
+    use s389::S389 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("hhhh", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("hhhh", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "389: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "389: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "389: Match end does not match");
+        assert_eq!(
+            &"hhhh"[ma.1..ma.2],
+            ma.0,
+            "389: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:a+|b+){1,2}", "aaabbb", 0, 6);
 // td!(r#"(?:a+|b+){1,2}"#, "aaabbb", &[("aaabbb", 0, 6)], 390),
 scanner! { S390 { mode M { token r#"(?:a+|b+){1,2}"# => 0; } } }
-// #[test] fn test_match_390() {
-//   use s390::S390 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaabbb", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaabbb", 0, 6)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "390: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "390: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "390: Match end does not match");
-//       assert_eq!(&"aaabbb"[ma.1..ma.2], ma.0, "390: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_390() {
+    use s390::S390 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaabbb", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaabbb", 0, 6)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "390: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "390: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "390: Match end does not match");
+        assert_eq!(
+            &"aaabbb"[ma.1..ma.2],
+            ma.0,
+            "390: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("ax{2}*a", "0axxxa1");
 // td!(r#"ax{2}*a"#, "0axxxa1", &[], 391),
 scanner! { S391 { mode M { token r#"ax{2}*a"# => 0; } } }
-// #[test] fn test_match_391() {
-//   use s391::S391 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("0axxxa1", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "391: Unexpected match count");
-//}
+#[test]
+fn test_match_391() {
+    use s391::S391 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("0axxxa1", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "391: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("a.{0,2}a", "0aXXXa0");
 // td!(r#"a.{0,2}a"#, "0aXXXa0", &[], 392),
 scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
-// #[test] fn test_match_392() {
-//   use s392::S392 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("0aXXXa0", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "392: Unexpected match count");
-//}
+#[test]
+fn test_match_392() {
+    use s392::S392 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("0aXXXa0", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "392: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("a.{0,2}?a", "0aXXXa0");
@@ -6664,7 +6886,7 @@ scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
 //   let matches = scanner.find_matches("0aXXXa0", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "393: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("a.{0,2}?a", "0aXXXXa0");
@@ -6676,7 +6898,7 @@ scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
 //   let matches = scanner.find_matches("0aXXXXa0", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "394: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^a{2,}?a$", "aaa", 0, 3);
@@ -6693,7 +6915,7 @@ scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "395: Match end does not match");
 //       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "395: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^[a-z]{2,}?$", "aaa", 0, 3);
@@ -6710,7 +6932,7 @@ scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "396: Match end does not match");
 //       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "396: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:a+|\\Ab*)cc", "cc", 0, 2);
@@ -6727,7 +6949,7 @@ scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "397: Match end does not match");
 //       assert_eq!(&"cc"[ma.1..ma.2], ma.0, "397: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?:a+|\\Ab*)cc", "abcc");
@@ -6739,7 +6961,7 @@ scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
 //   let matches = scanner.find_matches("abcc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "398: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:^a+|b+)*c", "aabbbabc", 6, 8);
@@ -6756,7 +6978,7 @@ scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "399: Match end does not match");
 //       assert_eq!(&"aabbbabc"[ma.1..ma.2], ma.0, "399: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:^a+|b+)*c", "aabbbbc", 0, 7);
@@ -6773,75 +6995,123 @@ scanner! { S392 { mode M { token r#"a.{0,2}a"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "400: Match end does not match");
 //       assert_eq!(&"aabbbbc"[ma.1..ma.2], ma.0, "400: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a|(?i)c", "C", 0, 1);
 // td!(r#"a|(?i)c"#, "C", &[("C", 0, 1)], 401),
 scanner! { S401 { mode M { token r#"a|(?i)c"# => 0; } } }
-// #[test] fn test_match_401() {
-//   use s401::S401 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("C", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "401: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "401: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "401: Match end does not match");
-//       assert_eq!(&"C"[ma.1..ma.2], ma.0, "401: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_401() {
+    use s401::S401 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("C", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "401: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "401: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "401: Match end does not match");
+        assert_eq!(
+            &"C"[ma.1..ma.2],
+            ma.0,
+            "401: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)c|a", "C", 0, 1);
 // td!(r#"(?i)c|a"#, "C", &[("C", 0, 1)], 402),
 scanner! { S402 { mode M { token r#"(?i)c|a"# => 0; } } }
-// #[test] fn test_match_402() {
-//   use s402::S402 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("C", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "402: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "402: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "402: Match end does not match");
-//       assert_eq!(&"C"[ma.1..ma.2], ma.0, "402: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_402() {
+    use s402::S402 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("C", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "402: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "402: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "402: Match end does not match");
+        assert_eq!(
+            &"C"[ma.1..ma.2],
+            ma.0,
+            "402: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)c|a", "A", 0, 1);
 // td!(r#"(?i)c|a"#, "A", &[("A", 0, 1)], 403),
 scanner! { S403 { mode M { token r#"(?i)c|a"# => 0; } } }
-// #[test] fn test_match_403() {
-//   use s403::S403 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("A", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "403: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "403: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "403: Match end does not match");
-//       assert_eq!(&"A"[ma.1..ma.2], ma.0, "403: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_403() {
+    use s403::S403 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("A", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "403: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "403: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "403: Match end does not match");
+        assert_eq!(
+            &"A"[ma.1..ma.2],
+            ma.0,
+            "403: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("a(?i)b|c", "aB", 0, 2);
 // td!(r#"a(?i)b|c"#, "aB", &[("aB", 0, 2)], 404),
 scanner! { S404 { mode M { token r#"a(?i)b|c"# => 0; } } }
-// #[test] fn test_match_404() {
-//   use s404::S404 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aB", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aB", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "404: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "404: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "404: Match end does not match");
-//       assert_eq!(&"aB"[ma.1..ma.2], ma.0, "404: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_404() {
+    use s404::S404 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aB", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aB", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "404: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "404: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "404: Match end does not match");
+        assert_eq!(
+            &"aB"[ma.1..ma.2],
+            ma.0,
+            "404: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("a(?i)b|c", "aC", 0, 2);
@@ -6858,7 +7128,7 @@ scanner! { S405 { mode M { token r#"a(?i)b|c"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "405: Match end does not match");
 //       assert_eq!(&"aC"[ma.1..ma.2], ma.0, "405: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("a(?i)b|c", "AC");
@@ -6870,48 +7140,70 @@ scanner! { S406 { mode M { token r#"a(?i)b|c"# => 0; } } }
 //   let matches = scanner.find_matches("AC", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "406: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("a(?:(?i)b)|c", "aC");
 // td!(r#"a(?:(?i)b)|c"#, "aC", &[], 407),
 scanner! { S407 { mode M { token r#"a(?:(?i)b)|c"# => 0; } } }
-// #[test] fn test_match_407() {
-//   use s407::S407 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aC", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "407: Unexpected match count");
-//}
+#[test]
+fn test_match_407() {
+    use s407::S407 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aC", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "407: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i:c)|a", "C", 0, 1);
 // td!(r#"(?i:c)|a"#, "C", &[("C", 0, 1)], 408),
 scanner! { S408 { mode M { token r#"(?i:c)|a"# => 0; } } }
-// #[test] fn test_match_408() {
-//   use s408::S408 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("C", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "408: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "408: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "408: Match end does not match");
-//       assert_eq!(&"C"[ma.1..ma.2], ma.0, "408: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_408() {
+    use s408::S408 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("C", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "408: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "408: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "408: Match end does not match");
+        assert_eq!(
+            &"C"[ma.1..ma.2],
+            ma.0,
+            "408: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("(?i:c)|a", "A");
 // td!(r#"(?i:c)|a"#, "A", &[], 409),
 scanner! { S409 { mode M { token r#"(?i:c)|a"# => 0; } } }
-// #[test] fn test_match_409() {
-//   use s409::S409 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "409: Unexpected match count");
-//}
+#[test]
+fn test_match_409() {
+    use s409::S409 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "409: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("[abc]?", "abc", 0, 1);
@@ -6928,60 +7220,87 @@ scanner! { S410 { mode M { token r#"[abc]?"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "410: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "410: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[abc]*", "abc", 0, 3);
 // td!(r#"[abc]*"#, "abc", &[("abc", 0, 3)], 411),
 scanner! { S411 { mode M { token r#"[abc]*"# => 0; } } }
-// #[test] fn test_match_411() {
-//   use s411::S411 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abc", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "411: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "411: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "411: Match end does not match");
-//       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "411: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_411() {
+    use s411::S411 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abc", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "411: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "411: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "411: Match end does not match");
+        assert_eq!(
+            &"abc"[ma.1..ma.2],
+            ma.0,
+            "411: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[^abc]*", "abc", 0, 0);
 // td!(r#"[^abc]*"#, "abc", &[], 412),
 scanner! { S412 { mode M { token r#"[^abc]*"# => 0; } } }
-// #[test] fn test_match_412() {
-//   use s412::S412 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "412: Unexpected match count");
-//}
+#[test]
+fn test_match_412() {
+    use s412::S412 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "412: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("[^abc]+", "abc");
 // td!(r#"[^abc]+"#, "abc", &[], 413),
 scanner! { S413 { mode M { token r#"[^abc]+"# => 0; } } }
-// #[test] fn test_match_413() {
-//   use s413::S413 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "413: Unexpected match count");
-//}
+#[test]
+fn test_match_413() {
+    use s413::S413 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "413: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("a?\?", "aaa", 0, 0);
 // td!(r#"a?\?"#, "aaa", &[], 414),
 scanner! { S414 { mode M { token r#"a?\?"# => 0; } } }
-// #[test] fn test_match_414() {
-//   use s414::S414 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "414: Unexpected match count");
-//}
+#[test]
+fn test_match_414() {
+    use s414::S414 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "414: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("ba?\?b", "bab", 0, 3);
@@ -6998,7 +7317,7 @@ scanner! { S415 { mode M { token r#"ba?\?b"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "415: Match end does not match");
 //       assert_eq!(&"bab"[ma.1..ma.2], ma.0, "415: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a*?", "aaa", 0, 0);
@@ -7034,25 +7353,35 @@ scanner! { S415 { mode M { token r#"ba?\?b"# => 0; } } }
 // x2("(?:a?)?\?", "a", 0, 0);
 // td!(r#"(?:a?)?\?"#, "a", &[], 422),
 scanner! { S422 { mode M { token r#"(?:a?)?\?"# => 0; } } }
-// #[test] fn test_match_422() {
-//   use s422::S422 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "422: Unexpected match count");
-//}
+#[test]
+fn test_match_422() {
+    use s422::S422 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "422: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:a?\?)?", "a", 0, 0);
 // td!(r#"(?:a?\?)?"#, "a", &[], 423),
 scanner! { S423 { mode M { token r#"(?:a?\?)?"# => 0; } } }
-// #[test] fn test_match_423() {
-//   use s423::S423 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "423: Unexpected match count");
-//}
+#[test]
+fn test_match_423() {
+    use s423::S423 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "423: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:a?)+?", "aaa", 0, 1);
@@ -7063,13 +7392,18 @@ scanner! { S423 { mode M { token r#"(?:a?\?)?"# => 0; } } }
 // x2("(?:a+)?\?", "aaa", 0, 0);
 // td!(r#"(?:a+)?\?"#, "aaa", &[], 425),
 scanner! { S425 { mode M { token r#"(?:a+)?\?"# => 0; } } }
-// #[test] fn test_match_425() {
-//   use s425::S425 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "425: Unexpected match count");
-//}
+#[test]
+fn test_match_425() {
+    use s425::S425 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "425: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:a+)?\?b", "aaab", 0, 4);
@@ -7086,111 +7420,174 @@ scanner! { S426 { mode M { token r#"(?:a+)?\?b"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "426: Match end does not match");
 //       assert_eq!(&"aaab"[ma.1..ma.2], ma.0, "426: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:ab)?{2}", "", 0, 0);
 // td!(r#"(?:ab)?{2}"#, "", &[], 427),
 scanner! { S427 { mode M { token r#"(?:ab)?{2}"# => 0; } } }
-// #[test] fn test_match_427() {
-//   use s427::S427 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "427: Unexpected match count");
-//}
+#[test]
+fn test_match_427() {
+    use s427::S427 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "427: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:ab)?{2}", "ababa", 0, 4);
 // td!(r#"(?:ab)?{2}"#, "ababa", &[("abab", 0, 4)], 428),
 scanner! { S428 { mode M { token r#"(?:ab)?{2}"# => 0; } } }
-// #[test] fn test_match_428() {
-//   use s428::S428 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ababa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abab", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "428: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "428: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "428: Match end does not match");
-//       assert_eq!(&"ababa"[ma.1..ma.2], ma.0, "428: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_428() {
+    use s428::S428 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ababa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abab", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "428: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "428: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "428: Match end does not match");
+        assert_eq!(
+            &"ababa"[ma.1..ma.2],
+            ma.0,
+            "428: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:ab)*{0}", "ababa", 0, 0);
 // td!(r#"(?:ab)*{0}"#, "ababa", &[], 429),
 scanner! { S429 { mode M { token r#"(?:ab)*{0}"# => 0; } } }
-// #[test] fn test_match_429() {
-//   use s429::S429 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ababa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "429: Unexpected match count");
-//}
+#[test]
+fn test_match_429() {
+    use s429::S429 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ababa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "429: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:ab){3,}", "abababab", 0, 8);
 // td!(r#"(?:ab){3,}"#, "abababab", &[("abababab", 0, 8)], 430),
 scanner! { S430 { mode M { token r#"(?:ab){3,}"# => 0; } } }
-// #[test] fn test_match_430() {
-//   use s430::S430 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abababab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abababab", 0, 8)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "430: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "430: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "430: Match end does not match");
-//       assert_eq!(&"abababab"[ma.1..ma.2], ma.0, "430: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_430() {
+    use s430::S430 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abababab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abababab", 0, 8)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "430: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "430: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "430: Match end does not match");
+        assert_eq!(
+            &"abababab"[ma.1..ma.2],
+            ma.0,
+            "430: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("(?:ab){3,}", "abab");
 // td!(r#"(?:ab){3,}"#, "abab", &[], 431),
 scanner! { S431 { mode M { token r#"(?:ab){3,}"# => 0; } } }
-// #[test] fn test_match_431() {
-//   use s431::S431 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "431: Unexpected match count");
-//}
+#[test]
+fn test_match_431() {
+    use s431::S431 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "431: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:ab){2,4}", "ababab", 0, 6);
 // td!(r#"(?:ab){2,4}"#, "ababab", &[("ababab", 0, 6)], 432),
 scanner! { S432 { mode M { token r#"(?:ab){2,4}"# => 0; } } }
-// #[test] fn test_match_432() {
-//   use s432::S432 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ababab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ababab", 0, 6)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "432: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "432: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "432: Match end does not match");
-//       assert_eq!(&"ababab"[ma.1..ma.2], ma.0, "432: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_432() {
+    use s432::S432 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ababab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ababab", 0, 6)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "432: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "432: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "432: Match end does not match");
+        assert_eq!(
+            &"ababab"[ma.1..ma.2],
+            ma.0,
+            "432: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:ab){2,4}", "ababababab", 0, 8);
 // td!(r#"(?:ab){2,4}"#, "ababababab", &[("abababab", 0, 8)], 433),
 scanner! { S433 { mode M { token r#"(?:ab){2,4}"# => 0; } } }
-// #[test] fn test_match_433() {
-//   use s433::S433 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ababababab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abababab", 0, 8)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "433: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "433: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "433: Match end does not match");
-//       assert_eq!(&"ababababab"[ma.1..ma.2], ma.0, "433: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_433() {
+    use s433::S433 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ababababab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abababab", 0, 8)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "433: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "433: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "433: Match end does not match");
+        assert_eq!(
+            &"ababababab"[ma.1..ma.2],
+            ma.0,
+            "433: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:ab){2,4}?", "ababababab", 0, 4);
@@ -7207,7 +7604,7 @@ scanner! { S433 { mode M { token r#"(?:ab){2,4}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "434: Match end does not match");
 //       assert_eq!(&"ababababab"[ma.1..ma.2], ma.0, "434: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:ab){,}", "ab{,}", 0, 5);
@@ -7224,7 +7621,7 @@ scanner! { S433 { mode M { token r#"(?:ab){2,4}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "435: Match end does not match");
 //       assert_eq!(&"ab{,}"[ma.1..ma.2], ma.0, "435: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:abc)+?{2}", "abcabcabc", 0, 6);
@@ -7235,171 +7632,291 @@ scanner! { S433 { mode M { token r#"(?:ab){2,4}"# => 0; } } }
 // x2("(?:X*)(?i:xa)", "XXXa", 0, 4);
 // td!(r#"(?:X*)(?i:xa)"#, "XXXa", &[("XXXa", 0, 4)], 437),
 scanner! { S437 { mode M { token r#"(?:X*)(?i:xa)"# => 0; } } }
-// #[test] fn test_match_437() {
-//   use s437::S437 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("XXXa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("XXXa", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "437: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "437: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "437: Match end does not match");
-//       assert_eq!(&"XXXa"[ma.1..ma.2], ma.0, "437: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_437() {
+    use s437::S437 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("XXXa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("XXXa", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "437: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "437: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "437: Match end does not match");
+        assert_eq!(
+            &"XXXa"[ma.1..ma.2],
+            ma.0,
+            "437: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(d+)([^abc]z)", "dddz", 0, 4);
 // td!(r#"(d+)([^abc]z)"#, "dddz", &[("dddz", 0, 4)], 438),
 scanner! { S438 { mode M { token r#"(d+)([^abc]z)"# => 0; } } }
-// #[test] fn test_match_438() {
-//   use s438::S438 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("dddz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("dddz", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "438: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "438: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "438: Match end does not match");
-//       assert_eq!(&"dddz"[ma.1..ma.2], ma.0, "438: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_438() {
+    use s438::S438 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("dddz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("dddz", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "438: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "438: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "438: Match end does not match");
+        assert_eq!(
+            &"dddz"[ma.1..ma.2],
+            ma.0,
+            "438: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("([^abc]*)([^abc]z)", "dddz", 0, 4);
 // td!(r#"([^abc]*)([^abc]z)"#, "dddz", &[("dddz", 0, 4)], 439),
 scanner! { S439 { mode M { token r#"([^abc]*)([^abc]z)"# => 0; } } }
-// #[test] fn test_match_439() {
-//   use s439::S439 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("dddz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("dddz", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "439: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "439: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "439: Match end does not match");
-//       assert_eq!(&"dddz"[ma.1..ma.2], ma.0, "439: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_439() {
+    use s439::S439 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("dddz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("dddz", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "439: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "439: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "439: Match end does not match");
+        assert_eq!(
+            &"dddz"[ma.1..ma.2],
+            ma.0,
+            "439: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(\\w+)(\\wz)", "dddz", 0, 4);
 // td!(r#"(\w+)(\wz)"#, "dddz", &[("dddz", 0, 4)], 440),
 scanner! { S440 { mode M { token r#"(\w+)(\wz)"# => 0; } } }
-// #[test] fn test_match_440() {
-//   use s440::S440 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("dddz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("dddz", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "440: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "440: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "440: Match end does not match");
-//       assert_eq!(&"dddz"[ma.1..ma.2], ma.0, "440: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_440() {
+    use s440::S440 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("dddz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("dddz", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "440: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "440: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "440: Match end does not match");
+        assert_eq!(
+            &"dddz"[ma.1..ma.2],
+            ma.0,
+            "440: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(a)", "a", 0, 1, 1);
 // td!(r#"(a)"#, "a", &[("a", 0, 1)], 441),
 scanner! { S441 { mode M { token r#"(a)"# => 0; } } }
-// #[test] fn test_match_441() {
-//   use s441::S441 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "441: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "441: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "441: Match end does not match");
-//       assert_eq!(&"a"[ma.1..ma.2], ma.0, "441: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_441() {
+    use s441::S441 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "441: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "441: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "441: Match end does not match");
+        assert_eq!(
+            &"a"[ma.1..ma.2],
+            ma.0,
+            "441: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(ab)", "ab", 0, 2, 1);
 // td!(r#"(ab)"#, "ab", &[("ab", 0, 2)], 442),
 scanner! { S442 { mode M { token r#"(ab)"# => 0; } } }
-// #[test] fn test_match_442() {
-//   use s442::S442 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ab", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "442: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "442: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "442: Match end does not match");
-//       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "442: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_442() {
+    use s442::S442 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ab", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "442: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "442: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "442: Match end does not match");
+        assert_eq!(
+            &"ab"[ma.1..ma.2],
+            ma.0,
+            "442: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("((ab))", "ab", 0, 2);
 // td!(r#"((ab))"#, "ab", &[("ab", 0, 2)], 443),
 scanner! { S443 { mode M { token r#"((ab))"# => 0; } } }
-// #[test] fn test_match_443() {
-//   use s443::S443 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ab", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "443: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "443: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "443: Match end does not match");
-//       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "443: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_443() {
+    use s443::S443 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ab", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "443: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "443: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "443: Match end does not match");
+        assert_eq!(
+            &"ab"[ma.1..ma.2],
+            ma.0,
+            "443: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("((ab))", "ab", 0, 2, 1);
 // td!(r#"((ab))"#, "ab", &[("ab", 0, 2)], 444),
 scanner! { S444 { mode M { token r#"((ab))"# => 0; } } }
-// #[test] fn test_match_444() {
-//   use s444::S444 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ab", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "444: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "444: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "444: Match end does not match");
-//       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "444: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_444() {
+    use s444::S444 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ab", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "444: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "444: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "444: Match end does not match");
+        assert_eq!(
+            &"ab"[ma.1..ma.2],
+            ma.0,
+            "444: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("((ab))", "ab", 0, 2, 2);
 // td!(r#"((ab))"#, "ab", &[("ab", 0, 2)], 445),
 scanner! { S445 { mode M { token r#"((ab))"# => 0; } } }
-// #[test] fn test_match_445() {
-//   use s445::S445 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ab", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "445: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "445: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "445: Match end does not match");
-//       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "445: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_445() {
+    use s445::S445 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ab", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "445: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "445: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "445: Match end does not match");
+        assert_eq!(
+            &"ab"[ma.1..ma.2],
+            ma.0,
+            "445: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("((((((((((((((((((((ab))))))))))))))))))))", "ab", 0, 2, 20);
 // td!(r#"((((((((((((((((((((ab))))))))))))))))))))"#, "ab", &[("ab", 0, 2)], 446),
 scanner! { S446 { mode M { token r#"((((((((((((((((((((ab))))))))))))))))))))"# => 0; } } }
-// #[test] fn test_match_446() {
-//   use s446::S446 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ab", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "446: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "446: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "446: Match end does not match");
-//       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "446: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_446() {
+    use s446::S446 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ab", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "446: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "446: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "446: Match end does not match");
+        assert_eq!(
+            &"ab"[ma.1..ma.2],
+            ma.0,
+            "446: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(ab)(cd)", "abcd", 0, 2, 1);
@@ -7416,7 +7933,7 @@ scanner! { S447 { mode M { token r#"(ab)(cd)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "447: Match end does not match");
 //       assert_eq!(&"abcd"[ma.1..ma.2], ma.0, "447: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(ab)(cd)", "abcd", 2, 4, 2);
@@ -7433,7 +7950,7 @@ scanner! { S448 { mode M { token r#"(ab)(cd)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "448: Match end does not match");
 //       assert_eq!(&"abcd"[ma.1..ma.2], ma.0, "448: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("()(a)bc(def)ghijk", "abcdefghijk", 3, 6, 3);
@@ -7450,7 +7967,7 @@ scanner! { S449 { mode M { token r#"()(a)bc(def)ghijk"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "449: Match end does not match");
 //       assert_eq!(&"abcdefghijk"[ma.1..ma.2], ma.0, "449: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(()(a)bc(def)ghijk)", "abcdefghijk", 3, 6, 4);
@@ -7467,7 +7984,7 @@ scanner! { S450 { mode M { token r#"(()(a)bc(def)ghijk)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "450: Match end does not match");
 //       assert_eq!(&"abcdefghijk"[ma.1..ma.2], ma.0, "450: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(^a)", "a", 0, 1);
@@ -7484,24 +8001,36 @@ scanner! { S450 { mode M { token r#"(()(a)bc(def)ghijk)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "451: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "451: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(a)|(a)", "ba", 1, 2, 1);
 // td!(r#"(a)|(a)"#, "ba", &[("a", 1, 2)], 452),
 scanner! { S452 { mode M { token r#"(a)|(a)"# => 0; } } }
-// #[test] fn test_match_452() {
-//   use s452::S452 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ba", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 1, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "452: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "452: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "452: Match end does not match");
-//       assert_eq!(&"ba"[ma.1..ma.2], ma.0, "452: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_452() {
+    use s452::S452 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ba", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 1, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "452: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "452: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "452: Match end does not match");
+        assert_eq!(
+            &"ba"[ma.1..ma.2],
+            ma.0,
+            "452: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(^a)|(a)", "ba", 1, 2, 2);
@@ -7518,7 +8047,7 @@ scanner! { S452 { mode M { token r#"(a)|(a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "453: Match end does not match");
 //       assert_eq!(&"ba"[ma.1..ma.2], ma.0, "453: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(a?)", "aaa", 0, 1, 1);
@@ -7535,53 +8064,82 @@ scanner! { S454 { mode M { token r#"(a?)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "454: Match end does not match");
 //       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "454: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(a*)", "aaa", 0, 3, 1);
 // td!(r#"(a*)"#, "aaa", &[("aaa", 0, 3)], 455),
 scanner! { S455 { mode M { token r#"(a*)"# => 0; } } }
-// #[test] fn test_match_455() {
-//   use s455::S455 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaa", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "455: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "455: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "455: Match end does not match");
-//       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "455: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_455() {
+    use s455::S455 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaa", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "455: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "455: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "455: Match end does not match");
+        assert_eq!(
+            &"aaa"[ma.1..ma.2],
+            ma.0,
+            "455: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(a*)", "", 0, 0, 1);
 // td!(r#"(a*)"#, "", &[], 456),
 scanner! { S456 { mode M { token r#"(a*)"# => 0; } } }
-// #[test] fn test_match_456() {
-//   use s456::S456 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "456: Unexpected match count");
-//}
+#[test]
+fn test_match_456() {
+    use s456::S456 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "456: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x3("(a+)", "aaaaaaa", 0, 7, 1);
 // td!(r#"(a+)"#, "aaaaaaa", &[("aaaaaaa", 0, 7)], 457),
 scanner! { S457 { mode M { token r#"(a+)"# => 0; } } }
-// #[test] fn test_match_457() {
-//   use s457::S457 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaaaaaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaaaaaa", 0, 7)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "457: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "457: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "457: Match end does not match");
-//       assert_eq!(&"aaaaaaa"[ma.1..ma.2], ma.0, "457: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_457() {
+    use s457::S457 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaaaaaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaaaaaa", 0, 7)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "457: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "457: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "457: Match end does not match");
+        assert_eq!(
+            &"aaaaaaa"[ma.1..ma.2],
+            ma.0,
+            "457: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(a+|b*)", "bbbaa", 0, 3, 1);
@@ -7598,7 +8156,7 @@ scanner! { S458 { mode M { token r#"(a+|b*)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "458: Match end does not match");
 //       assert_eq!(&"bbbaa"[ma.1..ma.2], ma.0, "458: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(a+|b?)", "bbbaa", 0, 1, 1);
@@ -7615,109 +8173,181 @@ scanner! { S459 { mode M { token r#"(a+|b?)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "459: Match end does not match");
 //       assert_eq!(&"bbbaa"[ma.1..ma.2], ma.0, "459: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(abc)?", "abc", 0, 3, 1);
 // td!(r#"(abc)?"#, "abc", &[("abc", 0, 3)], 460),
 scanner! { S460 { mode M { token r#"(abc)?"# => 0; } } }
-// #[test] fn test_match_460() {
-//   use s460::S460 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abc", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "460: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "460: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "460: Match end does not match");
-//       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "460: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_460() {
+    use s460::S460 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abc", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "460: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "460: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "460: Match end does not match");
+        assert_eq!(
+            &"abc"[ma.1..ma.2],
+            ma.0,
+            "460: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(abc)*", "abc", 0, 3, 1);
 // td!(r#"(abc)*"#, "abc", &[("abc", 0, 3)], 461),
 scanner! { S461 { mode M { token r#"(abc)*"# => 0; } } }
-// #[test] fn test_match_461() {
-//   use s461::S461 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abc", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "461: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "461: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "461: Match end does not match");
-//       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "461: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_461() {
+    use s461::S461 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abc", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "461: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "461: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "461: Match end does not match");
+        assert_eq!(
+            &"abc"[ma.1..ma.2],
+            ma.0,
+            "461: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(abc)+", "abc", 0, 3, 1);
 // td!(r#"(abc)+"#, "abc", &[("abc", 0, 3)], 462),
 scanner! { S462 { mode M { token r#"(abc)+"# => 0; } } }
-// #[test] fn test_match_462() {
-//   use s462::S462 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abc", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "462: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "462: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "462: Match end does not match");
-//       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "462: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_462() {
+    use s462::S462 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abc", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "462: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "462: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "462: Match end does not match");
+        assert_eq!(
+            &"abc"[ma.1..ma.2],
+            ma.0,
+            "462: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(xyz|abc)+", "abc", 0, 3, 1);
 // td!(r#"(xyz|abc)+"#, "abc", &[("abc", 0, 3)], 463),
 scanner! { S463 { mode M { token r#"(xyz|abc)+"# => 0; } } }
-// #[test] fn test_match_463() {
-//   use s463::S463 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abc", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "463: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "463: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "463: Match end does not match");
-//       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "463: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_463() {
+    use s463::S463 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abc", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "463: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "463: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "463: Match end does not match");
+        assert_eq!(
+            &"abc"[ma.1..ma.2],
+            ma.0,
+            "463: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("([xyz][abc]|abc)+", "abc", 0, 3, 1);
 // td!(r#"([xyz][abc]|abc)+"#, "abc", &[("abc", 0, 3)], 464),
 scanner! { S464 { mode M { token r#"([xyz][abc]|abc)+"# => 0; } } }
-// #[test] fn test_match_464() {
-//   use s464::S464 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abc", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "464: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "464: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "464: Match end does not match");
-//       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "464: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_464() {
+    use s464::S464 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abc", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "464: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "464: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "464: Match end does not match");
+        assert_eq!(
+            &"abc"[ma.1..ma.2],
+            ma.0,
+            "464: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("((?i:abc))", "AbC", 0, 3, 1);
 // td!(r#"((?i:abc))"#, "AbC", &[("AbC", 0, 3)], 465),
 scanner! { S465 { mode M { token r#"((?i:abc))"# => 0; } } }
-// #[test] fn test_match_465() {
-//   use s465::S465 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("AbC", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("AbC", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "465: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "465: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "465: Match end does not match");
-//       assert_eq!(&"AbC"[ma.1..ma.2], ma.0, "465: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_465() {
+    use s465::S465 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("AbC", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("AbC", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "465: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "465: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "465: Match end does not match");
+        assert_eq!(
+            &"AbC"[ma.1..ma.2],
+            ma.0,
+            "465: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(abc)(?i:\\1)", "abcABC", 0, 6);
@@ -7734,7 +8364,7 @@ scanner! { S465 { mode M { token r#"((?i:abc))"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "466: Match end does not match");
 //       assert_eq!(&"abcABC"[ma.1..ma.2], ma.0, "466: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("((?m:a.c))", "a\nc", 0, 3, 1);
@@ -7751,7 +8381,7 @@ scanner! { S467 { mode M { token r#"((?m:a.c))"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "467: Match end does not match");
 //       assert_eq!(&"a\nc"[ma.1..ma.2], ma.0, "467: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("((?=az)a)", "azb", 0, 1, 1);
@@ -7768,58 +8398,94 @@ scanner! { S467 { mode M { token r#"((?m:a.c))"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "468: Match end does not match");
 //       assert_eq!(&"azb"[ma.1..ma.2], ma.0, "468: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("abc|(.abd)", "zabd", 0, 4, 1);
 // td!(r#"abc|(.abd)"#, "zabd", &[("zabd", 0, 4)], 469),
 scanner! { S469 { mode M { token r#"abc|(.abd)"# => 0; } } }
-// #[test] fn test_match_469() {
-//   use s469::S469 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("zabd", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("zabd", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "469: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "469: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "469: Match end does not match");
-//       assert_eq!(&"zabd"[ma.1..ma.2], ma.0, "469: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_469() {
+    use s469::S469 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("zabd", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("zabd", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "469: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "469: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "469: Match end does not match");
+        assert_eq!(
+            &"zabd"[ma.1..ma.2],
+            ma.0,
+            "469: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:abc)|(ABC)", "abc", 0, 3);
 // td!(r#"(?:abc)|(ABC)"#, "abc", &[("abc", 0, 3)], 470),
 scanner! { S470 { mode M { token r#"(?:abc)|(ABC)"# => 0; } } }
-// #[test] fn test_match_470() {
-//   use s470::S470 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abc", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "470: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "470: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "470: Match end does not match");
-//       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "470: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_470() {
+    use s470::S470 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abc", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "470: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "470: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "470: Match end does not match");
+        assert_eq!(
+            &"abc"[ma.1..ma.2],
+            ma.0,
+            "470: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(?i:(abc))|(zzz)", "ABC", 0, 3, 1);
 // td!(r#"(?i:(abc))|(zzz)"#, "ABC", &[("ABC", 0, 3)], 471),
 scanner! { S471 { mode M { token r#"(?i:(abc))|(zzz)"# => 0; } } }
-// #[test] fn test_match_471() {
-//   use s471::S471 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ABC", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ABC", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "471: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "471: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "471: Match end does not match");
-//       assert_eq!(&"ABC"[ma.1..ma.2], ma.0, "471: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_471() {
+    use s471::S471 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ABC", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ABC", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "471: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "471: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "471: Match end does not match");
+        assert_eq!(
+            &"ABC"[ma.1..ma.2],
+            ma.0,
+            "471: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("a*(.)", "aaaaz", 4, 5, 1);
@@ -7836,7 +8502,7 @@ scanner! { S472 { mode M { token r#"a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "472: Match end does not match");
 //       assert_eq!(&"aaaaz"[ma.1..ma.2], ma.0, "472: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("a*?(.)", "aaaaz", 0, 1, 1);
@@ -7863,7 +8529,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "475: Match end does not match");
 //       assert_eq!(&"caaaaz"[ma.1..ma.2], ma.0, "475: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(\\Abb)cc", "bbcc", 0, 2, 1);
@@ -7880,7 +8546,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "476: Match end does not match");
 //       assert_eq!(&"bbcc"[ma.1..ma.2], ma.0, "476: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(\\Abb)cc", "zbbcc");
@@ -7892,7 +8558,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("zbbcc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "477: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(^bb)cc", "bbcc", 0, 2, 1);
@@ -7909,7 +8575,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "478: Match end does not match");
 //       assert_eq!(&"bbcc"[ma.1..ma.2], ma.0, "478: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(^bb)cc", "zbbcc");
@@ -7921,7 +8587,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("zbbcc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "479: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("cc(bb$)", "ccbb", 2, 4, 1);
@@ -7938,7 +8604,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "480: Match end does not match");
 //       assert_eq!(&"ccbb"[ma.1..ma.2], ma.0, "480: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("cc(bb$)", "ccbbb");
@@ -7950,7 +8616,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("ccbbb", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "481: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(\\1)", "");
@@ -7962,7 +8628,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "482: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\1(a)", "aa");
@@ -7974,7 +8640,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "483: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(a(b)\\1)\\2+", "ababb");
@@ -7986,7 +8652,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("ababb", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "484: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?:(?:\\1|z)(a))+$", "zaa");
@@ -7998,7 +8664,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("zaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "485: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:(?:\\1|z)(a))+$", "zaaa", 0, 4);
@@ -8015,7 +8681,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "486: Match end does not match");
 //       assert_eq!(&"zaaa"[ma.1..ma.2], ma.0, "486: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)(?=\\1)", "aa", 0, 1);
@@ -8032,7 +8698,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "487: Match end does not match");
 //       assert_eq!(&"aa"[ma.1..ma.2], ma.0, "487: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(a)$|\\1", "az");
@@ -8044,7 +8710,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("az", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "488: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)\\1", "aa", 0, 2);
@@ -8061,7 +8727,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "489: Match end does not match");
 //       assert_eq!(&"aa"[ma.1..ma.2], ma.0, "489: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(a)\\1", "ab");
@@ -8073,7 +8739,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "490: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a?)\\1", "aa", 0, 2);
@@ -8090,7 +8756,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "491: Match end does not match");
 //       assert_eq!(&"aa"[ma.1..ma.2], ma.0, "491: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a?\?)\\1", "aa", 0, 0);
@@ -8102,7 +8768,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "492: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a*)\\1", "aaaaa", 0, 4);
@@ -8119,7 +8785,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "493: Match end does not match");
 //       assert_eq!(&"aaaaa"[ma.1..ma.2], ma.0, "493: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(a*)\\1", "aaaaa", 0, 2, 1);
@@ -8136,7 +8802,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "494: Match end does not match");
 //       assert_eq!(&"aaaaa"[ma.1..ma.2], ma.0, "494: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a(b*)\\1", "abbbb", 0, 5);
@@ -8153,7 +8819,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "495: Match end does not match");
 //       assert_eq!(&"abbbb"[ma.1..ma.2], ma.0, "495: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a(b*)\\1", "ab", 0, 1);
@@ -8170,7 +8836,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "496: Match end does not match");
 //       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "496: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a*)(b*)\\1\\2", "aaabbaaabb", 0, 10);
@@ -8187,7 +8853,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "497: Match end does not match");
 //       assert_eq!(&"aaabbaaabb"[ma.1..ma.2], ma.0, "497: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a*)(b*)\\2", "aaabbbb", 0, 7);
@@ -8204,7 +8870,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "498: Match end does not match");
 //       assert_eq!(&"aaabbbb"[ma.1..ma.2], ma.0, "498: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(((((((a*)b))))))c\\7", "aaabcaaa", 0, 8);
@@ -8221,7 +8887,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "499: Match end does not match");
 //       assert_eq!(&"aaabcaaa"[ma.1..ma.2], ma.0, "499: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(((((((a*)b))))))c\\7", "aaabcaaa", 0, 3, 7);
@@ -8238,7 +8904,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "500: Match end does not match");
 //       assert_eq!(&"aaabcaaa"[ma.1..ma.2], ma.0, "500: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)(b)(c)\\2\\1\\3", "abcbac", 0, 6);
@@ -8255,7 +8921,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "501: Match end does not match");
 //       assert_eq!(&"abcbac"[ma.1..ma.2], ma.0, "501: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("([a-d])\\1", "cc", 0, 2);
@@ -8272,7 +8938,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "502: Match end does not match");
 //       assert_eq!(&"cc"[ma.1..ma.2], ma.0, "502: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(\\w\\d\\s)\\1", "f5 f5 ", 0, 6);
@@ -8289,7 +8955,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "503: Match end does not match");
 //       assert_eq!(&"f5 f5 "[ma.1..ma.2], ma.0, "503: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(\\w\\d\\s)\\1", "f5 f5");
@@ -8301,7 +8967,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("f5 f5", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "504: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(who|[a-c]{3})\\1", "whowho", 0, 6);
@@ -8318,7 +8984,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "505: Match end does not match");
 //       assert_eq!(&"whowho"[ma.1..ma.2], ma.0, "505: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("...(who|[a-c]{3})\\1", "abcwhowho", 0, 9);
@@ -8335,7 +9001,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "506: Match end does not match");
 //       assert_eq!(&"abcwhowho"[ma.1..ma.2], ma.0, "506: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(who|[a-c]{3})\\1", "cbccbc", 0, 6);
@@ -8352,7 +9018,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "507: Match end does not match");
 //       assert_eq!(&"cbccbc"[ma.1..ma.2], ma.0, "507: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(^a)\\1", "aa", 0, 2);
@@ -8369,7 +9035,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "508: Match end does not match");
 //       assert_eq!(&"aa"[ma.1..ma.2], ma.0, "508: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(^a)\\1", "baa");
@@ -8381,7 +9047,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("baa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "509: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(a$)\\1", "aa");
@@ -8393,7 +9059,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "510: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(ab\\Z)\\1", "ab");
@@ -8405,7 +9071,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "511: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a*\\Z)\\1", "a", 1, 1);
@@ -8422,7 +9088,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "512: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "512: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2(".(a*\\Z)\\1", "ba", 1, 2);
@@ -8439,7 +9105,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "513: Match end does not match");
 //       assert_eq!(&"ba"[ma.1..ma.2], ma.0, "513: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(.(abc)\\2)", "zabcabc", 0, 7, 1);
@@ -8456,7 +9122,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "514: Match end does not match");
 //       assert_eq!(&"zabcabc"[ma.1..ma.2], ma.0, "514: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(.(..\\d.)\\2)", "z12341234", 0, 9, 1);
@@ -8473,7 +9139,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "515: Match end does not match");
 //       assert_eq!(&"z12341234"[ma.1..ma.2], ma.0, "515: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?i:az))\\1", "AzAz", 0, 4);
@@ -8490,7 +9156,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "516: Match end does not match");
 //       assert_eq!(&"AzAz"[ma.1..ma.2], ma.0, "516: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("((?i:az))\\1", "Azaz");
@@ -8502,7 +9168,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("Azaz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "517: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a)b", "ab", 1, 2);
@@ -8519,7 +9185,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "518: Match end does not match");
 //       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "518: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=a)b", "bb");
@@ -8531,7 +9197,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("bb", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "519: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a|b)b", "bb", 1, 2);
@@ -8548,7 +9214,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "520: Match end does not match");
 //       assert_eq!(&"bb"[ma.1..ma.2], ma.0, "520: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a|bc)b", "bcb", 2, 3);
@@ -8565,7 +9231,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "521: Match end does not match");
 //       assert_eq!(&"bcb"[ma.1..ma.2], ma.0, "521: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a|bc)b", "ab", 1, 2);
@@ -8582,7 +9248,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "522: Match end does not match");
 //       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "522: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a|bc||defghij|klmnopq|r)z", "rz", 1, 2);
@@ -8599,7 +9265,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "523: Match end does not match");
 //       assert_eq!(&"rz"[ma.1..ma.2], ma.0, "523: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(?<=(abc))d", "abcd", 0, 3, 1);
@@ -8616,7 +9282,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "524: Match end does not match");
 //       assert_eq!(&"abcd"[ma.1..ma.2], ma.0, "524: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=(?i:abc))d", "ABCd", 3, 4);
@@ -8633,7 +9299,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "525: Match end does not match");
 //       assert_eq!(&"ABCd"[ma.1..ma.2], ma.0, "525: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=^|b)c", " cbc", 3, 4);
@@ -8650,7 +9316,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "526: Match end does not match");
 //       assert_eq!(&" cbc"[ma.1..ma.2], ma.0, "526: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a|^|b)c", " cbc", 3, 4);
@@ -8667,7 +9333,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "527: Match end does not match");
 //       assert_eq!(&" cbc"[ma.1..ma.2], ma.0, "527: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a|(^)|b)c", " cbc", 3, 4);
@@ -8684,7 +9350,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "528: Match end does not match");
 //       assert_eq!(&" cbc"[ma.1..ma.2], ma.0, "528: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a|(^)|b)c", "cbc", 0, 1);
@@ -8701,7 +9367,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "529: Match end does not match");
 //       assert_eq!(&"cbc"[ma.1..ma.2], ma.0, "529: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(Q)|(?<=a|(?(1))|b)c", "czc");
@@ -8713,7 +9379,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("czc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "530: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(Q)(?<=a|(?(1))|b)c", "cQc", 1, 3);
@@ -8730,7 +9396,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "531: Match end does not match");
 //       assert_eq!(&"cQc"[ma.1..ma.2], ma.0, "531: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a|(?~END)|b)c", "ENDc", 3, 4);
@@ -8747,7 +9413,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "532: Match end does not match");
 //       assert_eq!(&"ENDc"[ma.1..ma.2], ma.0, "532: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!^|b)c", "cbc");
@@ -8759,7 +9425,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("cbc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "533: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a|^|b)c", "cbc");
@@ -8771,7 +9437,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("cbc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "534: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a|(?:^)|b)c", "cbc");
@@ -8783,7 +9449,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("cbc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "535: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a|(?:^)|b)c", " cbc", 1, 2);
@@ -8800,7 +9466,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "536: Match end does not match");
 //       assert_eq!(&" cbc"[ma.1..ma.2], ma.0, "536: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)\\g<1>", "aa", 0, 2);
@@ -8817,7 +9483,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "537: Match end does not match");
 //       assert_eq!(&"aa"[ma.1..ma.2], ma.0, "537: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a)b", "cb", 1, 2);
@@ -8834,7 +9500,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "538: Match end does not match");
 //       assert_eq!(&"cb"[ma.1..ma.2], ma.0, "538: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a)b", "ab");
@@ -8846,7 +9512,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "539: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a|bc)b", "bbb", 0, 1);
@@ -8863,7 +9529,7 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "540: Match end does not match");
 //       assert_eq!(&"bbb"[ma.1..ma.2], ma.0, "540: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a|bc)z", "bcz");
@@ -8875,24 +9541,36 @@ scanner! { S475 { mode M { token r#"[bcd]a*(.)"# => 0; } } }
 //   let matches = scanner.find_matches("bcz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "541: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<name1>a)", "a", 0, 1);
 // td!(r#"(?<name1>a)"#, "a", &[("a", 0, 1)], 542),
 scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
-// #[test] fn test_match_542() {
-//   use s542::S542 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "542: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "542: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "542: Match end does not match");
-//       assert_eq!(&"a"[ma.1..ma.2], ma.0, "542: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_542() {
+    use s542::S542 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "542: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "542: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "542: Match end does not match");
+        assert_eq!(
+            &"a"[ma.1..ma.2],
+            ma.0,
+            "542: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?<name_2>ab)\\g<name_2>", "abab", 0, 4);
@@ -8909,7 +9587,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "543: Match end does not match");
 //       assert_eq!(&"abab"[ma.1..ma.2], ma.0, "543: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<name_3>.zv.)\\k<name_3>", "azvbazvb", 0, 8);
@@ -8926,7 +9604,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "544: Match end does not match");
 //       assert_eq!(&"azvbazvb"[ma.1..ma.2], ma.0, "544: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=\\g<ab>)|-\\zEND (?<ab>XyZ)", "XyZ", 3, 3);
@@ -8943,7 +9621,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "545: Match end does not match");
 //       assert_eq!(&"XyZ"[ma.1..ma.2], ma.0, "545: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<n>|a\\g<n>)+", "", 0, 0);
@@ -8955,7 +9633,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "546: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<n>|\\(\\g<n>\\))+$", "()(())", 0, 6);
@@ -8972,7 +9650,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "547: Match end does not match");
 //       assert_eq!(&"()(())"[ma.1..ma.2], ma.0, "547: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("\\g<n>(?<n>.){0}", "X", 0, 1, 1);
@@ -8989,7 +9667,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "548: Match end does not match");
 //       assert_eq!(&"X"[ma.1..ma.2], ma.0, "548: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\g<n>(abc|df(?<n>.YZ){2,8}){0}", "XYZ", 0, 3);
@@ -9006,7 +9684,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "549: Match end does not match");
 //       assert_eq!(&"XYZ"[ma.1..ma.2], ma.0, "549: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A(?<n>(a\\g<n>)|)\\z", "aaaa", 0, 4);
@@ -9023,7 +9701,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "550: Match end does not match");
 //       assert_eq!(&"aaaa"[ma.1..ma.2], ma.0, "550: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<n>|\\g<m>\\g<n>)\\z|\\zEND (?<m>a|(b)\\g<m>)", "bbbbabba", 0, 8);
@@ -9040,7 +9718,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "551: Match end does not match");
 //       assert_eq!(&"bbbbabba"[ma.1..ma.2], ma.0, "551: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<name1240>\\w+\\sx)a+\\k<name1240>", "  fg xaaaaaaaafg x", 2, 18);
@@ -9057,7 +9735,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "552: Match end does not match");
 //       assert_eq!(&"  fg xaaaaaaaafg x"[ma.1..ma.2], ma.0, "552: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(z)()()(?<_9>a)\\g<_9>", "zaa", 2, 3, 1);
@@ -9074,7 +9752,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "553: Match end does not match");
 //       assert_eq!(&"zaa"[ma.1..ma.2], ma.0, "553: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(.)(((?<_>a)))\\k<_>", "zaa", 0, 3);
@@ -9091,7 +9769,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "554: Match end does not match");
 //       assert_eq!(&"zaa"[ma.1..ma.2], ma.0, "554: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?<name1>\\d)|(?<name2>\\w))(\\k<name1>|\\k<name2>)", "ff", 0, 2);
@@ -9108,7 +9786,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "555: Match end does not match");
 //       assert_eq!(&"ff"[ma.1..ma.2], ma.0, "555: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:(?<x>)|(?<x>efg))\\k<x>", "", 0, 0);
@@ -9120,7 +9798,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "556: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:(?<x>abc)|(?<x>efg))\\k<x>", "abcefgefg", 3, 9);
@@ -9137,7 +9815,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "557: Match end does not match");
 //       assert_eq!(&"abcefgefg"[ma.1..ma.2], ma.0, "557: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?:(?<x>abc)|(?<x>efg))\\k<x>", "abcefg");
@@ -9149,7 +9827,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //   let matches = scanner.find_matches("abcefg", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "558: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<x>x)(?<x>xx)\\k<x>", "xxxx", 0, 4);
@@ -9166,7 +9844,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "559: Match end does not match");
 //       assert_eq!(&"xxxx"[ma.1..ma.2], ma.0, "559: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<x>x)(?<x>xx)\\k<x>", "xxxxz", 0, 4);
@@ -9183,7 +9861,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "560: Match end does not match");
 //       assert_eq!(&"xxxxz"[ma.1..ma.2], ma.0, "560: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:(?<n1>.)|(?<n1>..)|(?<n1>...)|(?<n1>....)|(?<n1>.....)|(?<n1>......)|(?<n1>.......)|(?<n1>........)|(?<n1>.........)|(?<n1>..........)|(?<n1>...........)|(?<n1>............)|(?<n1>.............)|(?<n1>..............))\\k<n1>$", "a-pyumpyum", 2, 10);
@@ -9200,7 +9878,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "561: Match end does not match");
 //       assert_eq!(&"a-pyumpyum"[ma.1..ma.2], ma.0, "561: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(?:(?<n1>.)|(?<n1>..)|(?<n1>...)|(?<n1>....)|(?<n1>.....)|(?<n1>......)|(?<n1>.......)|(?<n1>........)|(?<n1>.........)|(?<n1>..........)|(?<n1>...........)|(?<n1>............)|(?<n1>.............)|(?<n1>..............))\\k<n1>$", "xxxxabcdefghijklmnabcdefghijklmn", 4, 18, 14);
@@ -9217,7 +9895,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "562: Match end does not match");
 //       assert_eq!(&"xxxxabcdefghijklmnabcdefghijklmn"[ma.1..ma.2], ma.0, "562: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(?<name1>)(?<name2>)(?<name3>)(?<name4>)(?<name5>)(?<name6>)(?<name7>)(?<name8>)(?<name9>)(?<name10>)(?<name11>)(?<name12>)(?<name13>)(?<name14>)(?<name15>)(?<name16>aaa)(?<name17>)$", "aaa", 0, 3, 16);
@@ -9234,7 +9912,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "563: Match end does not match");
 //       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "563: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<foo>a|\\(\\g<foo>\\))", "a", 0, 1);
@@ -9251,7 +9929,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "564: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "564: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<foo>a|\\(\\g<foo>\\))", "((((((a))))))", 0, 13);
@@ -9268,7 +9946,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "565: Match end does not match");
 //       assert_eq!(&"((((((a))))))"[ma.1..ma.2], ma.0, "565: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(?<foo>a|\\(\\g<foo>\\))", "((((((((a))))))))", 0, 17, 1);
@@ -9285,7 +9963,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "566: Match end does not match");
 //       assert_eq!(&"((((((((a))))))))"[ma.1..ma.2], ma.0, "566: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\g<bar>|\\zEND(?<bar>.*abc$)", "abcxxxabc", 0, 9);
@@ -9302,7 +9980,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "567: Match end does not match");
 //       assert_eq!(&"abcxxxabc"[ma.1..ma.2], ma.0, "567: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\g<1>|\\zEND(.a.)", "bac", 0, 3);
@@ -9319,7 +9997,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "568: Match end does not match");
 //       assert_eq!(&"bac"[ma.1..ma.2], ma.0, "568: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("\\g<_A>\\g<_A>|\\zEND(.a.)(?<_A>.b.)", "xbxyby", 3, 6, 1);
@@ -9336,7 +10014,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "569: Match end does not match");
 //       assert_eq!(&"xbxyby"[ma.1..ma.2], ma.0, "569: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A(?:\\g<pon>|\\g<pan>|\\zEND  (?<pan>a|c\\g<pon>c)(?<pon>b|d\\g<pan>d))$", "cdcbcdc", 0, 7);
@@ -9353,7 +10031,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "570: Match end does not match");
 //       assert_eq!(&"cdcbcdc"[ma.1..ma.2], ma.0, "570: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A(?<n>|a\\g<m>)\\z|\\zEND (?<m>\\g<n>)", "aaaa", 0, 4);
@@ -9370,7 +10048,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "571: Match end does not match");
 //       assert_eq!(&"aaaa"[ma.1..ma.2], ma.0, "571: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<n>(a|b\\g<n>c){3,5})", "baaaaca", 1, 5);
@@ -9387,7 +10065,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "572: Match end does not match");
 //       assert_eq!(&"baaaaca"[ma.1..ma.2], ma.0, "572: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<n>(a|b\\g<n>c){3,5})", "baaaacaaaaa", 0, 10);
@@ -9404,7 +10082,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "573: Match end does not match");
 //       assert_eq!(&"baaaacaaaaa"[ma.1..ma.2], ma.0, "573: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<pare>\\(([^\\(\\)]++|\\g<pare>)*+\\))", "((a))", 0, 5);
@@ -9421,7 +10099,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "574: Match end does not match");
 //       assert_eq!(&"((a))"[ma.1..ma.2], ma.0, "574: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("()*\\1", "", 0, 0);
@@ -9433,7 +10111,7 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "575: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:()|())*\\1\\2", "", 0, 0);
@@ -9445,24 +10123,36 @@ scanner! { S542 { mode M { token r#"(?<name1>a)"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "576: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:a*|b*)*c", "abadc", 4, 5);
 // td!(r#"(?:a*|b*)*c"#, "abadc", &[("c", 4, 5)], 577),
 scanner! { S577 { mode M { token r#"(?:a*|b*)*c"# => 0; } } }
-// #[test] fn test_match_577() {
-//   use s577::S577 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abadc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("c", 4, 5)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "577: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "577: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "577: Match end does not match");
-//       assert_eq!(&"abadc"[ma.1..ma.2], ma.0, "577: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_577() {
+    use s577::S577 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abadc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("c", 4, 5)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "577: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "577: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "577: Match end does not match");
+        assert_eq!(
+            &"abadc"[ma.1..ma.2],
+            ma.0,
+            "577: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x3("(?:\\1a|())*", "a", 0, 0, 1);
@@ -9474,24 +10164,36 @@ scanner! { S577 { mode M { token r#"(?:a*|b*)*c"# => 0; } } }
 //   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "578: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("x((.)*)*x", "0x1x2x3", 1, 6);
 // td!(r#"x((.)*)*x"#, "0x1x2x3", &[("x1x2x", 1, 6)], 579),
 scanner! { S579 { mode M { token r#"x((.)*)*x"# => 0; } } }
-// #[test] fn test_match_579() {
-//   use s579::S579 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("0x1x2x3", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("x1x2x", 1, 6)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "579: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "579: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "579: Match end does not match");
-//       assert_eq!(&"0x1x2x3"[ma.1..ma.2], ma.0, "579: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_579() {
+    use s579::S579 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("0x1x2x3", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("x1x2x", 1, 6)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "579: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "579: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "579: Match end does not match");
+        assert_eq!(
+            &"0x1x2x3"[ma.1..ma.2],
+            ma.0,
+            "579: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("x((.)*)*x(?i:\\1)\\Z", "0x1x2x1X2", 1, 9);
@@ -9508,7 +10210,7 @@ scanner! { S579 { mode M { token r#"x((.)*)*x"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "580: Match end does not match");
 //       assert_eq!(&"0x1x2x1X2"[ma.1..ma.2], ma.0, "580: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:()|()|()|()|()|())*\\2\\5", "", 0, 0);
@@ -9520,7 +10222,7 @@ scanner! { S579 { mode M { token r#"x((.)*)*x"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "581: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:()|()|()|(x)|()|())*\\2b\\5", "b", 0, 1);
@@ -9537,36 +10239,53 @@ scanner! { S579 { mode M { token r#"x((.)*)*x"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "582: Match end does not match");
 //       assert_eq!(&"b"[ma.1..ma.2], ma.0, "582: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[0-9-a]", "-", 0, 1);   // PR#44
 // td!(r#"[0-9-a]"#, "-", &[("-", 0, 1)], 583),
 scanner! { S583 { mode M { token r#"[0-9-a]"# => 0; } } }
-// #[test] fn test_match_583() {
-//   use s583::S583 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("-", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("-", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "583: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "583: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "583: Match end does not match");
-//       assert_eq!(&"-"[ma.1..ma.2], ma.0, "583: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_583() {
+    use s583::S583 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("-", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("-", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "583: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "583: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "583: Match end does not match");
+        assert_eq!(
+            &"-"[ma.1..ma.2],
+            ma.0,
+            "583: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("[0-9-a]", ":");          // PR#44
 // td!(r#"[0-9-a]"#, ":", &[], 584),
 scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
-// #[test] fn test_match_584() {
-//   use s584::S584 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches(":", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "584: Unexpected match count");
-//}
+#[test]
+fn test_match_584() {
+    use s584::S584 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches(":", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "584: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x3("(\\(((?:[^(]|\\g<1>)*)\\))", "(abc)(abc)", 1, 4, 2); // PR#43
@@ -9583,7 +10302,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "585: Match end does not match");
 //       assert_eq!(&"(abc)(abc)"[ma.1..ma.2], ma.0, "585: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\o{101}", "A", 0, 1);
@@ -9600,7 +10319,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "586: Match end does not match");
 //       assert_eq!(&"A"[ma.1..ma.2], ma.0, "586: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A(a|b\\g<1>c)\\k<1+3>\\z", "bbacca", 0, 6);
@@ -9617,7 +10336,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "587: Match end does not match");
 //       assert_eq!(&"bbacca"[ma.1..ma.2], ma.0, "587: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\A(a|b\\g<1>c)\\k<1+3>\\z", "bbaccb");
@@ -9629,7 +10348,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("bbaccb", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "588: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)\\A(a|b\\g<1>c)\\k<1+2>\\z", "bBACcbac", 0, 8);
@@ -9646,7 +10365,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "589: Match end does not match");
 //       assert_eq!(&"bBACcbac"[ma.1..ma.2], ma.0, "589: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)(?<X>aa)|(?<X>bb)\\k<X>", "BBbb", 0, 4);
@@ -9663,7 +10382,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "590: Match end does not match");
 //       assert_eq!(&"BBbb"[ma.1..ma.2], ma.0, "590: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:\\k'+1'B|(A)C)*", "ACAB", 0, 4); // relative backref by positive number
@@ -9680,7 +10399,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "591: Match end does not match");
 //       assert_eq!(&"ACAB"[ma.1..ma.2], ma.0, "591: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\g<+2>(abc)(ABC){0}", "ABCabc", 0, 6); // relative call by positive number
@@ -9697,7 +10416,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "592: Match end does not match");
 //       assert_eq!(&"ABCabc"[ma.1..ma.2], ma.0, "592: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("A\\g'0'|B()", "AAAAB", 0, 5);
@@ -9714,7 +10433,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "593: Match end does not match");
 //       assert_eq!(&"AAAAB"[ma.1..ma.2], ma.0, "593: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(A\\g'0')|B", "AAAAB", 0, 5, 1);
@@ -9731,7 +10450,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "594: Match end does not match");
 //       assert_eq!(&"AAAAB"[ma.1..ma.2], ma.0, "594: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a*)(?(1))aa", "aaaaa", 0, 5);
@@ -9748,7 +10467,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "595: Match end does not match");
 //       assert_eq!(&"aaaaa"[ma.1..ma.2], ma.0, "595: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a*)(?(-1))aa", "aaaaa", 0, 5);
@@ -9765,7 +10484,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "596: Match end does not match");
 //       assert_eq!(&"aaaaa"[ma.1..ma.2], ma.0, "596: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<name>aaa)(?('name'))aa", "aaaaa", 0, 5);
@@ -9782,7 +10501,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "597: Match end does not match");
 //       assert_eq!(&"aaaaa"[ma.1..ma.2], ma.0, "597: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)(?(1)aa|bb)a", "aaaaa", 0, 4);
@@ -9799,7 +10518,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "598: Match end does not match");
 //       assert_eq!(&"aaaaa"[ma.1..ma.2], ma.0, "598: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:aa|())(?(<1>)aa|bb)a", "aabba", 0, 5);
@@ -9816,7 +10535,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "599: Match end does not match");
 //       assert_eq!(&"aabba"[ma.1..ma.2], ma.0, "599: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:aa|())(?('1')aa|bb|cc)a", "aacca", 0, 5);
@@ -9833,7 +10552,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "600: Match end does not match");
 //       assert_eq!(&"aacca"[ma.1..ma.2], ma.0, "600: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x3("(a*)(?(1)aa|a)b", "aaab", 0, 1, 1);
@@ -9850,7 +10569,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "601: Match end does not match");
 //       assert_eq!(&"aaab"[ma.1..ma.2], ma.0, "601: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(a)(?(1)a|b)c", "abc");
@@ -9862,7 +10581,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "602: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)(?(1)|)c", "ac", 0, 2);
@@ -9879,7 +10598,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "603: Match end does not match");
 //       assert_eq!(&"ac"[ma.1..ma.2], ma.0, "603: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?()aaa|bbb)", "bbb");
@@ -9891,7 +10610,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("bbb", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "604: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)(?(1+0)b|c)d", "abd", 0, 3);
@@ -9908,7 +10627,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "605: Match end does not match");
 //       assert_eq!(&"abd"[ma.1..ma.2], ma.0, "605: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:(?'name'a)|(?'name'b))(?('name')c|d)e", "ace", 0, 3);
@@ -9925,7 +10644,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "606: Match end does not match");
 //       assert_eq!(&"ace"[ma.1..ma.2], ma.0, "606: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:(?'name'a)|(?'name'b))(?('name')c|d)e", "bce", 0, 3);
@@ -9942,7 +10661,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "607: Match end does not match");
 //       assert_eq!(&"bce"[ma.1..ma.2], ma.0, "607: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\R", "\r\n", 0, 2);
@@ -9959,7 +10678,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "608: Match end does not match");
 //       assert_eq!(&"\r\n"[ma.1..ma.2], ma.0, "608: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\R", "\r", 0, 1);
@@ -9976,7 +10695,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "609: Match end does not match");
 //       assert_eq!(&"\r"[ma.1..ma.2], ma.0, "609: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\R", "\n", 0, 1);
@@ -9993,7 +10712,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "610: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "610: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\R", "\x0b", 0, 1);
@@ -10010,7 +10729,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "611: Match end does not match");
 //       assert_eq!(&"\x0b"[ma.1..ma.2], ma.0, "611: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\R\\n", "\r\n");
@@ -10022,7 +10741,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("\r\n", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "612: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\R", "\xc2\x85", 0, 2);
@@ -10039,7 +10758,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "613: Match end does not match");
 //       assert_eq!(&"\xc2\x85"[ma.1..ma.2], ma.0, "613: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\N", "a", 0, 1);
@@ -10056,7 +10775,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "614: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "614: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\N", "\n");
@@ -10068,7 +10787,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("\n", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "615: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?m:\\N)", "\n");
@@ -10080,7 +10799,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("\n", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "616: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?-m:\\N)", "\n");
@@ -10092,7 +10811,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("\n", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "617: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\O", "a", 0, 1);
@@ -10109,7 +10828,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "618: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "618: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\O", "\n", 0, 1);
@@ -10126,7 +10845,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "619: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "619: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?m:\\O)", "\n", 0, 1);
@@ -10143,7 +10862,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "620: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "620: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?-m:\\O)", "\n", 0, 1);
@@ -10160,7 +10879,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "621: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "621: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\K", "a", 0, 0);
@@ -10172,7 +10891,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "622: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a\\K", "a", 1, 1);
@@ -10189,7 +10908,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "623: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "623: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a\\Kb", "ab", 1, 2);
@@ -10206,7 +10925,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "624: Match end does not match");
 //       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "624: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a\\Kb|ac\\Kd)", "acd", 2, 3);
@@ -10223,7 +10942,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "625: Match end does not match");
 //       assert_eq!(&"acd"[ma.1..ma.2], ma.0, "625: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a\\Kb|\\Kac\\K)*", "acababacab", 9, 10);
@@ -10240,7 +10959,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "626: Match end does not match");
 //       assert_eq!(&"acababacab"[ma.1..ma.2], ma.0, "626: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:()|())*\\1", "abc", 0, 0);
@@ -10252,7 +10971,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "627: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:()|())*\\2", "abc", 0, 0);
@@ -10264,7 +10983,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "628: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:()|()|())*\\3\\1", "abc", 0, 0);
@@ -10276,7 +10995,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "629: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(|(?:a(?:\\g'1')*))b|", "abc", 0, 2);
@@ -10293,7 +11012,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "630: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "630: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^(\"|)(.*)\\1$", "XX", 0, 2);
@@ -10310,7 +11029,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "631: Match end does not match");
 //       assert_eq!(&"XX"[ma.1..ma.2], ma.0, "631: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(abc|def|ghi|jkl|mno|pqr|stu){0,10}?\\z", "admno", 2, 5);
@@ -10327,7 +11046,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "632: Match end does not match");
 //       assert_eq!(&"admno"[ma.1..ma.2], ma.0, "632: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(abc|(def|ghi|jkl|mno|pqr){0,7}?){5}\\z", "adpqrpqrpqr", 2, 11); // cover OP_REPEAT_INC_NG_SG
@@ -10344,7 +11063,7 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "633: Match end does not match");
 //       assert_eq!(&"adpqrpqrpqr"[ma.1..ma.2], ma.0, "633: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?!abc).*\\z", "abcde", 1, 5); // cover OP_PREC_READ_NOT_END
@@ -10361,75 +11080,123 @@ scanner! { S584 { mode M { token r#"[0-9-a]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "634: Match end does not match");
 //       assert_eq!(&"abcde"[ma.1..ma.2], ma.0, "634: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(.{2,})?", "abcde", 0, 5); // up coverage
 // td!(r#"(.{2,})?"#, "abcde", &[("abcde", 0, 5)], 635),
 scanner! { S635 { mode M { token r#"(.{2,})?"# => 0; } } }
-// #[test] fn test_match_635() {
-//   use s635::S635 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abcde", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abcde", 0, 5)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "635: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "635: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "635: Match end does not match");
-//       assert_eq!(&"abcde"[ma.1..ma.2], ma.0, "635: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_635() {
+    use s635::S635 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abcde", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abcde", 0, 5)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "635: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "635: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "635: Match end does not match");
+        assert_eq!(
+            &"abcde"[ma.1..ma.2],
+            ma.0,
+            "635: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("((a|b|c|d|e|f|g|h|i|j|k|l|m|n)+)?", "abcde", 0, 5); // up coverage
 // td!(r#"((a|b|c|d|e|f|g|h|i|j|k|l|m|n)+)?"#, "abcde", &[("abcde", 0, 5)], 636),
 scanner! { S636 { mode M { token r#"((a|b|c|d|e|f|g|h|i|j|k|l|m|n)+)?"# => 0; } } }
-// #[test] fn test_match_636() {
-//   use s636::S636 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abcde", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abcde", 0, 5)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "636: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "636: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "636: Match end does not match");
-//       assert_eq!(&"abcde"[ma.1..ma.2], ma.0, "636: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_636() {
+    use s636::S636 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abcde", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abcde", 0, 5)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "636: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "636: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "636: Match end does not match");
+        assert_eq!(
+            &"abcde"[ma.1..ma.2],
+            ma.0,
+            "636: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("((a|b|c|d|e|f|g|h|i|j|k|l|m|n){3,})?", "abcde", 0, 5); // up coverage
 // td!(r#"((a|b|c|d|e|f|g|h|i|j|k|l|m|n){3,})?"#, "abcde", &[("abcde", 0, 5)], 637),
 scanner! { S637 { mode M { token r#"((a|b|c|d|e|f|g|h|i|j|k|l|m|n){3,})?"# => 0; } } }
-// #[test] fn test_match_637() {
-//   use s637::S637 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abcde", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abcde", 0, 5)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "637: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "637: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "637: Match end does not match");
-//       assert_eq!(&"abcde"[ma.1..ma.2], ma.0, "637: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_637() {
+    use s637::S637 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abcde", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abcde", 0, 5)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "637: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "637: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "637: Match end does not match");
+        assert_eq!(
+            &"abcde"[ma.1..ma.2],
+            ma.0,
+            "637: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("((?:a(?:b|c|d|e|f|g|h|i|j|k|l|m|n))+)?", "abacadae", 0, 8); // up coverage
 // td!(r#"((?:a(?:b|c|d|e|f|g|h|i|j|k|l|m|n))+)?"#, "abacadae", &[("abacadae", 0, 8)], 638),
 scanner! { S638 { mode M { token r#"((?:a(?:b|c|d|e|f|g|h|i|j|k|l|m|n))+)?"# => 0; } } }
-// #[test] fn test_match_638() {
-//   use s638::S638 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abacadae", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abacadae", 0, 8)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "638: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "638: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "638: Match end does not match");
-//       assert_eq!(&"abacadae"[ma.1..ma.2], ma.0, "638: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_638() {
+    use s638::S638 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abacadae", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abacadae", 0, 8)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "638: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "638: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "638: Match end does not match");
+        assert_eq!(
+            &"abacadae"[ma.1..ma.2],
+            ma.0,
+            "638: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("((?:a(?:b|c|d|e|f|g|h|i|j|k|l|m|n))+?)?z", "abacadaez", 0, 9); // up coverage
@@ -10451,7 +11218,7 @@ scanner! { S638 { mode M { token r#"((?:a(?:b|c|d|e|f|g|h|i|j|k|l|m|n))+)?"# => 
 //       assert_eq!(matches[i].span.end, ma.2, "640: Match end does not match");
 //       assert_eq!(&"bz"[ma.1..ma.2], ma.0, "640: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?<x>abc){0}a\\g<x>d)+", "aabcd", 0, 5); // up coverage
@@ -10468,7 +11235,7 @@ scanner! { S638 { mode M { token r#"((?:a(?:b|c|d|e|f|g|h|i|j|k|l|m|n))+)?"# => 
 //       assert_eq!(matches[i].span.end, ma.2, "641: Match end does not match");
 //       assert_eq!(&"aabcd"[ma.1..ma.2], ma.0, "641: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?(abc)true|false))+", "false", 0, 5); // up coverage
@@ -10485,24 +11252,36 @@ scanner! { S638 { mode M { token r#"((?:a(?:b|c|d|e|f|g|h|i|j|k|l|m|n))+)?"# => 
 //       assert_eq!(matches[i].span.end, ma.2, "642: Match end does not match");
 //       assert_eq!(&"false"[ma.1..ma.2], ma.0, "642: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?i:abc)d)+", "abcdABCd", 0, 8); // up coverage
 // td!(r#"((?i:abc)d)+"#, "abcdABCd", &[("abcdABCd", 0, 8)], 643),
 scanner! { S643 { mode M { token r#"((?i:abc)d)+"# => 0; } } }
-// #[test] fn test_match_643() {
-//   use s643::S643 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abcdABCd", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abcdABCd", 0, 8)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "643: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "643: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "643: Match end does not match");
-//       assert_eq!(&"abcdABCd"[ma.1..ma.2], ma.0, "643: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_643() {
+    use s643::S643 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abcdABCd", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abcdABCd", 0, 8)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "643: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "643: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "643: Match end does not match");
+        assert_eq!(
+            &"abcdABCd"[ma.1..ma.2],
+            ma.0,
+            "643: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("((?<!abc)def)+", "bcdef", 2, 5); // up coverage
@@ -10519,7 +11298,7 @@ scanner! { S643 { mode M { token r#"((?i:abc)d)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "644: Match end does not match");
 //       assert_eq!(&"bcdef"[ma.1..ma.2], ma.0, "644: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(\\ba)+", "aaa", 0, 1); // up coverage
@@ -10536,7 +11315,7 @@ scanner! { S643 { mode M { token r#"((?i:abc)d)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "645: Match end does not match");
 //       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "645: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("()(?<x>ab)(?(<x>)a|b)", "aba", 0, 3); // up coverage
@@ -10553,7 +11332,7 @@ scanner! { S643 { mode M { token r#"((?i:abc)d)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "646: Match end does not match");
 //       assert_eq!(&"aba"[ma.1..ma.2], ma.0, "646: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a.b)c", "azbc", 3, 4); // up coverage
@@ -10570,7 +11349,7 @@ scanner! { S643 { mode M { token r#"((?i:abc)d)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "647: Match end does not match");
 //       assert_eq!(&"azbc"[ma.1..ma.2], ma.0, "647: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=(?:abcde){30})z", "abc"); // up coverage
@@ -10582,7 +11361,7 @@ scanner! { S643 { mode M { token r#"((?i:abc)d)+"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "648: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=(?(a)a|bb))z", "aaz", 2, 3); // up coverage
@@ -10599,53 +11378,82 @@ scanner! { S643 { mode M { token r#"((?i:abc)d)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "649: Match end does not match");
 //       assert_eq!(&"aaz"[ma.1..ma.2], ma.0, "649: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[a]*\\W", "aa@", 0, 3); // up coverage
 // td!(r#"[a]*\W"#, "aa@", &[("aa@", 0, 3)], 650),
 scanner! { S650 { mode M { token r#"[a]*\W"# => 0; } } }
-// #[test] fn test_match_650() {
-//   use s650::S650 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aa@", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aa@", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "650: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "650: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "650: Match end does not match");
-//       assert_eq!(&"aa@"[ma.1..ma.2], ma.0, "650: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_650() {
+    use s650::S650 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aa@", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aa@", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "650: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "650: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "650: Match end does not match");
+        assert_eq!(
+            &"aa@"[ma.1..ma.2],
+            ma.0,
+            "650: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[a]*[b]", "aab", 0, 3); // up coverage
 // td!(r#"[a]*[b]"#, "aab", &[("aab", 0, 3)], 651),
 scanner! { S651 { mode M { token r#"[a]*[b]"# => 0; } } }
-// #[test] fn test_match_651() {
-//   use s651::S651 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aab", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aab", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "651: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "651: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "651: Match end does not match");
-//       assert_eq!(&"aab"[ma.1..ma.2], ma.0, "651: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_651() {
+    use s651::S651 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aab", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aab", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "651: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "651: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "651: Match end does not match");
+        assert_eq!(
+            &"aab"[ma.1..ma.2],
+            ma.0,
+            "651: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("a*\\W", "aaa"); // up coverage
 // td!(r#"a*\W"#, "aaa", &[], 652),
 scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
-// #[test] fn test_match_652() {
-//   use s652::S652 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "652: Unexpected match count");
-//}
+#[test]
+fn test_match_652() {
+    use s652::S652 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "652: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("(?W)a*\\W", "aaa"); // up coverage
@@ -10657,7 +11465,7 @@ scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
 //   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "653: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=ab(?<=ab))", "ab", 2, 2); // up coverage
@@ -10674,7 +11482,7 @@ scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "654: Match end does not match");
 //       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "654: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<x>a)(?<x>b)(\\k<x>)+", "abbaab", 0, 6); // up coverage
@@ -10691,7 +11499,7 @@ scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "655: Match end does not match");
 //       assert_eq!(&"abbaab"[ma.1..ma.2], ma.0, "655: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("()(\\1)(\\2)", "abc", 0, 0); // up coverage
@@ -10703,7 +11511,7 @@ scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "656: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?(a)b|c))(\\1)", "abab", 0, 4); // up coverage
@@ -10720,7 +11528,7 @@ scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "657: Match end does not match");
 //       assert_eq!(&"abab"[ma.1..ma.2], ma.0, "657: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<x>$|b\\g<x>)", "bbb", 0, 3); // up coverage
@@ -10737,7 +11545,7 @@ scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "658: Match end does not match");
 //       assert_eq!(&"bbb"[ma.1..ma.2], ma.0, "658: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<x>(?(a)a|b)|c\\g<x>)", "cccb", 0, 4); // up coverage
@@ -10754,7 +11562,7 @@ scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "659: Match end does not match");
 //       assert_eq!(&"cccb"[ma.1..ma.2], ma.0, "659: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)(?(1)a*|b*)+", "aaaa", 0, 4); // up coverage
@@ -10771,53 +11579,82 @@ scanner! { S652 { mode M { token r#"a*\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "660: Match end does not match");
 //       assert_eq!(&"aaaa"[ma.1..ma.2], ma.0, "660: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[[^abc]&&cde]*", "de", 0, 2); // up coverage
 // td!(r#"[[^abc]&&cde]*"#, "de", &[("de", 0, 2)], 661),
 scanner! { S661 { mode M { token r#"[[^abc]&&cde]*"# => 0; } } }
-// #[test] fn test_match_661() {
-//   use s661::S661 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("de", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("de", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "661: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "661: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "661: Match end does not match");
-//       assert_eq!(&"de"[ma.1..ma.2], ma.0, "661: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_661() {
+    use s661::S661 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("de", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("de", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "661: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "661: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "661: Match end does not match");
+        assert_eq!(
+            &"de"[ma.1..ma.2],
+            ma.0,
+            "661: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("(a){10}{10}", "aa"); // up coverage
 // td!(r#"(a){10}{10}"#, "aa", &[], 662),
 scanner! { S662 { mode M { token r#"(a){10}{10}"# => 0; } } }
-// #[test] fn test_match_662() {
-//   use s662::S662 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "662: Unexpected match count");
-//}
+#[test]
+fn test_match_662() {
+    use s662::S662 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "662: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:a?)+", "aa", 0, 2); // up coverage
 // td!(r#"(?:a?)+"#, "aa", &[("aa", 0, 2)], 663),
 scanner! { S663 { mode M { token r#"(?:a?)+"# => 0; } } }
-// #[test] fn test_match_663() {
-//   use s663::S663 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aa", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "663: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "663: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "663: Match end does not match");
-//       assert_eq!(&"aa"[ma.1..ma.2], ma.0, "663: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_663() {
+    use s663::S663 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aa", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "663: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "663: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "663: Match end does not match");
+        assert_eq!(
+            &"aa"[ma.1..ma.2],
+            ma.0,
+            "663: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:a?)*?", "a", 0, 0); // up coverage
@@ -10849,7 +11686,7 @@ scanner! { S663 { mode M { token r#"(?:a?)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "667: Match end does not match");
 //       assert_eq!(&"5"[ma.1..ma.2], ma.0, "667: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\H", "z", 0, 1); // up coverage
@@ -10866,7 +11703,7 @@ scanner! { S663 { mode M { token r#"(?:a?)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "668: Match end does not match");
 //       assert_eq!(&"z"[ma.1..ma.2], ma.0, "668: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\h]", "5", 0, 1); // up coverage
@@ -10883,7 +11720,7 @@ scanner! { S663 { mode M { token r#"(?:a?)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "669: Match end does not match");
 //       assert_eq!(&"5"[ma.1..ma.2], ma.0, "669: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\H]", "z", 0, 1); // up coverage
@@ -10900,7 +11737,7 @@ scanner! { S663 { mode M { token r#"(?:a?)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "670: Match end does not match");
 //       assert_eq!(&"z"[ma.1..ma.2], ma.0, "670: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\o{101}]", "A", 0, 1); // up coverage
@@ -10917,24 +11754,36 @@ scanner! { S663 { mode M { token r#"(?:a?)+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "671: Match end does not match");
 //       assert_eq!(&"A"[ma.1..ma.2], ma.0, "671: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\u0041]", "A", 0, 1); // up coverage
 // td!(r#"[\u0041]"#, "A", &[("A", 0, 1)], 672),
 scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
-// #[test] fn test_match_672() {
-//   use s672::S672 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("A", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "672: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "672: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "672: Match end does not match");
-//       assert_eq!(&"A"[ma.1..ma.2], ma.0, "672: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_672() {
+    use s672::S672 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("A", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "672: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "672: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "672: Match end does not match");
+        assert_eq!(
+            &"A"[ma.1..ma.2],
+            ma.0,
+            "672: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?~)", "", 0, 0);
@@ -10946,7 +11795,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "673: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~)", "A", 0, 0);
@@ -10958,7 +11807,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "674: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~ab)", "abc", 0, 0);
@@ -10970,7 +11819,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "675: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~abc)", "abc", 0, 0);
@@ -10982,7 +11831,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "676: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~abc|ab)", "abc", 0, 0);
@@ -10994,7 +11843,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "677: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~ab|abc)", "abc", 0, 0);
@@ -11006,7 +11855,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "678: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~a.c)", "abc", 0, 0);
@@ -11018,7 +11867,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "679: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~a.c|ab)", "abc", 0, 0);
@@ -11030,7 +11879,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "680: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~ab|a.c)", "abc", 0, 0);
@@ -11042,7 +11891,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "681: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("aaaaa(?~)", "aaaaaaaaaa", 0, 5);
@@ -11059,7 +11908,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "682: Match end does not match");
 //       assert_eq!(&"aaaaaaaaaa"[ma.1..ma.2], ma.0, "682: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~(?:|aaa))", "aaa", 0, 0);
@@ -11071,7 +11920,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "683: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~aaa|)", "aaa", 0, 0);
@@ -11083,7 +11932,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "684: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a(?~(?~)).", "abcdefghijklmnopqrstuvwxyz", 0, 26); // nested absent functions cause strange result
@@ -11100,7 +11949,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "685: Match end does not match");
 //       assert_eq!(&"abcdefghijklmnopqrstuvwxyz"[ma.1..ma.2], ma.0, "685: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("/\\*(?~\\*/)\\*/", "/* */ */", 0, 5);
@@ -11117,7 +11966,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "686: Match end does not match");
 //       assert_eq!(&"/* */ */"[ma.1..ma.2], ma.0, "686: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~\\w+)zzzzz", "zzzzz", 0, 5);
@@ -11134,7 +11983,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "687: Match end does not match");
 //       assert_eq!(&"zzzzz"[ma.1..ma.2], ma.0, "687: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~\\w*)zzzzz", "zzzzz", 0, 5);
@@ -11151,7 +12000,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "688: Match end does not match");
 //       assert_eq!(&"zzzzz"[ma.1..ma.2], ma.0, "688: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~A.C|B)", "ABC", 0, 0);
@@ -11163,7 +12012,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("ABC", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "689: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~XYZ|ABC)a", "ABCa", 1, 4);
@@ -11180,7 +12029,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "690: Match end does not match");
 //       assert_eq!(&"ABCa"[ma.1..ma.2], ma.0, "690: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~XYZ|ABC)a", "aABCa", 0, 1);
@@ -11197,7 +12046,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "691: Match end does not match");
 //       assert_eq!(&"aABCa"[ma.1..ma.2], ma.0, "691: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("<[^>]*>(?~[<>])</[^>]*>", "<a>vvv</a>   <b>  </b>", 0, 10);
@@ -11214,7 +12063,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "692: Match end does not match");
 //       assert_eq!(&"<a>vvv</a>   <b>  </b>"[ma.1..ma.2], ma.0, "692: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~ab)", "ccc\ndab", 0, 5);
@@ -11236,7 +12085,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "694: Match end does not match");
 //       assert_eq!(&"ccc\ndab"[ma.1..ma.2], ma.0, "694: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?-m:(?~ab))", "ccc\ndab", 0, 5);
@@ -11253,7 +12102,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "695: Match end does not match");
 //       assert_eq!(&"ccc\ndab"[ma.1..ma.2], ma.0, "695: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~abc)xyz", "xyz012345678901234567890123456789abc", 0, 3);
@@ -11270,7 +12119,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "696: Match end does not match");
 //       assert_eq!(&"xyz012345678901234567890123456789abc"[ma.1..ma.2], ma.0, "696: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|78|\\d*)", "123456789", 0, 6);
@@ -11287,7 +12136,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "697: Match end does not match");
 //       assert_eq!(&"123456789"[ma.1..ma.2], ma.0, "697: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|def|(?:abc|de|f){0,100})", "abcdedeabcfdefabc", 0, 11);
@@ -11304,7 +12153,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "698: Match end does not match");
 //       assert_eq!(&"abcdedeabcfdefabc"[ma.1..ma.2], ma.0, "698: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|ab|.*)", "ccc\nddd", 0, 3);
@@ -11321,7 +12170,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "699: Match end does not match");
 //       assert_eq!(&"ccc\nddd"[ma.1..ma.2], ma.0, "699: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|ab|\\O*)", "ccc\ndab", 0, 5);
@@ -11338,7 +12187,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "700: Match end does not match");
 //       assert_eq!(&"ccc\ndab"[ma.1..ma.2], ma.0, "700: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|ab|\\O{2,10})", "ccc\ndab", 0, 5);
@@ -11355,7 +12204,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "701: Match end does not match");
 //       assert_eq!(&"ccc\ndab"[ma.1..ma.2], ma.0, "701: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|ab|\\O{1,10})", "ab", 1, 2);
@@ -11372,7 +12221,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "702: Match end does not match");
 //       assert_eq!(&"ab"[ma.1..ma.2], ma.0, "702: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?~|ab|\\O{2,10})", "ab");
@@ -11384,7 +12233,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("ab", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "703: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|abc|\\O{1,10})", "abc", 1, 3);
@@ -11401,7 +12250,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "704: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "704: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|ab|\\O{5,10})|abc", "abc", 0, 3);
@@ -11418,7 +12267,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "705: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "705: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|ab|\\O{1,10})", "cccccccccccab", 0, 10);
@@ -11435,7 +12284,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "706: Match end does not match");
 //       assert_eq!(&"cccccccccccab"[ma.1..ma.2], ma.0, "706: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|aaa|)", "aaa", 0, 0);
@@ -11447,7 +12296,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "707: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~||a*)", "aaaaaa", 0, 0);
@@ -11459,7 +12308,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("aaaaaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "708: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~||a*?)", "aaaaaa", 0, 0);
@@ -11481,7 +12330,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "710: Match end does not match");
 //       assert_eq!(&"aaaaaa"[ma.1..ma.2], ma.0, "710: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a)(?~|bb|(?:a\\1)*)", "aaaaaa", 0, 5);
@@ -11498,7 +12347,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "711: Match end does not match");
 //       assert_eq!(&"aaaaaa"[ma.1..ma.2], ma.0, "711: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(b|c)(?~|abac|(?:a\\1)*)", "abababacabab", 1, 4);
@@ -11515,7 +12364,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "712: Match end does not match");
 //       assert_eq!(&"abababacabab"[ma.1..ma.2], ma.0, "712: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?~|c|a*+)a", "aaaaa");
@@ -11527,7 +12376,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("aaaaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "713: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|aaaaa|a*+)", "aaaaa", 0, 0);
@@ -11539,7 +12388,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("aaaaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "714: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|aaaaaa|a*+)b", "aaaaaab", 1, 7);
@@ -11556,7 +12405,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "715: Match end does not match");
 //       assert_eq!(&"aaaaaab"[ma.1..ma.2], ma.0, "715: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|abcd|(?>))", "zzzabcd", 0, 0);
@@ -11568,7 +12417,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("zzzabcd", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "716: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|abc|a*?)", "aaaabc", 0, 0);
@@ -11590,7 +12439,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "718: Match end does not match");
 //       assert_eq!(&"aaaaaabc"[ma.1..ma.2], ma.0, "718: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|abc)a*z|aaaaaabc", "aaaaaabc", 0, 8);
@@ -11607,7 +12456,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "719: Match end does not match");
 //       assert_eq!(&"aaaaaabc"[ma.1..ma.2], ma.0, "719: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|aaaaaa)a*", "aaaaaa", 0, 0);
@@ -11619,7 +12468,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("aaaaaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "720: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|abc)aaaa|aaaabc", "aaaabc", 0, 6);
@@ -11636,7 +12485,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "721: Match end does not match");
 //       assert_eq!(&"aaaabc"[ma.1..ma.2], ma.0, "721: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?>(?~|abc))aaaa|aaaabc", "aaaabc", 0, 6);
@@ -11653,7 +12502,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "722: Match end does not match");
 //       assert_eq!(&"aaaabc"[ma.1..ma.2], ma.0, "722: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|)a", "a", 0, 1);
@@ -11670,7 +12519,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "723: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "723: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?~|a)a", "a");
@@ -11682,7 +12531,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "724: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|a)(?~|)a", "a", 0, 1);
@@ -11699,7 +12548,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "725: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "725: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|a).*(?~|)a", "bbbbbbbbbbbbbbbbbbbba", 0, 21);
@@ -11716,7 +12565,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "726: Match end does not match");
 //       assert_eq!(&"bbbbbbbbbbbbbbbbbbbba"[ma.1..ma.2], ma.0, "726: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|abc).*(xyz|pqr)(?~|)abc", "aaaaxyzaaapqrabc", 0, 16);
@@ -11733,7 +12582,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "727: Match end does not match");
 //       assert_eq!(&"aaaaxyzaaapqrabc"[ma.1..ma.2], ma.0, "727: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?~|abc).*(xyz|pqr)(?~|)abc", "aaaaxyzaaaabcpqrabc", 11, 19);
@@ -11750,7 +12599,7 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "728: Match end does not match");
 //       assert_eq!(&"aaaaxyzaaaabcpqrabc"[ma.1..ma.2], ma.0, "728: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\A(?~|abc).*(xyz|pqrabc)(?~|)abc", "aaaaxyzaaaabcpqrabcabc");
@@ -11762,38 +12611,60 @@ scanner! { S672 { mode M { token r#"[\u0041]"# => 0; } } }
 //   let matches = scanner.find_matches("aaaaxyzaaaabcpqrabcabc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "729: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("", "あ", 0, 0);
 // td!(r#""#, "あ", &[], 730),
 scanner! { S730 { mode M { token r#""# => 0; } } }
-// #[test] fn test_match_730() {
-//   use s730::S730 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "730: Unexpected match count");
-//}
+#[test]
+fn test_match_730() {
+    use s730::S730 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "730: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ", "あ", 0, 3); // 731
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ", "あ", 0, 3); // 731
+
 // -------------------------------------------------------------------------
 // n("い", "あ");
 // td!(r#"い"#, "あ", &[], 732),
 scanner! { S732 { mode M { token r#"い"# => 0; } } }
-// #[test] fn test_match_732() {
-//   use s732::S732 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "732: Unexpected match count");
-//}
+#[test]
+fn test_match_732() {
+    use s732::S732 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "732: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("うう", "うう", 0, 6); // 733
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あいう", "あいう", 0, 9); // 734
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("こここここここここここここここここここここここここここここここここここ", "こここここここここここここここここここここここここここここここここここ", 0, 105); // 735
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("あ", "いあ", 3, 6); // 736
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("いう", "あいう", 3, 9); // 737
+// -------------------------------------------------------------------------
+// *** Index error: x2("うう", "うう", 0, 6); // 733
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あいう", "あいう", 0, 9); // 734
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("こここここここここここここここここここここここここここここここここここ", "こここここここここここここここここここここここここここここここここここ", 0, 105); // 735
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2("あ", "いあ", 3, 6); // 736
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("いう", "あいう", 3, 9); // 737
+
 // -------------------------------------------------------------------------
 // x2("\\xca\\xb8", "\xca\xb8", 0, 2);
 // td!(r#"\xca\xb8"#, "\xca\xb8", &[("\\x", 0, 2)], 738),
@@ -11809,26 +12680,43 @@ scanner! { S738 { mode M { token r#"\xca\xb8"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "738: Match end does not match");
 //       assert_eq!(&"\xca\xb8"[ma.1..ma.2], ma.0, "738: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".", "あ", 0, 3); // 739
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("..", "かき", 0, 6); // 740
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\w", "お", 0, 3); // 741
+// -------------------------------------------------------------------------
+// *** Index error: x2(".", "あ", 0, 3); // 739
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("..", "かき", 0, 6); // 740
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\w", "お", 0, 3); // 741
+
 // -------------------------------------------------------------------------
 // n("\\W", "あ");
 // td!(r#"\W"#, "あ", &[], 742),
 scanner! { S742 { mode M { token r#"\W"# => 0; } } }
-// #[test] fn test_match_742() {
-//   use s742::S742 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "742: Unexpected match count");
-//}
+#[test]
+fn test_match_742() {
+    use s742::S742 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "742: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("[\\W]", "う$", 3, 4); // 743
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\S", "そ", 0, 3); // 744
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\S", "漢", 0, 3); // 745
+// -------------------------------------------------------------------------
+// *** Index error:  x2("[\\W]", "う$", 3, 4); // 743
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\S", "そ", 0, 3); // 744
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\S", "漢", 0, 3); // 745
+
 // -------------------------------------------------------------------------
 // x2("\\b", "気 ", 0, 0);
 // tu!(r#"\b"#, "気 ", &[], 746), UnsupportedFeatureError("WordUnicode Look(WordUnicode)")
@@ -11839,7 +12727,7 @@ scanner! { S742 { mode M { token r#"\W"# => 0; } } }
 //   let matches = scanner.find_matches("気 ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "746: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\b", " ほ", 1, 1);
@@ -11856,7 +12744,7 @@ scanner! { S742 { mode M { token r#"\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "747: Match end does not match");
 //       assert_eq!(&" ほ"[ma.1..ma.2], ma.0, "747: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\B", "せそ ", 3, 3);
@@ -11873,9 +12761,11 @@ scanner! { S742 { mode M { token r#"\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "748: Match end does not match");
 //       assert_eq!(&"せそ "[ma.1..ma.2], ma.0, "748: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("\\B", "う ", 4, 4); // 749
+// -------------------------------------------------------------------------
+// *** Index error:  x2("\\B", "う ", 4, 4); // 749
+
 // -------------------------------------------------------------------------
 // x2("\\B", " い", 0, 0);
 // tu!(r#"\B"#, " い", &[], 750), UnsupportedFeatureError("WordUnicodeNegate Look(WordUnicodeNegate)")
@@ -11886,104 +12776,182 @@ scanner! { S742 { mode M { token r#"\W"# => 0; } } }
 //   let matches = scanner.find_matches(" い", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "750: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[たち]", "ち", 0, 3); // 751
+// -------------------------------------------------------------------------
+// *** Index error: x2("[たち]", "ち", 0, 3); // 751
+
 // -------------------------------------------------------------------------
 // n("[なに]", "ぬ");
 // td!(r#"[なに]"#, "ぬ", &[], 752),
 scanner! { S752 { mode M { token r#"[なに]"# => 0; } } }
-// #[test] fn test_match_752() {
-//   use s752::S752 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ぬ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "752: Unexpected match count");
-//}
+#[test]
+fn test_match_752() {
+    use s752::S752 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ぬ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "752: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[う-お]", "え", 0, 3); // 753
+// -------------------------------------------------------------------------
+// *** Index error: x2("[う-お]", "え", 0, 3); // 753
+
 // -------------------------------------------------------------------------
 // n("[^け]", "け");
 // td!(r#"[^け]"#, "け", &[], 754),
 scanner! { S754 { mode M { token r#"[^け]"# => 0; } } }
-// #[test] fn test_match_754() {
-//   use s754::S754 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("け", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "754: Unexpected match count");
-//}
+#[test]
+fn test_match_754() {
+    use s754::S754 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("け", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "754: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[\\w]", "ね", 0, 3); // 755
+// -------------------------------------------------------------------------
+// *** Index error: x2("[\\w]", "ね", 0, 3); // 755
+
 // -------------------------------------------------------------------------
 // n("[\\d]", "ふ");
 // td!(r#"[\d]"#, "ふ", &[], 756),
 scanner! { S756 { mode M { token r#"[\d]"# => 0; } } }
-// #[test] fn test_match_756() {
-//   use s756::S756 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ふ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "756: Unexpected match count");
-//}
+#[test]
+fn test_match_756() {
+    use s756::S756 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ふ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "756: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[\\D]", "は", 0, 3); // 757
+// -------------------------------------------------------------------------
+// *** Index error: x2("[\\D]", "は", 0, 3); // 757
+
 // -------------------------------------------------------------------------
 // n("[\\s]", "く");
 // td!(r#"[\s]"#, "く", &[], 758),
 scanner! { S758 { mode M { token r#"[\s]"# => 0; } } }
-// #[test] fn test_match_758() {
-//   use s758::S758 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("く", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "758: Unexpected match count");
-//}
+#[test]
+fn test_match_758() {
+    use s758::S758 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("く", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "758: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[\\S]", "へ", 0, 3); // 759
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[\\w\\d]", "よ", 0, 3); // 760
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[\\w\\d]", "   よ", 3, 6); // 761
+// -------------------------------------------------------------------------
+// *** Index error: x2("[\\S]", "へ", 0, 3); // 759
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[\\w\\d]", "よ", 0, 3); // 760
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[\\w\\d]", "   よ", 3, 6); // 761
+
 // -------------------------------------------------------------------------
 // n("\\w鬼車", " 鬼車");
 // td!(r#"\w鬼車"#, " 鬼車", &[], 762),
 scanner! { S762 { mode M { token r#"\w鬼車"# => 0; } } }
-// #[test] fn test_match_762() {
-//   use s762::S762 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches(" 鬼車", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "762: Unexpected match count");
-//}
+#[test]
+fn test_match_762() {
+    use s762::S762 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches(" 鬼車", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "762: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("鬼\\W車", "鬼 車", 0, 7); // 763
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ.い.う", "ああいいう", 0, 15); // 764
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".\\wう\\W..ぞ", "えうう うぞぞ", 0, 19); // 765
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\s\\wこここ", " ここここ", 0, 13); // 766
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("ああ.け", "ああけけ", 0, 12); // 767
+// -------------------------------------------------------------------------
+// *** Index error: x2("鬼\\W車", "鬼 車", 0, 7); // 763
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ.い.う", "ああいいう", 0, 15); // 764
+
+// -------------------------------------------------------------------------
+// *** Index error: x2(".\\wう\\W..ぞ", "えうう うぞぞ", 0, 19); // 765
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\s\\wこここ", " ここここ", 0, 13); // 766
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("ああ.け", "ああけけ", 0, 12); // 767
+
 // -------------------------------------------------------------------------
 // n(".い", "いえ");
 // td!(r#".い"#, "いえ", &[], 768),
 scanner! { S768 { mode M { token r#".い"# => 0; } } }
-// #[test] fn test_match_768() {
-//   use s768::S768 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("いえ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "768: Unexpected match count");
-//}
+#[test]
+fn test_match_768() {
+    use s768::S768 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("いえ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "768: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".お", "おお", 0, 6); // 769
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("^あ", "あ", 0, 3); // 770
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("^む$", "む", 0, 3); // 771
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("^\\w$", "に", 0, 3); // 772
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("^\\wかきくけこ$", "zかきくけこ", 0, 16); // 773
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("^\\w...うえお$", "zあいううえお", 0, 19); // 774
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\w\\w\\s\\Wおおお\\d", "aお  おおお4", 0, 16); // 775
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\Aたちつ", "たちつ", 0, 9); // 776
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("むめも\\Z", "むめも", 0, 9); // 777
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("かきく\\z", "かきく", 0, 9); // 778
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("かきく\\Z", "かきく\n", 0, 9); // 779
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\Gぽぴ", "ぽぴ", 0, 6); // 780
+// -------------------------------------------------------------------------
+// *** Index error: x2(".お", "おお", 0, 6); // 769
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("^あ", "あ", 0, 3); // 770
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("^む$", "む", 0, 3); // 771
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("^\\w$", "に", 0, 3); // 772
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("^\\wかきくけこ$", "zかきくけこ", 0, 16); // 773
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("^\\w...うえお$", "zあいううえお", 0, 19); // 774
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\w\\w\\s\\Wおおお\\d", "aお  おおお4", 0, 16); // 775
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\Aたちつ", "たちつ", 0, 9); // 776
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("むめも\\Z", "むめも", 0, 9); // 777
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("かきく\\z", "かきく", 0, 9); // 778
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("かきく\\Z", "かきく\n", 0, 9); // 779
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\Gぽぴ", "ぽぴ", 0, 6); // 780
+
 // -------------------------------------------------------------------------
 // n("\\Gえ", "うえお");
 // tr!(r#"\Gえ"#, "うえお", &[], 781), EscapeUnrecognized
@@ -11994,7 +12962,7 @@ scanner! { S768 { mode M { token r#".い"# => 0; } } }
 //   let matches = scanner.find_matches("うえお", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "781: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("とて\\G", "とて");
@@ -12006,7 +12974,7 @@ scanner! { S768 { mode M { token r#".い"# => 0; } } }
 //   let matches = scanner.find_matches("とて", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "782: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("まみ\\A", "まみ");
@@ -12018,7 +12986,7 @@ scanner! { S768 { mode M { token r#".い"# => 0; } } }
 //   let matches = scanner.find_matches("まみ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "783: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("ま\\Aみ", "まみ");
@@ -12030,9 +12998,11 @@ scanner! { S768 { mode M { token r#".い"# => 0; } } }
 //   let matches = scanner.find_matches("まみ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "784: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?=せ)せ", "せ", 0, 3); // 785
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?=せ)せ", "せ", 0, 3); // 785
+
 // -------------------------------------------------------------------------
 // n("(?=う).", "い");
 // tr!(r#"(?=う)."#, "い", &[], 786), UnsupportedLookAround
@@ -12043,9 +13013,11 @@ scanner! { S768 { mode M { token r#".い"# => 0; } } }
 //   let matches = scanner.find_matches("い", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "786: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?!う)か", "か", 0, 3); // 787
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?!う)か", "か", 0, 3); // 787
+
 // -------------------------------------------------------------------------
 // n("(?!と)あ", "と");
 // tr!(r#"(?!と)あ"#, "と", &[], 788), UnsupportedLookAround
@@ -12056,124 +13028,223 @@ scanner! { S768 { mode M { token r#".い"# => 0; } } }
 //   let matches = scanner.find_matches("と", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "788: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i:あ)", "あ", 0, 3); // 789
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i:ぶべ)", "ぶべ", 0, 6); // 790
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i:あ)", "あ", 0, 3); // 789
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i:ぶべ)", "ぶべ", 0, 6); // 790
+
 // -------------------------------------------------------------------------
 // n("(?i:い)", "う");
 // td!(r#"(?i:い)"#, "う", &[], 791),
 scanner! { S791 { mode M { token r#"(?i:い)"# => 0; } } }
-// #[test] fn test_match_791() {
-//   use s791::S791 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("う", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "791: Unexpected match count");
-//}
+#[test]
+fn test_match_791() {
+    use s791::S791 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("う", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "791: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?m:よ.)", "よ\n", 0, 4); // 792
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?m:.め)", "ま\nめ", 3, 7); // 793
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?m:よ.)", "よ\n", 0, 4); // 792
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?m:.め)", "ま\nめ", 3, 7); // 793
+
 // -------------------------------------------------------------------------
 // x2("あ?", "", 0, 0);
 // td!(r#"あ?"#, "", &[], 794),
 scanner! { S794 { mode M { token r#"あ?"# => 0; } } }
-// #[test] fn test_match_794() {
-//   use s794::S794 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "794: Unexpected match count");
-//}
+#[test]
+fn test_match_794() {
+    use s794::S794 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "794: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("変?", "化", 0, 0);
 // td!(r#"変?"#, "化", &[], 795),
 scanner! { S795 { mode M { token r#"変?"# => 0; } } }
-// #[test] fn test_match_795() {
-//   use s795::S795 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("化", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "795: Unexpected match count");
-//}
+#[test]
+fn test_match_795() {
+    use s795::S795 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("化", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "795: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("変?", "変", 0, 3); // 796
+// -------------------------------------------------------------------------
+// *** Index error: x2("変?", "変", 0, 3); // 796
+
 // -------------------------------------------------------------------------
 // x2("量*", "", 0, 0);
 // td!(r#"量*"#, "", &[], 797),
 scanner! { S797 { mode M { token r#"量*"# => 0; } } }
-// #[test] fn test_match_797() {
-//   use s797::S797 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "797: Unexpected match count");
-//}
+#[test]
+fn test_match_797() {
+    use s797::S797 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "797: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("量*", "量", 0, 3); // 798
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("子*", "子子子", 0, 9); // 799
+// -------------------------------------------------------------------------
+// *** Index error: x2("量*", "量", 0, 3); // 798
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("子*", "子子子", 0, 9); // 799
+
 // -------------------------------------------------------------------------
 // x2("馬*", "鹿馬馬馬馬", 0, 0);
 // td!(r#"馬*"#, "鹿馬馬馬馬", &[], 800),
 scanner! { S800 { mode M { token r#"馬*"# => 0; } } }
-// #[test] fn test_match_800() {
-//   use s800::S800 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("鹿馬馬馬馬", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "800: Unexpected match count");
-//}
+#[test]
+fn test_match_800() {
+    use s800::S800 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("鹿馬馬馬馬", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "800: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("山+", "");
 // td!(r#"山+"#, "", &[], 801),
 scanner! { S801 { mode M { token r#"山+"# => 0; } } }
-// #[test] fn test_match_801() {
-//   use s801::S801 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "801: Unexpected match count");
-//}
+#[test]
+fn test_match_801() {
+    use s801::S801 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "801: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("河+", "河", 0, 3); // 802
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("時+", "時時時時", 0, 12); // 803
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("え+", "ええううう", 0, 6); // 804
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("う+", "おうううう", 3, 15); // 805
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".?", "た", 0, 3); // 806
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".*", "ぱぴぷぺ", 0, 12); // 807
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".+", "ろ", 0, 3); // 808
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".+", "いうえか\n", 0, 12); // 809
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ|い", "あ", 0, 3); // 810
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ|い", "い", 0, 3); // 811
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あい|いう", "あい", 0, 6); // 812
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あい|いう", "いう", 0, 6); // 813
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("を(?:かき|きく)", "をかき", 0, 9); // 814
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("を(?:かき|きく)け", "をきくけ", 0, 12); // 815
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あい|(?:あう|あを)", "あを", 0, 6); // 816
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("あ|い|う", "えう", 3, 6); // 817
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ|い|うえ|おかき|く|けこさ|しすせ|そ|たち|つてとなに|ぬね", "しすせ", 0, 9); // 818
+// -------------------------------------------------------------------------
+// *** Index error: x2("河+", "河", 0, 3); // 802
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("時+", "時時時時", 0, 12); // 803
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("え+", "ええううう", 0, 6); // 804
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("う+", "おうううう", 3, 15); // 805
+
+// -------------------------------------------------------------------------
+// *** Index error: x2(".?", "た", 0, 3); // 806
+
+// -------------------------------------------------------------------------
+// *** Index error: x2(".*", "ぱぴぷぺ", 0, 12); // 807
+
+// -------------------------------------------------------------------------
+// *** Index error: x2(".+", "ろ", 0, 3); // 808
+
+// -------------------------------------------------------------------------
+// *** Index error: x2(".+", "いうえか\n", 0, 12); // 809
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ|い", "あ", 0, 3); // 810
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ|い", "い", 0, 3); // 811
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あい|いう", "あい", 0, 6); // 812
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あい|いう", "いう", 0, 6); // 813
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("を(?:かき|きく)", "をかき", 0, 9); // 814
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("を(?:かき|きく)け", "をきくけ", 0, 12); // 815
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あい|(?:あう|あを)", "あを", 0, 6); // 816
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2("あ|い|う", "えう", 3, 6); // 817
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ|い|うえ|おかき|く|けこさ|しすせ|そ|たち|つてとなに|ぬね", "しすせ", 0, 9); // 818
+
 // -------------------------------------------------------------------------
 // n("あ|い|うえ|おかき|く|けこさ|しすせ|そ|たち|つてとなに|ぬね", "すせ");
 // td!(r#"あ|い|うえ|おかき|く|けこさ|しすせ|そ|たち|つてとなに|ぬね"#, "すせ", &[], 819),
 scanner! { S819 { mode M { token r#"あ|い|うえ|おかき|く|けこさ|しすせ|そ|たち|つてとなに|ぬね"# => 0; } } }
-// #[test] fn test_match_819() {
-//   use s819::S819 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("すせ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "819: Unexpected match count");
-//}
+#[test]
+fn test_match_819() {
+    use s819::S819 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("すせ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "819: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("あ|^わ", "ぶあ", 3, 6); // 820
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ|^を", "をあ", 0, 3); // 821
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("鬼|\\G車", "け車鬼", 6, 9); // 822
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("鬼|\\G車", "車鬼", 0, 3); // 823
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("鬼|\\A車", "b車鬼", 4, 7); // 824
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("鬼|\\A車", "車", 0, 3); // 825
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("鬼|車\\Z", "車鬼", 3, 6); // 826
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("鬼|車\\Z", "車", 0, 3); // 827
+// -------------------------------------------------------------------------
+// *** Index error:  x2("あ|^わ", "ぶあ", 3, 6); // 820
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ|^を", "をあ", 0, 3); // 821
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2("鬼|\\G車", "け車鬼", 6, 9); // 822
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("鬼|\\G車", "車鬼", 0, 3); // 823
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2("鬼|\\A車", "b車鬼", 4, 7); // 824
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("鬼|\\A車", "車", 0, 3); // 825
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2("鬼|車\\Z", "車鬼", 3, 6); // 826
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("鬼|車\\Z", "車", 0, 3); // 827
+
 // -------------------------------------------------------------------------
 // x2("鬼|車\\Z", "車\n", 0, 3);
 // tr!(r#"鬼|車\Z"#, "車\n", &[("車\\n", 0, 3)], 828), EscapeUnrecognized
@@ -12189,11 +13260,17 @@ scanner! { S819 { mode M { token r#"あ|い|うえ|おかき|く|けこさ|し�
 //       assert_eq!(matches[i].span.end, ma.2, "828: Match end does not match");
 //       assert_eq!(&"車\n"[ma.1..ma.2], ma.0, "828: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("鬼|車\\z", "車鬼", 3, 6); // 829
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("鬼|車\\z", "車", 0, 3); // 830
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\w|\\s", "お", 0, 3); // 831
+// -------------------------------------------------------------------------
+// *** Index error:  x2("鬼|車\\z", "車鬼", 3, 6); // 829
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("鬼|車\\z", "車", 0, 3); // 830
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\w|\\s", "お", 0, 3); // 831
+
 // -------------------------------------------------------------------------
 // x2("\\w|%", "%お", 0, 1);
 // td!(r#"\w|%"#, "%お", &[("%", 0, 1)], 832),
@@ -12209,12 +13286,20 @@ scanner! { S832 { mode M { token r#"\w|%"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "832: Match end does not match");
 //       assert_eq!(&"%お"[ma.1..ma.2], ma.0, "832: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\w|[&$]", "う&", 0, 3); // 833
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[い-け]", "う", 0, 3); // 834
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[い-け]|[^か-こ]", "あ", 0, 3); // 835
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[い-け]|[^か-こ]", "か", 0, 3); // 836
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\w|[&$]", "う&", 0, 3); // 833
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[い-け]", "う", 0, 3); // 834
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[い-け]|[^か-こ]", "あ", 0, 3); // 835
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[い-け]|[^か-こ]", "か", 0, 3); // 836
+
 // -------------------------------------------------------------------------
 // x2("[^あ]", "\n", 0, 1);
 // td!(r#"[^あ]"#, "\n", &[("\\", 0, 1)], 837),
@@ -12230,14 +13315,26 @@ scanner! { S837 { mode M { token r#"[^あ]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "837: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "837: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:あ|[う-き])|いを", "うを", 0, 3); // 838
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:あ|[う-き])|いを", "いを", 0, 6); // 839
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あいう|(?=けけ)..ほ", "けけほ", 0, 9); // 840
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あいう|(?!けけ)..ほ", "あいほ", 0, 9); // 841
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?=をあ)..あ|(?=をを)..あ", "ををあ", 0, 9); // 842
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("(?<=あ|いう)い", "いうい", 6, 9); // 843
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:あ|[う-き])|いを", "うを", 0, 3); // 838
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:あ|[う-き])|いを", "いを", 0, 6); // 839
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あいう|(?=けけ)..ほ", "けけほ", 0, 9); // 840
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あいう|(?!けけ)..ほ", "あいほ", 0, 9); // 841
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?=をあ)..あ|(?=をを)..あ", "ををあ", 0, 9); // 842
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2("(?<=あ|いう)い", "いうい", 6, 9); // 843
+
 // -------------------------------------------------------------------------
 // n("(?>あ|あいえ)う", "あいえう");
 // tr!(r#"(?>あ|あいえ)う"#, "あいえう", &[], 844), FlagUnrecognized
@@ -12248,48 +13345,71 @@ scanner! { S837 { mode M { token r#"[^あ]"# => 0; } } }
 //   let matches = scanner.find_matches("あいえう", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "844: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?>あいえ|あ)う", "あいえう", 0, 12); // 845
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ?|い", "あ", 0, 3); // 846
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?>あいえ|あ)う", "あいえう", 0, 12); // 845
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ?|い", "あ", 0, 3); // 846
+
 // -------------------------------------------------------------------------
 // x2("あ?|い", "い", 0, 0);
 // td!(r#"あ?|い"#, "い", &[], 847),
 scanner! { S847 { mode M { token r#"あ?|い"# => 0; } } }
-// #[test] fn test_match_847() {
-//   use s847::S847 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("い", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "847: Unexpected match count");
-//}
+#[test]
+fn test_match_847() {
+    use s847::S847 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("い", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "847: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("あ?|い", "", 0, 0);
 // td!(r#"あ?|い"#, "", &[], 848),
 scanner! { S848 { mode M { token r#"あ?|い"# => 0; } } }
-// #[test] fn test_match_848() {
-//   use s848::S848 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "848: Unexpected match count");
-//}
+#[test]
+fn test_match_848() {
+    use s848::S848 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "848: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ*|い", "ああ", 0, 6); // 849
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ*|い", "ああ", 0, 6); // 849
+
 // -------------------------------------------------------------------------
 // x2("あ*|い*", "いあ", 0, 0);
 // td!(r#"あ*|い*"#, "いあ", &[], 850),
 scanner! { S850 { mode M { token r#"あ*|い*"# => 0; } } }
-// #[test] fn test_match_850() {
-//   use s850::S850 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("いあ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "850: Unexpected match count");
-//}
+#[test]
+fn test_match_850() {
+    use s850::S850 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("いあ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "850: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ*|い*", "あい", 0, 3); // 851
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ*|い*", "あい", 0, 3); // 851
+
 // -------------------------------------------------------------------------
 // x2("[aあ]*|い*", "aあいいい", 0, 4);
 // td!(r#"[aあ]*|い*"#, "aあいいい", &[("aあいい", 0, 4)], 852),
@@ -12305,21 +13425,28 @@ scanner! { S852 { mode M { token r#"[aあ]*|い*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "852: Match end does not match");
 //       assert_eq!(&"aあいいい"[ma.1..ma.2], ma.0, "852: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("あ+|い*", "", 0, 0);
 // td!(r#"あ+|い*"#, "", &[], 853),
 scanner! { S853 { mode M { token r#"あ+|い*"# => 0; } } }
-// #[test] fn test_match_853() {
-//   use s853::S853 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "853: Unexpected match count");
-//}
+#[test]
+fn test_match_853() {
+    use s853::S853 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "853: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ+|い*", "いいい", 0, 9); // 854
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ+|い*", "いいい", 0, 9); // 854
+
 // -------------------------------------------------------------------------
 // x2("あ+|い*", "あいいい", 0, 3);
 // td!(r#"あ+|い*"#, "あいいい", &[("あいい", 0, 3)], 855),
@@ -12335,49 +13462,93 @@ scanner! { S855 { mode M { token r#"あ+|い*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "855: Match end does not match");
 //       assert_eq!(&"あいいい"[ma.1..ma.2], ma.0, "855: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("あ+|い*", "aあいいい", 0, 0);
 // td!(r#"あ+|い*"#, "aあいいい", &[], 856),
 scanner! { S856 { mode M { token r#"あ+|い*"# => 0; } } }
-// #[test] fn test_match_856() {
-//   use s856::S856 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aあいいい", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "856: Unexpected match count");
-//}
+#[test]
+fn test_match_856() {
+    use s856::S856 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aあいいい", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "856: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("あ+|い+", "");
 // td!(r#"あ+|い+"#, "", &[], 857),
 scanner! { S857 { mode M { token r#"あ+|い+"# => 0; } } }
-// #[test] fn test_match_857() {
-//   use s857::S857 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "857: Unexpected match count");
-//}
+#[test]
+fn test_match_857() {
+    use s857::S857 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "857: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あ|い)?", "い", 0, 3); // 858
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あ|い)*", "いあ", 0, 6); // 859
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あ|い)+", "いあい", 0, 9); // 860
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あい|うあ)+", "うああいうえ", 0, 12); // 861
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あい|うえ)+", "うああいうえ", 6, 18); // 862
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あい|うあ)+", "ああいうあ", 3, 15); // 863
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あい|うあ)+", "あいをうあ", 0, 6); // 864
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あい|うあ)+", "$$zzzzあいをうあ", 6, 12); // 865
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あ|いあい)+", "あいあいあ", 0, 15); // 866
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("(あ|いあい)+", "いあ", 3, 6); // 867
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あ|いあい)+", "いあああいあ", 3, 12); // 868
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:あ|い)(?:あ|い)", "あい", 0, 6); // 869
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:あ*|い*)(?:あ*|い*)", "あああいいい", 0, 9); // 870
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:あ*|い*)(?:あ+|い+)", "あああいいい", 0, 18); // 871
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:あ+|い+){2}", "あああいいい", 0, 18); // 872
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:あ+|い+){1,2}", "あああいいい", 0, 18); // 873
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:あ+|\\Aい*)うう", "うう", 0, 6); // 874
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あ|い)?", "い", 0, 3); // 858
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あ|い)*", "いあ", 0, 6); // 859
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あ|い)+", "いあい", 0, 9); // 860
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あい|うあ)+", "うああいうえ", 0, 12); // 861
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あい|うえ)+", "うああいうえ", 6, 18); // 862
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あい|うあ)+", "ああいうあ", 3, 15); // 863
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あい|うあ)+", "あいをうあ", 0, 6); // 864
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あい|うあ)+", "$$zzzzあいをうあ", 6, 12); // 865
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あ|いあい)+", "あいあいあ", 0, 15); // 866
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2("(あ|いあい)+", "いあ", 3, 6); // 867
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あ|いあい)+", "いあああいあ", 3, 12); // 868
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:あ|い)(?:あ|い)", "あい", 0, 6); // 869
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:あ*|い*)(?:あ*|い*)", "あああいいい", 0, 9); // 870
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:あ*|い*)(?:あ+|い+)", "あああいいい", 0, 18); // 871
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:あ+|い+){2}", "あああいいい", 0, 18); // 872
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:あ+|い+){1,2}", "あああいいい", 0, 18); // 873
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:あ+|\\Aい*)うう", "うう", 0, 6); // 874
+
 // -------------------------------------------------------------------------
 // n("(?:あ+|\\Aい*)うう", "あいうう");
 // tu!(r#"(?:あ+|\Aい*)うう"#, "あいうう", &[], 875), UnsupportedFeatureError("StartLine Look(Start)")
@@ -12388,73 +13559,120 @@ scanner! { S857 { mode M { token r#"あ+|い+"# => 0; } } }
 //   let matches = scanner.find_matches("あいうう", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "875: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("(?:^あ+|い+)*う", "ああいいいあいう", 18, 24); // 876
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:^あ+|い+)*う", "ああいいいいう", 0, 21); // 877
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("う{0,}", "うううう", 0, 12); // 878
+// -------------------------------------------------------------------------
+// *** Index error:  x2("(?:^あ+|い+)*う", "ああいいいあいう", 18, 24); // 876
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:^あ+|い+)*う", "ああいいいいう", 0, 21); // 877
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("う{0,}", "うううう", 0, 12); // 878
+
 // -------------------------------------------------------------------------
 // x2("あ|(?i)c", "C", 0, 1);
 // td!(r#"あ|(?i)c"#, "C", &[("C", 0, 1)], 879),
 scanner! { S879 { mode M { token r#"あ|(?i)c"# => 0; } } }
-// #[test] fn test_match_879() {
-//   use s879::S879 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("C", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "879: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "879: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "879: Match end does not match");
-//       assert_eq!(&"C"[ma.1..ma.2], ma.0, "879: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_879() {
+    use s879::S879 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("C", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "879: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "879: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "879: Match end does not match");
+        assert_eq!(
+            &"C"[ma.1..ma.2],
+            ma.0,
+            "879: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)c|あ", "C", 0, 1);
 // td!(r#"(?i)c|あ"#, "C", &[("C", 0, 1)], 880),
 scanner! { S880 { mode M { token r#"(?i)c|あ"# => 0; } } }
-// #[test] fn test_match_880() {
-//   use s880::S880 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("C", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "880: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "880: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "880: Match end does not match");
-//       assert_eq!(&"C"[ma.1..ma.2], ma.0, "880: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_880() {
+    use s880::S880 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("C", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "880: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "880: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "880: Match end does not match");
+        assert_eq!(
+            &"C"[ma.1..ma.2],
+            ma.0,
+            "880: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i:あ)|a", "a", 0, 1);
 // td!(r#"(?i:あ)|a"#, "a", &[("a", 0, 1)], 881),
 scanner! { S881 { mode M { token r#"(?i:あ)|a"# => 0; } } }
-// #[test] fn test_match_881() {
-//   use s881::S881 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "881: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "881: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "881: Match end does not match");
-//       assert_eq!(&"a"[ma.1..ma.2], ma.0, "881: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_881() {
+    use s881::S881 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "881: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "881: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "881: Match end does not match");
+        assert_eq!(
+            &"a"[ma.1..ma.2],
+            ma.0,
+            "881: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("(?i:あ)|a", "A");
 // td!(r#"(?i:あ)|a"#, "A", &[], 882),
 scanner! { S882 { mode M { token r#"(?i:あ)|a"# => 0; } } }
-// #[test] fn test_match_882() {
-//   use s882::S882 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "882: Unexpected match count");
-//}
+#[test]
+fn test_match_882() {
+    use s882::S882 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("A", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "882: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("[あいう]?", "あいう", 0, 3);
@@ -12471,46 +13689,65 @@ scanner! { S883 { mode M { token r#"[あいう]?"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "883: Match end does not match");
 //       assert_eq!(&"あいう"[ma.1..ma.2], ma.0, "883: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[あいう]*", "あいう", 0, 9); // 884
+// -------------------------------------------------------------------------
+// *** Index error: x2("[あいう]*", "あいう", 0, 9); // 884
+
 // -------------------------------------------------------------------------
 // x2("[^あいう]*", "あいう", 0, 0);
 // td!(r#"[^あいう]*"#, "あいう", &[], 885),
 scanner! { S885 { mode M { token r#"[^あいう]*"# => 0; } } }
-// #[test] fn test_match_885() {
-//   use s885::S885 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あいう", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "885: Unexpected match count");
-//}
+#[test]
+fn test_match_885() {
+    use s885::S885 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あいう", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "885: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("[^あいう]+", "あいう");
 // td!(r#"[^あいう]+"#, "あいう", &[], 886),
 scanner! { S886 { mode M { token r#"[^あいう]+"# => 0; } } }
-// #[test] fn test_match_886() {
-//   use s886::S886 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あいう", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "886: Unexpected match count");
-//}
+#[test]
+fn test_match_886() {
+    use s886::S886 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あいう", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "886: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("あ?\?", "あああ", 0, 0);
 // td!(r#"あ?\?"#, "あああ", &[], 887),
 scanner! { S887 { mode M { token r#"あ?\?"# => 0; } } }
-// #[test] fn test_match_887() {
-//   use s887::S887 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あああ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "887: Unexpected match count");
-//}
+#[test]
+fn test_match_887() {
+    use s887::S887 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あああ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "887: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("いあ?\?い", "いあい", 0, 9); // 888
+// -------------------------------------------------------------------------
+// *** Index error: x2("いあ?\?い", "いあい", 0, 9); // 888
+
 // -------------------------------------------------------------------------
 // x2("あ*?", "あああ", 0, 0);
 // tu!(r#"あ*?"#, "あああ", &[], 889), UnsupportedFeatureError("x?*?: Non-greedy repetitions)
@@ -12521,37 +13758,53 @@ scanner! { S887 { mode M { token r#"あ?\?"# => 0; } } }
 // tu!(r#"いあ*?"#, "いああ", &[("いああ", 0, 3)], 890), UnsupportedFeatureError("x?*?: Non-greedy repetitions)
 // scanner! { S890 { mode M { token r#"いあ*?"# => 0; } } }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("いあ*?い", "いああい", 0, 12); // 891
+// -------------------------------------------------------------------------
+// *** Index error: x2("いあ*?い", "いああい", 0, 12); // 891
+
 // -------------------------------------------------------------------------
 // x2("あ+?", "あああ", 0, 3);
 // tu!(r#"あ+?"#, "あああ", &[("あああ", 0, 3)], 892), UnsupportedFeatureError("x?*?: Non-greedy repetitions)
 // scanner! { S892 { mode M { token r#"あ+?"# => 0; } } }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("いあ+?", "いああ", 0, 6); // 893
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("いあ+?い", "いああい", 0, 12); // 894
+// -------------------------------------------------------------------------
+// *** Index error: x2("いあ+?", "いああ", 0, 6); // 893
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("いあ+?い", "いああい", 0, 12); // 894
+
 // -------------------------------------------------------------------------
 // x2("(?:天?)?\?", "天", 0, 0);
 // td!(r#"(?:天?)?\?"#, "天", &[], 895),
 scanner! { S895 { mode M { token r#"(?:天?)?\?"# => 0; } } }
-// #[test] fn test_match_895() {
-//   use s895::S895 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("天", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "895: Unexpected match count");
-//}
+#[test]
+fn test_match_895() {
+    use s895::S895 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("天", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "895: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:天?\?)?", "天", 0, 0);
 // td!(r#"(?:天?\?)?"#, "天", &[], 896),
 scanner! { S896 { mode M { token r#"(?:天?\?)?"# => 0; } } }
-// #[test] fn test_match_896() {
-//   use s896::S896 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("天", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "896: Unexpected match count");
-//}
+#[test]
+fn test_match_896() {
+    use s896::S896 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("天", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "896: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("(?:夢?)+?", "夢夢夢", 0, 3);
@@ -12562,72 +13815,136 @@ scanner! { S896 { mode M { token r#"(?:天?\?)?"# => 0; } } }
 // x2("(?:風+)?\?", "風風風", 0, 0);
 // td!(r#"(?:風+)?\?"#, "風風風", &[], 898),
 scanner! { S898 { mode M { token r#"(?:風+)?\?"# => 0; } } }
-// #[test] fn test_match_898() {
-//   use s898::S898 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("風風風", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "898: Unexpected match count");
-//}
+#[test]
+fn test_match_898() {
+    use s898::S898 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("風風風", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "898: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:雪+)?\?霜", "雪雪雪霜", 0, 12); // 899
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:雪+)?\?霜", "雪雪雪霜", 0, 12); // 899
+
 // -------------------------------------------------------------------------
 // x2("(?:あい)?{2}", "", 0, 0);
 // td!(r#"(?:あい)?{2}"#, "", &[], 900),
 scanner! { S900 { mode M { token r#"(?:あい)?{2}"# => 0; } } }
-// #[test] fn test_match_900() {
-//   use s900::S900 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "900: Unexpected match count");
-//}
+#[test]
+fn test_match_900() {
+    use s900::S900 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "900: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:鬼車)?{2}", "鬼車鬼車鬼", 0, 12); // 901
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:鬼車)?{2}", "鬼車鬼車鬼", 0, 12); // 901
+
 // -------------------------------------------------------------------------
 // x2("(?:鬼車)*{0}", "鬼車鬼車鬼", 0, 0);
 // td!(r#"(?:鬼車)*{0}"#, "鬼車鬼車鬼", &[], 902),
 scanner! { S902 { mode M { token r#"(?:鬼車)*{0}"# => 0; } } }
-// #[test] fn test_match_902() {
-//   use s902::S902 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("鬼車鬼車鬼", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "902: Unexpected match count");
-//}
+#[test]
+fn test_match_902() {
+    use s902::S902 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("鬼車鬼車鬼", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "902: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:鬼車){3,}", "鬼車鬼車鬼車鬼車", 0, 24); // 903
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:鬼車){3,}", "鬼車鬼車鬼車鬼車", 0, 24); // 903
+
 // -------------------------------------------------------------------------
 // n("(?:鬼車){3,}", "鬼車鬼車");
 // td!(r#"(?:鬼車){3,}"#, "鬼車鬼車", &[], 904),
 scanner! { S904 { mode M { token r#"(?:鬼車){3,}"# => 0; } } }
-// #[test] fn test_match_904() {
-//   use s904::S904 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("鬼車鬼車", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "904: Unexpected match count");
-//}
+#[test]
+fn test_match_904() {
+    use s904::S904 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("鬼車鬼車", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "904: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:鬼車){2,4}", "鬼車鬼車鬼車", 0, 18); // 905
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:鬼車){2,4}", "鬼車鬼車鬼車鬼車鬼車", 0, 24); // 906
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:鬼車){2,4}?", "鬼車鬼車鬼車鬼車鬼車", 0, 12); // 907
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:鬼車){,}", "鬼車{,}", 0, 9); // 908
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?:かきく)+?{2}", "かきくかきくかきく", 0, 18); // 909
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(火)", "火", 0, 3, 1); // 910
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(火水)", "火水", 0, 6, 1); // 911
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("((時間))", "時間", 0, 6); // 912
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("((風水))", "風水", 0, 6, 1); // 913
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("((昨日))", "昨日", 0, 6, 2); // 914
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("((((((((((((((((((((量子))))))))))))))))))))", "量子", 0, 6, 20); // 915
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(あい)(うえ)", "あいうえ", 0, 6, 1); // 916
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3("(あい)(うえ)", "あいうえ", 6, 12, 2); // 917
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("()(あ)いう(えおか)きくけこ", "あいうえおかきくけこ", 9, 18, 3); // 918
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(()(あ)いう(えおか)きくけこ)", "あいうえおかきくけこ", 9, 18, 4); // 919
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3(".*(フォ)ン・マ(ン()シュタ)イン", "フォン・マンシュタイン", 15, 27, 2); // 920
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(^あ)", "あ", 0, 3); // 921
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3("(あ)|(あ)", "いあ", 3, 6, 1); // 922
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3("(^あ)|(あ)", "いあ", 3, 6, 2); // 923
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:鬼車){2,4}", "鬼車鬼車鬼車", 0, 18); // 905
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:鬼車){2,4}", "鬼車鬼車鬼車鬼車鬼車", 0, 24); // 906
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:鬼車){2,4}?", "鬼車鬼車鬼車鬼車鬼車", 0, 12); // 907
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:鬼車){,}", "鬼車{,}", 0, 9); // 908
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?:かきく)+?{2}", "かきくかきくかきく", 0, 18); // 909
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(火)", "火", 0, 3, 1); // 910
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(火水)", "火水", 0, 6, 1); // 911
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("((時間))", "時間", 0, 6); // 912
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("((風水))", "風水", 0, 6, 1); // 913
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("((昨日))", "昨日", 0, 6, 2); // 914
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("((((((((((((((((((((量子))))))))))))))))))))", "量子", 0, 6, 20); // 915
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(あい)(うえ)", "あいうえ", 0, 6, 1); // 916
+
+// -------------------------------------------------------------------------
+// *** Index error:  x3("(あい)(うえ)", "あいうえ", 6, 12, 2); // 917
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("()(あ)いう(えおか)きくけこ", "あいうえおかきくけこ", 9, 18, 3); // 918
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(()(あ)いう(えおか)きくけこ)", "あいうえおかきくけこ", 9, 18, 4); // 919
+
+// -------------------------------------------------------------------------
+// *** Index error:  x3(".*(フォ)ン・マ(ン()シュタ)イン", "フォン・マンシュタイン", 15, 27, 2); // 920
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(^あ)", "あ", 0, 3); // 921
+
+// -------------------------------------------------------------------------
+// *** Index error:  x3("(あ)|(あ)", "いあ", 3, 6, 1); // 922
+
+// -------------------------------------------------------------------------
+// *** Index error:  x3("(^あ)|(あ)", "いあ", 3, 6, 2); // 923
+
 // -------------------------------------------------------------------------
 // x3("(あ?)", "あああ", 0, 3, 1);
 // td!(r#"(あ?)"#, "あああ", &[("あああ", 0, 3)], 924),
@@ -12643,23 +13960,34 @@ scanner! { S924 { mode M { token r#"(あ?)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "924: Match end does not match");
 //       assert_eq!(&"あああ"[ma.1..ma.2], ma.0, "924: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(ま*)", "ままま", 0, 9, 1); // 925
+// -------------------------------------------------------------------------
+// *** Index error: x3("(ま*)", "ままま", 0, 9, 1); // 925
+
 // -------------------------------------------------------------------------
 // x3("(と*)", "", 0, 0, 1);
 // td!(r#"(と*)"#, "", &[], 926),
 scanner! { S926 { mode M { token r#"(と*)"# => 0; } } }
-// #[test] fn test_match_926() {
-//   use s926::S926 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "926: Unexpected match count");
-//}
+#[test]
+fn test_match_926() {
+    use s926::S926 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "926: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(る+)", "るるるるるるる", 0, 21, 1); // 927
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(ふ+|へ*)", "ふふふへへ", 0, 9, 1); // 928
+// -------------------------------------------------------------------------
+// *** Index error: x3("(る+)", "るるるるるるる", 0, 21, 1); // 927
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(ふ+|へ*)", "ふふふへへ", 0, 9, 1); // 928
+
 // -------------------------------------------------------------------------
 // x3("(あ+|い?)", "いいいああ", 0, 3, 1);
 // td!(r#"(あ+|い?)"#, "いいいああ", &[("いいい", 0, 3)], 929),
@@ -12675,15 +14003,29 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "929: Match end does not match");
 //       assert_eq!(&"いいいああ"[ma.1..ma.2], ma.0, "929: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(あいう)?", "あいう", 0, 9, 1); // 930
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(あいう)*", "あいう", 0, 9, 1); // 931
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(あいう)+", "あいう", 0, 9, 1); // 932
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(さしす|あいう)+", "あいう", 0, 9, 1); // 933
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("([なにぬ][かきく]|かきく)+", "かきく", 0, 9, 1); // 934
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("((?i:あいう))", "あいう", 0, 9, 1); // 935
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("((?m:あ.う))", "あ\nう", 0, 7, 1); // 936
+// -------------------------------------------------------------------------
+// *** Index error: x3("(あいう)?", "あいう", 0, 9, 1); // 930
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(あいう)*", "あいう", 0, 9, 1); // 931
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(あいう)+", "あいう", 0, 9, 1); // 932
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(さしす|あいう)+", "あいう", 0, 9, 1); // 933
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("([なにぬ][かきく]|かきく)+", "かきく", 0, 9, 1); // 934
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("((?i:あいう))", "あいう", 0, 9, 1); // 935
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("((?m:あ.う))", "あ\nう", 0, 7, 1); // 936
+
 // -------------------------------------------------------------------------
 // x3("((?=あん)あ)", "あんい", 0, 3, 1);
 // tr!(r#"((?=あん)あ)"#, "あんい", &[("あんい", 0, 3)], 937), UnsupportedLookAround
@@ -12699,18 +14041,28 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "937: Match end does not match");
 //       assert_eq!(&"あんい"[ma.1..ma.2], ma.0, "937: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("あいう|(.あいえ)", "んあいえ", 0, 12, 1); // 938
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3("あ*(.)", "ああああん", 12, 15, 1); // 939
+// -------------------------------------------------------------------------
+// *** Index error: x3("あいう|(.あいえ)", "んあいえ", 0, 12, 1); // 938
+
+// -------------------------------------------------------------------------
+// *** Index error:  x3("あ*(.)", "ああああん", 12, 15, 1); // 939
+
 // -------------------------------------------------------------------------
 // x3("あ*?(.)", "ああああん", 0, 3, 1);
 // tu!(r#"あ*?(.)"#, "ああああん", &[("あああ", 0, 3)], 940), UnsupportedFeatureError("x?*?: Non-greedy repetitions)
 // scanner! { S940 { mode M { token r#"あ*?(.)"# => 0; } } }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3("あ*?(ん)", "ああああん", 12, 15, 1); // 941
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3("[いうえ]あ*(.)", "えああああん", 15, 18, 1); // 942
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(\\Aいい)うう", "いいうう", 0, 6, 1); // 943
+// -------------------------------------------------------------------------
+// *** Index error:  x3("あ*?(ん)", "ああああん", 12, 15, 1); // 941
+
+// -------------------------------------------------------------------------
+// *** Index error:  x3("[いうえ]あ*(.)", "えああああん", 15, 18, 1); // 942
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(\\Aいい)うう", "いいうう", 0, 6, 1); // 943
+
 // -------------------------------------------------------------------------
 // n("(\\Aいい)うう", "んいいうう");
 // tu!(r#"(\Aいい)うう"#, "んいいうう", &[], 944), UnsupportedFeatureError("StartLine Look(Start)")
@@ -12721,9 +14073,11 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("んいいうう", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "944: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(^いい)うう", "いいうう", 0, 6, 1); // 945
+// -------------------------------------------------------------------------
+// *** Index error: x3("(^いい)うう", "いいうう", 0, 6, 1); // 945
+
 // -------------------------------------------------------------------------
 // n("(^いい)うう", "んいいうう");
 // tu!(r#"(^いい)うう"#, "んいいうう", &[], 946), UnsupportedFeatureError("StartLine Look(Start)")
@@ -12734,9 +14088,11 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("んいいうう", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "946: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3("ろろ(るる$)", "ろろるる", 6, 12, 1); // 947
+// -------------------------------------------------------------------------
+// *** Index error:  x3("ろろ(るる$)", "ろろるる", 6, 12, 1); // 947
+
 // -------------------------------------------------------------------------
 // n("ろろ(るる$)", "ろろるるる");
 // tu!(r#"ろろ(るる$)"#, "ろろるるる", &[], 948), UnsupportedFeatureError("EndLine Look(End)")
@@ -12747,9 +14103,11 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("ろろるるる", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "948: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(無)\\1", "無無", 0, 6); // 949
+// -------------------------------------------------------------------------
+// *** Index error: x2("(無)\\1", "無無", 0, 6); // 949
+
 // -------------------------------------------------------------------------
 // n("(無)\\1", "無武");
 // tr!(r#"(無)\1"#, "無武", &[], 950), UnsupportedBackreference
@@ -12760,9 +14118,11 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("無武", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "950: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(空?)\\1", "空空", 0, 6); // 951
+// -------------------------------------------------------------------------
+// *** Index error: x2("(空?)\\1", "空空", 0, 6); // 951
+
 // -------------------------------------------------------------------------
 // x2("(空?\?)\\1", "空空", 0, 0);
 // tr!(r#"(空?\?)\1"#, "空空", &[], 952), UnsupportedBackreference
@@ -12773,20 +14133,44 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("空空", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "952: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(空*)\\1", "空空空空空", 0, 12); // 953
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(空*)\\1", "空空空空空", 0, 6, 1); // 954
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ(い*)\\1", "あいいいい", 0, 15); // 955
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("あ(い*)\\1", "あい", 0, 3); // 956
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あ*)(い*)\\1\\2", "あああいいあああいい", 0, 30); // 957
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(あ*)(い*)\\2", "あああいいいい", 0, 21); // 958
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x3("(あ*)(い*)\\2", "あああいいいい", 9, 15, 2); // 959
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(((((((ぽ*)ぺ))))))ぴ\\7", "ぽぽぽぺぴぽぽぽ", 0, 24); // 960
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(((((((ぽ*)ぺ))))))ぴ\\7", "ぽぽぽぺぴぽぽぽ", 0, 9, 7); // 961
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(は)(ひ)(ふ)\\2\\1\\3", "はひふひはふ", 0, 18); // 962
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("([き-け])\\1", "くく", 0, 6); // 963
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(\\w\\d\\s)\\1", "あ5 あ5 ", 0, 10); // 964
+// -------------------------------------------------------------------------
+// *** Index error: x2("(空*)\\1", "空空空空空", 0, 12); // 953
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(空*)\\1", "空空空空空", 0, 6, 1); // 954
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ(い*)\\1", "あいいいい", 0, 15); // 955
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("あ(い*)\\1", "あい", 0, 3); // 956
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あ*)(い*)\\1\\2", "あああいいあああいい", 0, 30); // 957
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(あ*)(い*)\\2", "あああいいいい", 0, 21); // 958
+
+// -------------------------------------------------------------------------
+// *** Index error:  x3("(あ*)(い*)\\2", "あああいいいい", 9, 15, 2); // 959
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(((((((ぽ*)ぺ))))))ぴ\\7", "ぽぽぽぺぴぽぽぽ", 0, 24); // 960
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(((((((ぽ*)ぺ))))))ぴ\\7", "ぽぽぽぺぴぽぽぽ", 0, 9, 7); // 961
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(は)(ひ)(ふ)\\2\\1\\3", "はひふひはふ", 0, 18); // 962
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("([き-け])\\1", "くく", 0, 6); // 963
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(\\w\\d\\s)\\1", "あ5 あ5 ", 0, 10); // 964
+
 // -------------------------------------------------------------------------
 // n("(\\w\\d\\s)\\1", "あ5 あ5");
 // tr!(r#"(\w\d\s)\1"#, "あ5 あ5", &[], 965), UnsupportedBackreference
@@ -12797,12 +14181,20 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("あ5 あ5", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "965: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(誰？|[あ-う]{3})\\1", "誰？誰？", 0, 12); // 966
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("...(誰？|[あ-う]{3})\\1", "あaあ誰？誰？", 0, 19); // 967
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(誰？|[あ-う]{3})\\1", "ういうういう", 0, 18); // 968
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(^こ)\\1", "ここ", 0, 6); // 969
+// -------------------------------------------------------------------------
+// *** Index error: x2("(誰？|[あ-う]{3})\\1", "誰？誰？", 0, 12); // 966
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("...(誰？|[あ-う]{3})\\1", "あaあ誰？誰？", 0, 19); // 967
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(誰？|[あ-う]{3})\\1", "ういうういう", 0, 18); // 968
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(^こ)\\1", "ここ", 0, 6); // 969
+
 // -------------------------------------------------------------------------
 // n("(^む)\\1", "めむむ");
 // tr!(r#"(^む)\1"#, "めむむ", &[], 970), UnsupportedBackreference
@@ -12813,7 +14205,7 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("めむむ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "970: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(あ$)\\1", "ああ");
@@ -12825,7 +14217,7 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("ああ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "971: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(あい\\Z)\\1", "あい");
@@ -12837,119 +14229,191 @@ scanner! { S929 { mode M { token r#"(あ+|い?)"# => 0; } } }
 //   let matches = scanner.find_matches("あい", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "972: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("(あ*\\Z)\\1", "あ", 3, 3); // 973
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2(".(あ*\\Z)\\1", "いあ", 3, 6); // 974
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(.(やいゆ)\\2)", "zやいゆやいゆ", 0, 19, 1); // 975
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x3("(.(..\\d.)\\2)", "あ12341234", 0, 11, 1); // 976
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("((?i:あvず))\\1", "あvずあvず", 0, 14); // 977
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?<愚か>変|\\(\\g<愚か>\\))", "((((((変))))))", 0, 15); // 978
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\A(?:\\g<阿_1>|\\g<云_2>|\\z終了  (?<阿_1>観|自\\g<云_2>自)(?<云_2>在|菩薩\\g<阿_1>菩薩))$", "菩薩自菩薩自在自菩薩自菩薩", 0, 39); // 979
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[[ひふ]]", "ふ", 0, 3); // 980
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[[いおう]か]", "か", 0, 3); // 981
+// -------------------------------------------------------------------------
+// *** Index error:  x2("(あ*\\Z)\\1", "あ", 3, 3); // 973
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2(".(あ*\\Z)\\1", "いあ", 3, 6); // 974
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(.(やいゆ)\\2)", "zやいゆやいゆ", 0, 19, 1); // 975
+
+// -------------------------------------------------------------------------
+// *** Index error: x3("(.(..\\d.)\\2)", "あ12341234", 0, 11, 1); // 976
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("((?i:あvず))\\1", "あvずあvず", 0, 14); // 977
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?<愚か>変|\\(\\g<愚か>\\))", "((((((変))))))", 0, 15); // 978
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\A(?:\\g<阿_1>|\\g<云_2>|\\z終了  (?<阿_1>観|自\\g<云_2>自)(?<云_2>在|菩薩\\g<阿_1>菩薩))$", "菩薩自菩薩自在自菩薩自菩薩", 0, 39); // 979
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[[ひふ]]", "ふ", 0, 3); // 980
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[[いおう]か]", "か", 0, 3); // 981
+
 // -------------------------------------------------------------------------
 // n("[[^あ]]", "あ");
 // td!(r#"[[^あ]]"#, "あ", &[], 982),
 scanner! { S982 { mode M { token r#"[[^あ]]"# => 0; } } }
-// #[test] fn test_match_982() {
-//   use s982::S982 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "982: Unexpected match count");
-//}
+#[test]
+fn test_match_982() {
+    use s982::S982 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "982: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("[^[あ]]", "あ");
 // td!(r#"[^[あ]]"#, "あ", &[], 983),
 scanner! { S983 { mode M { token r#"[^[あ]]"# => 0; } } }
-// #[test] fn test_match_983() {
-//   use s983::S983 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "983: Unexpected match count");
-//}
+#[test]
+fn test_match_983() {
+    use s983::S983 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "983: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[^あ]]", "あ", 0, 3); // 984
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[[かきく]&&きく]", "く", 0, 3); // 985
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[^あ]]", "あ", 0, 3); // 984
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[[かきく]&&きく]", "く", 0, 3); // 985
+
 // -------------------------------------------------------------------------
 // n("[[かきく]&&きく]", "か");
 // td!(r#"[[かきく]&&きく]"#, "か", &[], 986),
 scanner! { S986 { mode M { token r#"[[かきく]&&きく]"# => 0; } } }
-// #[test] fn test_match_986() {
-//   use s986::S986 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("か", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "986: Unexpected match count");
-//}
+#[test]
+fn test_match_986() {
+    use s986::S986 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("か", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "986: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("[[かきく]&&きく]", "け");
 // td!(r#"[[かきく]&&きく]"#, "け", &[], 987),
 scanner! { S987 { mode M { token r#"[[かきく]&&きく]"# => 0; } } }
-// #[test] fn test_match_987() {
-//   use s987::S987 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("け", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "987: Unexpected match count");
-//}
+#[test]
+fn test_match_987() {
+    use s987::S987 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("け", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "987: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[あ-ん&&い-を&&う-ゑ]", "ゑ", 0, 3); // 988
+// -------------------------------------------------------------------------
+// *** Index error: x2("[あ-ん&&い-を&&う-ゑ]", "ゑ", 0, 3); // 988
+
 // -------------------------------------------------------------------------
 // n("[^あ-ん&&い-を&&う-ゑ]", "ゑ");
 // td!(r#"[^あ-ん&&い-を&&う-ゑ]"#, "ゑ", &[], 989),
 scanner! { S989 { mode M { token r#"[^あ-ん&&い-を&&う-ゑ]"# => 0; } } }
-// #[test] fn test_match_989() {
-//   use s989::S989 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ゑ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "989: Unexpected match count");
-//}
+#[test]
+fn test_match_989() {
+    use s989::S989 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ゑ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "989: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[[^あ&&あ]&&あ-ん]", "い", 0, 3); // 990
+// -------------------------------------------------------------------------
+// *** Index error: x2("[[^あ&&あ]&&あ-ん]", "い", 0, 3); // 990
+
 // -------------------------------------------------------------------------
 // n("[[^あ&&あ]&&あ-ん]", "あ");
 // td!(r#"[[^あ&&あ]&&あ-ん]"#, "あ", &[], 991),
 scanner! { S991 { mode M { token r#"[[^あ&&あ]&&あ-ん]"# => 0; } } }
-// #[test] fn test_match_991() {
-//   use s991::S991 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "991: Unexpected match count");
-//}
+#[test]
+fn test_match_991() {
+    use s991::S991 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("あ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "991: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[[^あ-ん&&いうえお]&&[^う-か]]", "き", 0, 3); // 992
+// -------------------------------------------------------------------------
+// *** Index error: x2("[[^あ-ん&&いうえお]&&[^う-か]]", "き", 0, 3); // 992
+
 // -------------------------------------------------------------------------
 // n("[[^あ-ん&&いうえお]&&[^う-か]]", "い");
 // td!(r#"[[^あ-ん&&いうえお]&&[^う-か]]"#, "い", &[], 993),
 scanner! { S993 { mode M { token r#"[[^あ-ん&&いうえお]&&[^う-か]]"# => 0; } } }
-// #[test] fn test_match_993() {
-//   use s993::S993 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("い", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "993: Unexpected match count");
-//}
+#[test]
+fn test_match_993() {
+    use s993::S993 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("い", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "993: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[^あいう]&&[^うえお]]", "う", 0, 3); // 994
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[^あいう]&&[^うえお]]", "え", 0, 3); // 995
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[^あいう]&&[^うえお]]", "う", 0, 3); // 994
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[^あいう]&&[^うえお]]", "え", 0, 3); // 995
+
 // -------------------------------------------------------------------------
 // n("[^[^あいう]&&[^うえお]]", "か");
 // td!(r#"[^[^あいう]&&[^うえお]]"#, "か", &[], 996),
 scanner! { S996 { mode M { token r#"[^[^あいう]&&[^うえお]]"# => 0; } } }
-// #[test] fn test_match_996() {
-//   use s996::S996 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("か", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "996: Unexpected match count");
-//}
+#[test]
+fn test_match_996() {
+    use s996::S996 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("か", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "996: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("[あ-&&-あ]", "-", 0, 1);
@@ -12966,72 +14430,120 @@ scanner! { S996 { mode M { token r#"[^[^あいう]&&[^うえお]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "997: Match end does not match");
 //       assert_eq!(&"-"[ma.1..ma.2], ma.0, "997: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[^a-zあいう]&&[^bcdefgうえお]q-w]", "え", 0, 3); // 998
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[^a-zあいう]&&[^bcdefgうえお]q-w]", "え", 0, 3); // 998
+
 // -------------------------------------------------------------------------
 // x2("[^[^a-zあいう]&&[^bcdefgうえお]g-w]", "f", 0, 1);
 // td!(r#"[^[^a-zあいう]&&[^bcdefgうえお]g-w]"#, "f", &[("f", 0, 1)], 999),
 scanner! { S999 { mode M { token r#"[^[^a-zあいう]&&[^bcdefgうえお]g-w]"# => 0; } } }
-// #[test] fn test_match_999() {
-//   use s999::S999 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("f", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("f", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "999: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "999: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "999: Match end does not match");
-//       assert_eq!(&"f"[ma.1..ma.2], ma.0, "999: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_999() {
+    use s999::S999 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("f", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("f", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "999: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "999: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "999: Match end does not match");
+        assert_eq!(
+            &"f"[ma.1..ma.2],
+            ma.0,
+            "999: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[^[^a-zあいう]&&[^bcdefgうえお]g-w]", "g", 0, 1);
 // td!(r#"[^[^a-zあいう]&&[^bcdefgうえお]g-w]"#, "g", &[("g", 0, 1)], 1000),
 scanner! { S1000 { mode M { token r#"[^[^a-zあいう]&&[^bcdefgうえお]g-w]"# => 0; } } }
-// #[test] fn test_match_1000() {
-//   use s1000::S1000 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("g", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("g", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1000: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1000: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1000: Match end does not match");
-//       assert_eq!(&"g"[ma.1..ma.2], ma.0, "1000: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1000() {
+    use s1000::S1000 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("g", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("g", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1000: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1000: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1000: Match end does not match");
+        assert_eq!(
+            &"g"[ma.1..ma.2],
+            ma.0,
+            "1000: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("[^[^a-zあいう]&&[^bcdefgうえお]g-w]", "2");
 // td!(r#"[^[^a-zあいう]&&[^bcdefgうえお]g-w]"#, "2", &[], 1001),
 scanner! { S1001 { mode M { token r#"[^[^a-zあいう]&&[^bcdefgうえお]g-w]"# => 0; } } }
-// #[test] fn test_match_1001() {
-//   use s1001::S1001 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("2", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1001: Unexpected match count");
-//}
+#[test]
+fn test_match_1001() {
+    use s1001::S1001 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("2", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1001: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("a<b>バージョンのダウンロード<\\/b>", "a<b>バージョンのダウンロード</b>", 0, 44); // 1002
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".<b>バージョンのダウンロード<\\/b>", "a<b>バージョンのダウンロード</b>", 0, 44); // 1003
-// Exception: Exception calling "Substring" with "2" argument(s): "startIndex cannot be larger than length of string. (Parameter 'startIndex')" x2("\\n?\\z", "こんにちは", 15, 15); // 1004
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?m).*", "青赤黄", 0, 9); // 1005
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?m).*a", "青赤黄a", 0, 10); // 1006
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\p{Hiragana}", "ぴ", 0, 3); // 1007
+// -------------------------------------------------------------------------
+// *** Index error: x2("a<b>バージョンのダウンロード<\\/b>", "a<b>バージョンのダウンロード</b>", 0, 44); // 1002
+
+// -------------------------------------------------------------------------
+// *** Index error: x2(".<b>バージョンのダウンロード<\\/b>", "a<b>バージョンのダウンロード</b>", 0, 44); // 1003
+
+// -------------------------------------------------------------------------
+// *** Index error:  x2("\\n?\\z", "こんにちは", 15, 15); // 1004
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?m).*", "青赤黄", 0, 9); // 1005
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?m).*a", "青赤黄a", 0, 10); // 1006
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\p{Hiragana}", "ぴ", 0, 3); // 1007
+
 // -------------------------------------------------------------------------
 // n("\\P{Hiragana}", "ぴ");
 // td!(r#"\P{Hiragana}"#, "ぴ", &[], 1008),
 scanner! { S1008 { mode M { token r#"\P{Hiragana}"# => 0; } } }
-// #[test] fn test_match_1008() {
-//   use s1008::S1008 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ぴ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1008: Unexpected match count");
-//}
+#[test]
+fn test_match_1008() {
+    use s1008::S1008 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ぴ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1008: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("\\p{Emoji}", "\xE2\xAD\x90", 0, 3);
@@ -13048,7 +14560,7 @@ scanner! { S1009 { mode M { token r#"\p{Emoji}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1009: Match end does not match");
 //       assert_eq!(&"\xE2\xAD\x90"[ma.1..ma.2], ma.0, "1009: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\p{^Emoji}", "\xEF\xBC\x93", 0, 3);
@@ -13065,7 +14577,7 @@ scanner! { S1009 { mode M { token r#"\p{Emoji}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1010: Match end does not match");
 //       assert_eq!(&"\xEF\xBC\x93"[ma.1..ma.2], ma.0, "1010: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\p{Extended_Pictographic}", "\xE2\x9A\xA1", 0, 3);
@@ -13082,7 +14594,7 @@ scanner! { S1011 { mode M { token r#"\p{Extended_Pictographic}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1011: Match end does not match");
 //       assert_eq!(&"\xE2\x9A\xA1"[ma.1..ma.2], ma.0, "1011: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\p{Extended_Pictographic}", "\xE3\x81\x82");
@@ -13094,7 +14606,7 @@ scanner! { S1012 { mode M { token r#"\p{Extended_Pictographic}"# => 0; } } }
 //   let matches = scanner.find_matches("\xE3\x81\x82", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1012: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\pC", "\xC2\xAD", 0, 2); // U+00AD: Soft Hyphen
@@ -13111,24 +14623,36 @@ scanner! { S1013 { mode M { token r#"\pC"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1013: Match end does not match");
 //       assert_eq!(&"\xC2\xAD"[ma.1..ma.2], ma.0, "1013: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\pL", "U", 0, 1);
 // td!(r#"\pL"#, "U", &[("U", 0, 1)], 1014),
 scanner! { S1014 { mode M { token r#"\pL"# => 0; } } }
-// #[test] fn test_match_1014() {
-//   use s1014::S1014 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("U", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("U", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1014: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1014: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1014: Match end does not match");
-//       assert_eq!(&"U"[ma.1..ma.2], ma.0, "1014: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1014() {
+    use s1014::S1014 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("U", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("U", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1014: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1014: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1014: Match end does not match");
+        assert_eq!(
+            &"U"[ma.1..ma.2],
+            ma.0,
+            "1014: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("\\pM", "\xE2\x83\x9D", 0, 3); // U+20DD: Combining Enclosing Circle
@@ -13145,73 +14669,120 @@ scanner! { S1015 { mode M { token r#"\pM"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1015: Match end does not match");
 //       assert_eq!(&"\xE2\x83\x9D"[ma.1..ma.2], ma.0, "1015: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\pN+", "3Ⅴ", 0, 4); // 1016
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\pP+", "†⁂", 0, 6); // 1017
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\pS+", "€₤", 0, 6); // 1018
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\pN+", "3Ⅴ", 0, 4); // 1016
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\pP+", "†⁂", 0, 6); // 1017
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\pS+", "€₤", 0, 6); // 1018
+
 // -------------------------------------------------------------------------
 // x2("\\pZ+", " ", 0, 1);
 // td!(r#"\pZ+"#, " ", &[(" ", 0, 1)], 1019),
 scanner! { S1019 { mode M { token r#"\pZ+"# => 0; } } }
-// #[test] fn test_match_1019() {
-//   use s1019::S1019 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches(" ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[(" ", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1019: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1019: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1019: Match end does not match");
-//       assert_eq!(&" "[ma.1..ma.2], ma.0, "1019: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1019() {
+    use s1019::S1019 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches(" ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[(" ", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1019: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1019: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1019: Match end does not match");
+        assert_eq!(
+            &" "[ma.1..ma.2],
+            ma.0,
+            "1019: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("\\pL", "@");
 // td!(r#"\pL"#, "@", &[], 1020),
 scanner! { S1020 { mode M { token r#"\pL"# => 0; } } }
-// #[test] fn test_match_1020() {
-//   use s1020::S1020 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("@", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1020: Unexpected match count");
-//}
+#[test]
+fn test_match_1020() {
+    use s1020::S1020 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("@", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1020: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("\\pL+", "akZtE", 0, 5);
 // td!(r#"\pL+"#, "akZtE", &[("akZtE", 0, 5)], 1021),
 scanner! { S1021 { mode M { token r#"\pL+"# => 0; } } }
-// #[test] fn test_match_1021() {
-//   use s1021::S1021 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("akZtE", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("akZtE", 0, 5)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1021: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1021: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1021: Match end does not match");
-//       assert_eq!(&"akZtE"[ma.1..ma.2], ma.0, "1021: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1021() {
+    use s1021::S1021 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("akZtE", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("akZtE", 0, 5)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1021: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1021: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1021: Match end does not match");
+        assert_eq!(
+            &"akZtE"[ma.1..ma.2],
+            ma.0,
+            "1021: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("\\PL+", "1@=-%", 0, 5);
 // td!(r#"\PL+"#, "1@=-%", &[("1@=-%", 0, 5)], 1022),
 scanner! { S1022 { mode M { token r#"\PL+"# => 0; } } }
-// #[test] fn test_match_1022() {
-//   use s1022::S1022 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("1@=-%", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("1@=-%", 0, 5)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1022: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1022: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1022: Match end does not match");
-//       assert_eq!(&"1@=-%"[ma.1..ma.2], ma.0, "1022: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1022() {
+    use s1022::S1022 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("1@=-%", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("1@=-%", 0, 5)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1022: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1022: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1022: Match end does not match");
+        assert_eq!(
+            &"1@=-%"[ma.1..ma.2],
+            ma.0,
+            "1022: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // e("\\p", "", ONIGERR_INVALID_CHAR_PROPERTY_NAME);
@@ -13238,47 +14809,76 @@ scanner! { S1022 { mode M { token r#"\PL+"# => 0; } } }
 // x2("[\\pL]", "s", 0, 1);
 // td!(r#"[\pL]"#, "s", &[("s", 0, 1)], 1026),
 scanner! { S1026 { mode M { token r#"[\pL]"# => 0; } } }
-// #[test] fn test_match_1026() {
-//   use s1026::S1026 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("s", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1026: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1026: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1026: Match end does not match");
-//       assert_eq!(&"s"[ma.1..ma.2], ma.0, "1026: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1026() {
+    use s1026::S1026 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("s", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1026: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1026: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1026: Match end does not match");
+        assert_eq!(
+            &"s"[ma.1..ma.2],
+            ma.0,
+            "1026: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("[^\\pL]", "s");
 // td!(r#"[^\pL]"#, "s", &[], 1027),
 scanner! { S1027 { mode M { token r#"[^\pL]"# => 0; } } }
-// #[test] fn test_match_1027() {
-//   use s1027::S1027 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1027: Unexpected match count");
-//}
+#[test]
+fn test_match_1027() {
+    use s1027::S1027 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1027: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("[\\PL]+", "-3@", 0, 3);
 // td!(r#"[\PL]+"#, "-3@", &[("-3@", 0, 3)], 1028),
 scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
-// #[test] fn test_match_1028() {
-//   use s1028::S1028 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("-3@", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("-3@", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1028: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1028: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1028: Match end does not match");
-//       assert_eq!(&"-3@"[ma.1..ma.2], ma.0, "1028: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1028() {
+    use s1028::S1028 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("-3@", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("-3@", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1028: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1028: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1028: Match end does not match");
+        assert_eq!(
+            &"-3@"[ma.1..ma.2],
+            ma.0,
+            "1028: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // e("[\\p]", "", ONIGERR_INVALID_CHAR_PROPERTY_NAME);
@@ -13294,7 +14894,9 @@ scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
 // #[test] fn test_error_1030() {
 // }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\p{Word}", "こ", 0, 3); // 1031
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\p{Word}", "こ", 0, 3); // 1031
+
 // -------------------------------------------------------------------------
 // n("\\p{^Word}", "こ");
 // tr!(r#"\p{^Word}"#, "こ", &[], 1032), UnicodePropertyNotFound
@@ -13305,9 +14907,11 @@ scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1032: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[\\p{Word}]", "こ", 0, 3); // 1033
+// -------------------------------------------------------------------------
+// *** Index error: x2("[\\p{Word}]", "こ", 0, 3); // 1033
+
 // -------------------------------------------------------------------------
 // n("[\\p{^Word}]", "こ");
 // tr!(r#"[\p{^Word}]"#, "こ", &[], 1034), UnicodePropertyNotFound
@@ -13318,7 +14922,7 @@ scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1034: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("[^\\p{Word}]", "こ");
@@ -13330,10 +14934,14 @@ scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1035: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^\\p{^Word}]", "こ", 0, 3); // 1036
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^\\p{^Word}&&\\p{ASCII}]", "こ", 0, 3); // 1037
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^\\p{^Word}]", "こ", 0, 3); // 1036
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^\\p{^Word}&&\\p{ASCII}]", "こ", 0, 3); // 1037
+
 // -------------------------------------------------------------------------
 // x2("[^\\p{^Word}&&\\p{ASCII}]", "a", 0, 1);
 // tr!(r#"[^\p{^Word}&&\p{ASCII}]"#, "a", &[("a", 0, 1)], 1038), UnicodePropertyNotFound
@@ -13349,7 +14957,7 @@ scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1038: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "1038: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("[^\\p{^Word}&&\\p{ASCII}]", "#");
@@ -13361,10 +14969,14 @@ scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
 //   let matches = scanner.find_matches("#", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1039: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[\\p{^Word}]&&[\\p{ASCII}]]", "こ", 0, 3); // 1040
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[\\p{ASCII}]&&[^\\p{Word}]]", "こ", 0, 3); // 1041
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[\\p{^Word}]&&[\\p{ASCII}]]", "こ", 0, 3); // 1040
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[\\p{ASCII}]&&[^\\p{Word}]]", "こ", 0, 3); // 1041
+
 // -------------------------------------------------------------------------
 // n("[[\\p{ASCII}]&&[^\\p{Word}]]", "こ");
 // tr!(r#"[[\p{ASCII}]&&[^\p{Word}]]"#, "こ", &[], 1042), UnicodePropertyNotFound
@@ -13375,12 +14987,20 @@ scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1042: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[\\p{^Word}]&&[^\\p{ASCII}]]", "こ", 0, 3); // 1043
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^\\x{104a}]", "こ", 0, 3); // 1044
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^\\p{^Word}&&[^\\x{104a}]]", "こ", 0, 3); // 1045
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[\\p{^Word}]&&[^\\x{104a}]]", "こ", 0, 3); // 1046
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[\\p{^Word}]&&[^\\p{ASCII}]]", "こ", 0, 3); // 1043
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^\\x{104a}]", "こ", 0, 3); // 1044
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^\\p{^Word}&&[^\\x{104a}]]", "こ", 0, 3); // 1045
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[\\p{^Word}]&&[^\\x{104a}]]", "こ", 0, 3); // 1046
+
 // -------------------------------------------------------------------------
 // n("[^\\p{Word}||[^\\x{104a}]]", "こ");
 // tr!(r#"[^\p{Word}||[^\x{104a}]]"#, "こ", &[], 1047), UnicodePropertyNotFound
@@ -13391,33 +15011,47 @@ scanner! { S1028 { mode M { token r#"[\PL]+"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1047: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\p{^Cntrl}", "こ", 0, 3); // 1048
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\p{^Cntrl}", "こ", 0, 3); // 1048
+
 // -------------------------------------------------------------------------
 // n("\\p{Cntrl}", "こ");
 // td!(r#"\p{Cntrl}"#, "こ", &[], 1049),
 scanner! { S1049 { mode M { token r#"\p{Cntrl}"# => 0; } } }
-// #[test] fn test_match_1049() {
-//   use s1049::S1049 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1049: Unexpected match count");
-//}
+#[test]
+fn test_match_1049() {
+    use s1049::S1049 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1049: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[\\p{^Cntrl}]", "こ", 0, 3); // 1050
+// -------------------------------------------------------------------------
+// *** Index error: x2("[\\p{^Cntrl}]", "こ", 0, 3); // 1050
+
 // -------------------------------------------------------------------------
 // n("[\\p{Cntrl}]", "こ");
 // td!(r#"[\p{Cntrl}]"#, "こ", &[], 1051),
 scanner! { S1051 { mode M { token r#"[\p{Cntrl}]"# => 0; } } }
-// #[test] fn test_match_1051() {
-//   use s1051::S1051 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1051: Unexpected match count");
-//}
+#[test]
+fn test_match_1051() {
+    use s1051::S1051 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1051: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("[^\\p{^Cntrl}]", "こ");
@@ -13429,26 +15063,42 @@ scanner! { S1051 { mode M { token r#"[\p{Cntrl}]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1052: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^\\p{Cntrl}]", "こ", 0, 3); // 1053
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^\\p{Cntrl}&&\\p{ASCII}]", "こ", 0, 3); // 1054
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^\\p{Cntrl}]", "こ", 0, 3); // 1053
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^\\p{Cntrl}&&\\p{ASCII}]", "こ", 0, 3); // 1054
+
 // -------------------------------------------------------------------------
 // x2("[^\\p{Cntrl}&&\\p{ASCII}]", "a", 0, 1);
 // td!(r#"[^\p{Cntrl}&&\p{ASCII}]"#, "a", &[("a", 0, 1)], 1055),
 scanner! { S1055 { mode M { token r#"[^\p{Cntrl}&&\p{ASCII}]"# => 0; } } }
-// #[test] fn test_match_1055() {
-//   use s1055::S1055 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1055: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1055: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1055: Match end does not match");
-//       assert_eq!(&"a"[ma.1..ma.2], ma.0, "1055: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1055() {
+    use s1055::S1055 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1055: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1055: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1055: Match end does not match");
+        assert_eq!(
+            &"a"[ma.1..ma.2],
+            ma.0,
+            "1055: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("[^\\p{^Cntrl}&&\\p{ASCII}]", "#");
@@ -13460,21 +15110,30 @@ scanner! { S1055 { mode M { token r#"[^\p{Cntrl}&&\p{ASCII}]"# => 0; } } }
 //   let matches = scanner.find_matches("#", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1056: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[\\p{^Cntrl}]&&[\\p{ASCII}]]", "こ", 0, 3); // 1057
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("[^[\\p{ASCII}]&&[^\\p{Cntrl}]]", "こ", 0, 3); // 1058
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[\\p{^Cntrl}]&&[\\p{ASCII}]]", "こ", 0, 3); // 1057
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("[^[\\p{ASCII}]&&[^\\p{Cntrl}]]", "こ", 0, 3); // 1058
+
 // -------------------------------------------------------------------------
 // n("[[\\p{ASCII}]&&[^\\p{Cntrl}]]", "こ");
 // td!(r#"[[\p{ASCII}]&&[^\p{Cntrl}]]"#, "こ", &[], 1059),
 scanner! { S1059 { mode M { token r#"[[\p{ASCII}]&&[^\p{Cntrl}]]"# => 0; } } }
-// #[test] fn test_match_1059() {
-//   use s1059::S1059 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1059: Unexpected match count");
-//}
+#[test]
+fn test_match_1059() {
+    use s1059::S1059 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1059: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("[^[\\p{^Cntrl}]&&[^\\p{ASCII}]]", "こ");
@@ -13486,7 +15145,7 @@ scanner! { S1059 { mode M { token r#"[[\p{ASCII}]&&[^\p{Cntrl}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1060: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("[^\\p{^Cntrl}&&[^\\x{104a}]]", "こ");
@@ -13498,7 +15157,7 @@ scanner! { S1059 { mode M { token r#"[[\p{ASCII}]&&[^\p{Cntrl}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1061: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("[^[\\p{^Cntrl}]&&[^\\x{104a}]]", "こ");
@@ -13510,21 +15169,28 @@ scanner! { S1059 { mode M { token r#"[[\p{ASCII}]&&[^\p{Cntrl}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1062: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("[^\\p{Cntrl}||[^\\x{104a}]]", "こ");
 // td!(r#"[^\p{Cntrl}||[^\x{104a}]]"#, "こ", &[], 1063),
 scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
-// #[test] fn test_match_1063() {
-//   use s1063::S1063 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1063: Unexpected match count");
-//}
+#[test]
+fn test_match_1063() {
+    use s1063::S1063 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1063: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?-W:\\p{Word})", "こ", 0, 3); // 1064
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?-W:\\p{Word})", "こ", 0, 3); // 1064
+
 // -------------------------------------------------------------------------
 // n("(?W:\\p{Word})", "こ");
 // tr!(r#"(?W:\p{Word})"#, "こ", &[], 1065), FlagUnrecognized
@@ -13535,7 +15201,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1065: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?W:\\p{Word})", "k", 0, 1);
@@ -13552,9 +15218,11 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1066: Match end does not match");
 //       assert_eq!(&"k"[ma.1..ma.2], ma.0, "1066: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?-W:[[:word:]])", "こ", 0, 3); // 1067
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?-W:[[:word:]])", "こ", 0, 3); // 1067
+
 // -------------------------------------------------------------------------
 // n("(?W:[[:word:]])", "こ");
 // tr!(r#"(?W:[[:word:]])"#, "こ", &[], 1068), FlagUnrecognized
@@ -13565,9 +15233,11 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1068: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?-D:\\p{Digit})", "３", 0, 3); // 1069
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?-D:\\p{Digit})", "３", 0, 3); // 1069
+
 // -------------------------------------------------------------------------
 // n("(?D:\\p{Digit})", "３");
 // tr!(r#"(?D:\p{Digit})"#, "３", &[], 1070), FlagUnrecognized
@@ -13578,7 +15248,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("３", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1070: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?-S:\\p{Space})", "\xc2\x85", 0, 2);
@@ -13595,7 +15265,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1071: Match end does not match");
 //       assert_eq!(&"\xc2\x85"[ma.1..ma.2], ma.0, "1071: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?S:\\p{Space})", "\xc2\x85");
@@ -13607,9 +15277,11 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xc2\x85", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1072: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?-P:\\p{Word})", "こ", 0, 3); // 1073
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?-P:\\p{Word})", "こ", 0, 3); // 1073
+
 // -------------------------------------------------------------------------
 // n("(?P:\\p{Word})", "こ");
 // tr!(r#"(?P:\p{Word})"#, "こ", &[], 1074), FlagUnrecognized
@@ -13620,9 +15292,11 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1074: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?-W:\\w)", "こ", 0, 3); // 1075
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?-W:\\w)", "こ", 0, 3); // 1075
+
 // -------------------------------------------------------------------------
 // n("(?W:\\w)", "こ");
 // tr!(r#"(?W:\w)"#, "こ", &[], 1076), FlagUnrecognized
@@ -13633,7 +15307,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1076: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?-W:\\w)", "k", 0, 1);
@@ -13650,7 +15324,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1077: Match end does not match");
 //       assert_eq!(&"k"[ma.1..ma.2], ma.0, "1077: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?W:\\w)", "k", 0, 1);
@@ -13667,7 +15341,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1078: Match end does not match");
 //       assert_eq!(&"k"[ma.1..ma.2], ma.0, "1078: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?-W:\\W)", "こ");
@@ -13679,9 +15353,11 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1079: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?W:\\W)", "こ", 0, 3); // 1080
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?W:\\W)", "こ", 0, 3); // 1080
+
 // -------------------------------------------------------------------------
 // n("(?-W:\\W)", "k");
 // tr!(r#"(?-W:\W)"#, "k", &[], 1081), FlagUnrecognized
@@ -13692,7 +15368,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("k", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1081: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?W:\\W)", "k");
@@ -13704,7 +15380,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("k", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1082: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?-W:\\b)", "こ", 0, 0);
@@ -13716,7 +15392,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1083: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?W:\\b)", "こ");
@@ -13728,7 +15404,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1084: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?-W:\\b)", "h", 0, 0);
@@ -13740,7 +15416,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("h", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1085: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?W:\\b)", "h", 0, 0);
@@ -13752,7 +15428,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("h", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1086: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?-W:\\B)", "こ");
@@ -13764,7 +15440,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1087: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?W:\\B)", "こ", 0, 0);
@@ -13776,7 +15452,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1088: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?-W:\\B)", "h");
@@ -13788,7 +15464,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("h", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1089: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?W:\\B)", "h");
@@ -13800,7 +15476,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("h", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1090: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?-P:\\b)", "こ", 0, 0);
@@ -13812,7 +15488,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1091: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?P:\\b)", "こ");
@@ -13824,7 +15500,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1092: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?-P:\\b)", "h", 0, 0);
@@ -13836,7 +15512,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("h", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1093: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?P:\\b)", "h", 0, 0);
@@ -13848,7 +15524,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("h", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1094: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?-P:\\B)", "こ");
@@ -13860,7 +15536,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1095: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?P:\\B)", "こ", 0, 0);
@@ -13872,7 +15548,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("こ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1096: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?-P:\\B)", "h");
@@ -13884,7 +15560,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("h", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1097: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?P:\\B)", "h");
@@ -13896,7 +15572,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("h", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1098: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\p{InBasicLatin}", "\x41", 0, 1);
@@ -13913,7 +15589,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1099: Match end does not match");
 //       assert_eq!(&"\x41"[ma.1..ma.2], ma.0, "1099: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n(".\\y\\O", "\x0d\x0a");
@@ -13925,7 +15601,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\x0d\x0a", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1100: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2(".\\Y\\O", "\x0d\x0a", 0, 2);
@@ -13942,7 +15618,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1101: Match end does not match");
 //       assert_eq!(&"\x0d\x0a"[ma.1..ma.2], ma.0, "1101: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("^.\\y.$", "\x67\xCC\x88");
@@ -13954,7 +15630,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\x67\xCC\x88", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1102: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2(".\\Y.", "\x67\xCC\x88", 0, 3);
@@ -13971,7 +15647,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1103: Match end does not match");
 //       assert_eq!(&"\x67\xCC\x88"[ma.1..ma.2], ma.0, "1103: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\y.\\Y.\\y", "\x67\xCC\x88", 0, 3);
@@ -13988,7 +15664,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1104: Match end does not match");
 //       assert_eq!(&"\x67\xCC\x88"[ma.1..ma.2], ma.0, "1104: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\y.\\y", "\xEA\xB0\x81", 0, 3);
@@ -14005,7 +15681,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1105: Match end does not match");
 //       assert_eq!(&"\xEA\xB0\x81"[ma.1..ma.2], ma.0, "1105: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^.\\Y.\\Y.$", "\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8", 0, 9);
@@ -14022,7 +15698,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1106: Match end does not match");
 //       assert_eq!(&"\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8"[ma.1..ma.2], ma.0, "1106: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("^.\\y.\\Y.$", "\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8");
@@ -14034,7 +15710,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1107: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2(".\\Y.", "\xE0\xAE\xA8\xE0\xAE\xBF", 0, 6);
@@ -14051,7 +15727,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1108: Match end does not match");
 //       assert_eq!(&"\xE0\xAE\xA8\xE0\xAE\xBF"[ma.1..ma.2], ma.0, "1108: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n(".\\y.", "\xE0\xAE\xA8\xE0\xAE\xBF");
@@ -14063,7 +15739,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE0\xAE\xA8\xE0\xAE\xBF", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1109: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2(".\\Y.", "\xE0\xB8\x81\xE0\xB8\xB3", 0, 6);
@@ -14080,7 +15756,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1110: Match end does not match");
 //       assert_eq!(&"\xE0\xB8\x81\xE0\xB8\xB3"[ma.1..ma.2], ma.0, "1110: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n(".\\y.", "\xE0\xB8\x81\xE0\xB8\xB3");
@@ -14092,7 +15768,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE0\xB8\x81\xE0\xB8\xB3", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1111: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2(".\\Y.", "\xE0\xA4\xB7\xE0\xA4\xBF", 0, 6);
@@ -14109,7 +15785,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1112: Match end does not match");
 //       assert_eq!(&"\xE0\xA4\xB7\xE0\xA4\xBF"[ma.1..ma.2], ma.0, "1112: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n(".\\y.", "\xE0\xA4\xB7\xE0\xA4\xBF");
@@ -14121,7 +15797,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE0\xA4\xB7\xE0\xA4\xBF", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1113: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("..\\Y.", "\xE3\x80\xB0\xE2\x80\x8D\xE2\xAD\x95", 0, 9);
@@ -14138,7 +15814,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1114: Match end does not match");
 //       assert_eq!(&"\xE3\x80\xB0\xE2\x80\x8D\xE2\xAD\x95"[ma.1..ma.2], ma.0, "1114: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("...\\Y.", "\xE3\x80\xB0\xCC\x82\xE2\x80\x8D\xE2\xAD\x95", 0, 11);
@@ -14155,7 +15831,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1115: Match end does not match");
 //       assert_eq!(&"\xE3\x80\xB0\xCC\x82\xE2\x80\x8D\xE2\xAD\x95"[ma.1..ma.2], ma.0, "1115: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("...\\Y.", "\xE3\x80\xB0\xCD\xB0\xE2\x80\x8D\xE2\xAD\x95");
@@ -14167,7 +15843,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE3\x80\xB0\xCD\xB0\xE2\x80\x8D\xE2\xAD\x95", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1116: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("^\\X\\X$", "\x0d\x0a");
@@ -14179,7 +15855,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\x0d\x0a", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1117: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^\\X$", "\x0d\x0a", 0, 2);
@@ -14196,7 +15872,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1118: Match end does not match");
 //       assert_eq!(&"\x0d\x0a"[ma.1..ma.2], ma.0, "1118: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("^\\X\\X.$", "\x67\xCC\x88");
@@ -14208,7 +15884,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\x67\xCC\x88", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1119: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^\\X$", "\x67\xCC\x88", 0, 3);
@@ -14225,7 +15901,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1120: Match end does not match");
 //       assert_eq!(&"\x67\xCC\x88"[ma.1..ma.2], ma.0, "1120: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^\\X$", "\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8", 0, 9);
@@ -14242,7 +15918,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1121: Match end does not match");
 //       assert_eq!(&"\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8"[ma.1..ma.2], ma.0, "1121: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("^\\X\\X\\X$", "\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8");
@@ -14254,7 +15930,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE1\x84\x80\xE1\x85\xA1\xE1\x86\xA8", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1122: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^\\X$", "\xE0\xAE\xA8\xE0\xAE\xBF", 0, 6);
@@ -14271,7 +15947,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1123: Match end does not match");
 //       assert_eq!(&"\xE0\xAE\xA8\xE0\xAE\xBF"[ma.1..ma.2], ma.0, "1123: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\X\\X", "\xE0\xAE\xA8\xE0\xAE\xBF");
@@ -14283,7 +15959,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE0\xAE\xA8\xE0\xAE\xBF", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1124: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^\\X$", "\xE0\xB8\x81\xE0\xB8\xB3", 0, 6);
@@ -14300,7 +15976,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1125: Match end does not match");
 //       assert_eq!(&"\xE0\xB8\x81\xE0\xB8\xB3"[ma.1..ma.2], ma.0, "1125: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\X\\X", "\xE0\xB8\x81\xE0\xB8\xB3");
@@ -14312,7 +15988,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE0\xB8\x81\xE0\xB8\xB3", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1126: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^\\X$", "\xE0\xA4\xB7\xE0\xA4\xBF", 0, 6);
@@ -14329,7 +16005,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1127: Match end does not match");
 //       assert_eq!(&"\xE0\xA4\xB7\xE0\xA4\xBF"[ma.1..ma.2], ma.0, "1127: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("\\X\\X", "\xE0\xA4\xB7\xE0\xA4\xBF");
@@ -14341,7 +16017,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE0\xA4\xB7\xE0\xA4\xBF", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1128: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("^\\X.$", "\xE0\xAE\xA8\xE0\xAE\xBF");
@@ -14353,7 +16029,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //   let matches = scanner.find_matches("\xE0\xAE\xA8\xE0\xAE\xBF", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1129: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("h\\Xllo", "ha\xCC\x80llo", 0, 7);
@@ -14370,7 +16046,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1130: Match end does not match");
 //       assert_eq!(&"ha\xCC\x80llo"[ma.1..ma.2], ma.0, "1130: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{g})\\yabc\\y", "abc", 0, 3);
@@ -14387,7 +16063,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1131: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1131: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{g})\\y\\X\\y", "abc", 0, 1);
@@ -14404,7 +16080,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1132: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1132: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\yabc\\y", "abc", 0, 3); // WB1, WB2
@@ -14421,7 +16097,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1133: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1133: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "\r\n", 0, 2); // WB3
@@ -14438,7 +16114,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1134: Match end does not match");
 //       assert_eq!(&"\r\n"[ma.1..ma.2], ma.0, "1134: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "\x0cz", 0, 1); // WB3a
@@ -14455,7 +16131,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1135: Match end does not match");
 //       assert_eq!(&"\x0cz"[ma.1..ma.2], ma.0, "1135: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "q\x0c", 0, 1); // WB3b
@@ -14472,7 +16148,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1136: Match end does not match");
 //       assert_eq!(&"q\x0c"[ma.1..ma.2], ma.0, "1136: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "\xE2\x80\x8D\xE2\x9D\x87", 0, 6); // WB3c
@@ -14489,7 +16165,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1137: Match end does not match");
 //       assert_eq!(&"\xE2\x80\x8D\xE2\x9D\x87"[ma.1..ma.2], ma.0, "1137: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "\x20\x20", 0, 2); // WB3d
@@ -14506,7 +16182,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1138: Match end does not match");
 //       assert_eq!(&"\x20\x20"[ma.1..ma.2], ma.0, "1138: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "a\xE2\x80\x8D", 0, 4); // WB4
@@ -14523,7 +16199,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1139: Match end does not match");
 //       assert_eq!(&"a\xE2\x80\x8D"[ma.1..ma.2], ma.0, "1139: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\y\\X\\y", "abc", 0, 3); // WB5
@@ -14540,7 +16216,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1140: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1140: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\y\\X\\y", "v\xCE\x87w", 0, 4); // WB6, WB7
@@ -14557,7 +16233,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1141: Match end does not match");
 //       assert_eq!(&"v\xCE\x87w"[ma.1..ma.2], ma.0, "1141: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\y\\X\\y", "\xD7\x93\x27", 0, 3); // WB7a
@@ -14574,7 +16250,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1142: Match end does not match");
 //       assert_eq!(&"\xD7\x93\x27"[ma.1..ma.2], ma.0, "1142: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\y\\X\\y", "\xD7\x93\x22\xD7\x93", 0, 5); // WB7b, WB7c
@@ -14591,7 +16267,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1143: Match end does not match");
 //       assert_eq!(&"\xD7\x93\x22\xD7\x93"[ma.1..ma.2], ma.0, "1143: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "14 45", 0, 2); // WB8
@@ -14608,7 +16284,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1144: Match end does not match");
 //       assert_eq!(&"14 45"[ma.1..ma.2], ma.0, "1144: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "a14", 0, 3); // WB9
@@ -14625,7 +16301,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1145: Match end does not match");
 //       assert_eq!(&"a14"[ma.1..ma.2], ma.0, "1145: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "832e", 0, 4); // WB10
@@ -14642,7 +16318,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1146: Match end does not match");
 //       assert_eq!(&"832e"[ma.1..ma.2], ma.0, "1146: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "8\xEF\xBC\x8C\xDB\xB0", 0, 6); // WB11, WB12
@@ -14659,9 +16335,11 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1147: Match end does not match");
 //       assert_eq!(&"8\xEF\xBC\x8C\xDB\xB0"[ma.1..ma.2], ma.0, "1147: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?y{w})\\y\\X\\y", "ケン", 0, 6); // WB13 // 1148
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?y{w})\\y\\X\\y", "ケン", 0, 6); // WB13 // 1148
+
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\y\\X\\y", "ケン\xE2\x80\xAFタ", 0, 12); // WB13a, WB13b
 // tr!(r#"(?y{w})\y\X\y"#, "ケン\xE2\x80\xAFタ", &[("ケン\\xE2\\x80\\x", 0, 12)], 1149), FlagUnrecognized
@@ -14677,7 +16355,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1149: Match end does not match");
 //       assert_eq!(&"ケン\xE2\x80\xAFタ"[ma.1..ma.2], ma.0, "1149: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\y\\X\\y", "\x21\x23", 0, 1); // WB999
@@ -14694,9 +16372,11 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1150: Match end does not match");
 //       assert_eq!(&"\x21\x23"[ma.1..ma.2], ma.0, "1150: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?y{w})\\y\\X\\y", "山ア", 0, 3); // 1151
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?y{w})\\y\\X\\y", "山ア", 0, 3); // 1151
+
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "3.14", 0, 4);
 // tr!(r#"(?y{w})\X"#, "3.14", &[("3.14", 0, 4)], 1152), FlagUnrecognized
@@ -14712,7 +16392,7 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1152: Match end does not match");
 //       assert_eq!(&"3.14"[ma.1..ma.2], ma.0, "1152: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?y{w})\\X", "3 14", 0, 1);
@@ -14729,24 +16409,36 @@ scanner! { S1063 { mode M { token r#"[^\p{Cntrl}||[^\x{104a}]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1153: Match end does not match");
 //       assert_eq!(&"3 14"[ma.1..ma.2], ma.0, "1153: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\x40", "@", 0, 1);
 // td!(r#"\x40"#, "@", &[("@", 0, 1)], 1154),
 scanner! { S1154 { mode M { token r#"\x40"# => 0; } } }
-// #[test] fn test_match_1154() {
-//   use s1154::S1154 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("@", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("@", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1154: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1154: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1154: Match end does not match");
-//       assert_eq!(&"@"[ma.1..ma.2], ma.0, "1154: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1154() {
+    use s1154::S1154 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("@", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("@", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1154: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1154: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1154: Match end does not match");
+        assert_eq!(
+            &"@"[ma.1..ma.2],
+            ma.0,
+            "1154: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("\\x1", "\x01", 0, 1);
@@ -14763,7 +16455,7 @@ scanner! { S1154 { mode M { token r#"\x40"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1155: Match end does not match");
 //       assert_eq!(&"\x01"[ma.1..ma.2], ma.0, "1155: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\x{1}", "\x01", 0, 1);
@@ -14780,7 +16472,7 @@ scanner! { S1156 { mode M { token r#"\x{1}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1156: Match end does not match");
 //       assert_eq!(&"\x01"[ma.1..ma.2], ma.0, "1156: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\x{4E38}", "\xE4\xB8\xB8", 0, 3);
@@ -14797,7 +16489,7 @@ scanner! { S1157 { mode M { token r#"\x{4E38}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1157: Match end does not match");
 //       assert_eq!(&"\xE4\xB8\xB8"[ma.1..ma.2], ma.0, "1157: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\u4E38", "\xE4\xB8\xB8", 0, 3);
@@ -14814,24 +16506,36 @@ scanner! { S1158 { mode M { token r#"\u4E38"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1158: Match end does not match");
 //       assert_eq!(&"\xE4\xB8\xB8"[ma.1..ma.2], ma.0, "1158: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\u0040", "@", 0, 1);
 // td!(r#"\u0040"#, "@", &[("@", 0, 1)], 1159),
 scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
-// #[test] fn test_match_1159() {
-//   use s1159::S1159 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("@", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("@", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1159: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1159: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1159: Match end does not match");
-//       assert_eq!(&"@"[ma.1..ma.2], ma.0, "1159: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1159() {
+    use s1159::S1159 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("@", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("@", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1159: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1159: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1159: Match end does not match");
+        assert_eq!(
+            &"@"[ma.1..ma.2],
+            ma.0,
+            "1159: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // e("\\xF4", "", ONIGERR_TOO_SHORT_MULTI_BYTE_STRING);
@@ -14890,7 +16594,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1166: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1166: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\b.*abc.*\\b", "abc", 0, 3);
@@ -14907,7 +16611,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1167: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1167: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?()0+)+++(((0\\g<0>)0)|())++++((?(1)(0\\g<0>))++++++0*())++++((?(1)(0\\g<1>)+)++++++++++*())++++((?(1)((0)\\g<0>)+)++())+0++*+++(((0\\g<0>))*())++++((?(1)(0\\g<0>)+)++++++++++*|)++++*+++((?(1)((0)\\g<0>)+)+++++++++())++*|)++++((?()0))|", "abcde", 0, 0); // #139
@@ -14919,7 +16623,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //   let matches = scanner.find_matches("abcde", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1168: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(*FAIL)", "abcdefg");
@@ -14931,7 +16635,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //   let matches = scanner.find_matches("abcdefg", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1169: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("abcd(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)(*FAIL)", "abcdefg");
@@ -14943,7 +16647,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //   let matches = scanner.find_matches("abcdefg", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1170: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:[ab]|(*MAX{2}).)*", "abcbaaccaaa", 0, 7);
@@ -14960,7 +16664,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1171: Match end does not match");
 //       assert_eq!(&"abcbaaccaaa"[ma.1..ma.2], ma.0, "1171: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // x2("(?:(*COUNT[AB]{X})[ab]|(*COUNT[CD]{X})[cd])*(*CMP{AB,<,CD})", // 1172
 // -------------------------------------------------------------------------
@@ -14978,7 +16682,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1173: Match end does not match");
 //       assert_eq!(&"123"[ma.1..ma.2], ma.0, "1173: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?(*FAIL)123|456)", "456", 0, 3);
@@ -14995,7 +16699,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1174: Match end does not match");
 //       assert_eq!(&"456"[ma.1..ma.2], ma.0, "1174: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\g'0'++{,0}",   "abcdefgh", 0, 0);
@@ -15007,7 +16711,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //   let matches = scanner.find_matches("abcdefgh", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1175: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\g'0'++{,0}?",  "abcdefgh", 0, 0);
@@ -15019,7 +16723,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //   let matches = scanner.find_matches("abcdefgh", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1176: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\g'0'++{,0}b",  "abcdefgh", 1, 2);
@@ -15036,7 +16740,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1177: Match end does not match");
 //       assert_eq!(&"abcdefgh"[ma.1..ma.2], ma.0, "1177: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\g'0'++{,0}?def", "abcdefgh", 3, 6);
@@ -15053,7 +16757,7 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1178: Match end does not match");
 //       assert_eq!(&"abcdefgh"[ma.1..ma.2], ma.0, "1178: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{1,3}?", "aaa", 0, 1);
@@ -15070,24 +16774,36 @@ scanner! { S1159 { mode M { token r#"\u0040"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1179: Match end does not match");
 //       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "1179: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{3}", "aaa", 0, 3);
 // td!(r#"a{3}"#, "aaa", &[("aaa", 0, 3)], 1180),
 scanner! { S1180 { mode M { token r#"a{3}"# => 0; } } }
-// #[test] fn test_match_1180() {
-//   use s1180::S1180 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaa", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1180: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1180: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1180: Match end does not match");
-//       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "1180: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1180() {
+    use s1180::S1180 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaa", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1180: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1180: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1180: Match end does not match");
+        assert_eq!(
+            &"aaa"[ma.1..ma.2],
+            ma.0,
+            "1180: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("a{3}?", "aaa", 0, 3);
@@ -15104,7 +16820,7 @@ scanner! { S1180 { mode M { token r#"a{3}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1181: Match end does not match");
 //       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "1181: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{3}?", "aa", 0, 0);
@@ -15116,7 +16832,7 @@ scanner! { S1180 { mode M { token r#"a{3}"# => 0; } } }
 //   let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1182: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{3,3}?", "aaa", 0, 3);
@@ -15133,7 +16849,7 @@ scanner! { S1180 { mode M { token r#"a{3}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1183: Match end does not match");
 //       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "1183: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("a{3,3}?", "aa");
@@ -15145,58 +16861,94 @@ scanner! { S1180 { mode M { token r#"a{3}"# => 0; } } }
 //   let matches = scanner.find_matches("aa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1184: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{1,3}+", "aaaaaa", 0, 6);
 // td!(r#"a{1,3}+"#, "aaaaaa", &[("aaaaaa", 0, 6)], 1185),
 scanner! { S1185 { mode M { token r#"a{1,3}+"# => 0; } } }
-// #[test] fn test_match_1185() {
-//   use s1185::S1185 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaaaaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaaaaa", 0, 6)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1185: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1185: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1185: Match end does not match");
-//       assert_eq!(&"aaaaaa"[ma.1..ma.2], ma.0, "1185: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1185() {
+    use s1185::S1185 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaaaaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaaaaa", 0, 6)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1185: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1185: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1185: Match end does not match");
+        assert_eq!(
+            &"aaaaaa"[ma.1..ma.2],
+            ma.0,
+            "1185: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("a{3}+", "aaaaaa", 0, 6);
 // td!(r#"a{3}+"#, "aaaaaa", &[("aaaaaa", 0, 6)], 1186),
 scanner! { S1186 { mode M { token r#"a{3}+"# => 0; } } }
-// #[test] fn test_match_1186() {
-//   use s1186::S1186 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaaaaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaaaaa", 0, 6)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1186: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1186: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1186: Match end does not match");
-//       assert_eq!(&"aaaaaa"[ma.1..ma.2], ma.0, "1186: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1186() {
+    use s1186::S1186 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaaaaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaaaaa", 0, 6)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1186: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1186: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1186: Match end does not match");
+        assert_eq!(
+            &"aaaaaa"[ma.1..ma.2],
+            ma.0,
+            "1186: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("a{3,3}+", "aaaaaa", 0, 6);
 // td!(r#"a{3,3}+"#, "aaaaaa", &[("aaaaaa", 0, 6)], 1187),
 scanner! { S1187 { mode M { token r#"a{3,3}+"# => 0; } } }
-// #[test] fn test_match_1187() {
-//   use s1187::S1187 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaaaaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaaaaa", 0, 6)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1187: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1187: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1187: Match end does not match");
-//       assert_eq!(&"aaaaaa"[ma.1..ma.2], ma.0, "1187: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1187() {
+    use s1187::S1187 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaaaaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaaaaa", 0, 6)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1187: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1187: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1187: Match end does not match");
+        assert_eq!(
+            &"aaaaaa"[ma.1..ma.2],
+            ma.0,
+            "1187: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("a{2,3}?",  "a");
@@ -15208,7 +16960,7 @@ scanner! { S1187 { mode M { token r#"a{3,3}+"# => 0; } } }
 //   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1188: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("a{3,2}a", "aaa");
@@ -15220,7 +16972,7 @@ scanner! { S1187 { mode M { token r#"a{3,3}+"# => 0; } } }
 //   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1189: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{3,2}b", "aaab", 0, 4);
@@ -15237,7 +16989,7 @@ scanner! { S1187 { mode M { token r#"a{3,3}+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1190: Match end does not match");
 //       assert_eq!(&"aaab"[ma.1..ma.2], ma.0, "1190: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{3,2}b", "aaaab", 1, 5);
@@ -15254,7 +17006,7 @@ scanner! { S1187 { mode M { token r#"a{3,3}+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1191: Match end does not match");
 //       assert_eq!(&"aaaab"[ma.1..ma.2], ma.0, "1191: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{3,2}b", "aab", 0, 3);
@@ -15271,7 +17023,7 @@ scanner! { S1187 { mode M { token r#"a{3,3}+"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1192: Match end does not match");
 //       assert_eq!(&"aab"[ma.1..ma.2], ma.0, "1192: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{3,2}?", "", 0, 0);     /* == (?:a{3,2})?*/
@@ -15283,24 +17035,36 @@ scanner! { S1187 { mode M { token r#"a{3,3}+"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1193: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a{2,3}+a", "aaa", 0, 3); /* == (?:a{2,3})+*/
 // td!(r#"a{2,3}+a"#, "aaa", &[("aaa", 0, 3)], 1194),
 scanner! { S1194 { mode M { token r#"a{2,3}+a"# => 0; } } }
-// #[test] fn test_match_1194() {
-//   use s1194::S1194 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("aaa", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1194: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1194: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1194: Match end does not match");
-//       assert_eq!(&"aaa"[ma.1..ma.2], ma.0, "1194: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1194() {
+    use s1194::S1194 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("aaa", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("aaa", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1194: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1194: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1194: Match end does not match");
+        assert_eq!(
+            &"aaa"[ma.1..ma.2],
+            ma.0,
+            "1194: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[\\x{0}-\\x{7fffffff}]", "a", 0, 1);
@@ -15317,7 +17081,7 @@ scanner! { S1194 { mode M { token r#"a{2,3}+a"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1195: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "1195: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x{7f}-\\x{7fffffff}]", "\xe5\xae\xb6", 0, 3);
@@ -15334,87 +17098,140 @@ scanner! { S1194 { mode M { token r#"a{2,3}+a"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1196: Match end does not match");
 //       assert_eq!(&"\xe5\xae\xb6"[ma.1..ma.2], ma.0, "1196: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[a[cdef]]", "a", 0, 1);
 // td!(r#"[a[cdef]]"#, "a", &[("a", 0, 1)], 1197),
 scanner! { S1197 { mode M { token r#"[a[cdef]]"# => 0; } } }
-// #[test] fn test_match_1197() {
-//   use s1197::S1197 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1197: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1197: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1197: Match end does not match");
-//       assert_eq!(&"a"[ma.1..ma.2], ma.0, "1197: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1197() {
+    use s1197::S1197 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1197: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1197: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1197: Match end does not match");
+        assert_eq!(
+            &"a"[ma.1..ma.2],
+            ma.0,
+            "1197: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("[a[xyz]-c]", "b");
 // td!(r#"[a[xyz]-c]"#, "b", &[], 1198),
 scanner! { S1198 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
-// #[test] fn test_match_1198() {
-//   use s1198::S1198 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("b", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1198: Unexpected match count");
-//}
+#[test]
+fn test_match_1198() {
+    use s1198::S1198 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("b", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1198: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("[a[xyz]-c]", "a", 0, 1);
 // td!(r#"[a[xyz]-c]"#, "a", &[("a", 0, 1)], 1199),
 scanner! { S1199 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
-// #[test] fn test_match_1199() {
-//   use s1199::S1199 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("a", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1199: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1199: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1199: Match end does not match");
-//       assert_eq!(&"a"[ma.1..ma.2], ma.0, "1199: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1199() {
+    use s1199::S1199 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("a", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1199: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1199: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1199: Match end does not match");
+        assert_eq!(
+            &"a"[ma.1..ma.2],
+            ma.0,
+            "1199: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[a[xyz]-c]", "-", 0, 1);
 // td!(r#"[a[xyz]-c]"#, "-", &[("-", 0, 1)], 1200),
 scanner! { S1200 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
-// #[test] fn test_match_1200() {
-//   use s1200::S1200 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("-", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("-", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1200: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1200: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1200: Match end does not match");
-//       assert_eq!(&"-"[ma.1..ma.2], ma.0, "1200: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1200() {
+    use s1200::S1200 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("-", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("-", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1200: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1200: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1200: Match end does not match");
+        assert_eq!(
+            &"-"[ma.1..ma.2],
+            ma.0,
+            "1200: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[a[xyz]-c]", "c", 0, 1);
 // td!(r#"[a[xyz]-c]"#, "c", &[("c", 0, 1)], 1201),
 scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
-// #[test] fn test_match_1201() {
-//   use s1201::S1201 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("c", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("c", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1201: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1201: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1201: Match end does not match");
-//       assert_eq!(&"c"[ma.1..ma.2], ma.0, "1201: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1201() {
+    use s1201::S1201 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("c", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("c", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1201: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1201: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1201: Match end does not match");
+        assert_eq!(
+            &"c"[ma.1..ma.2],
+            ma.0,
+            "1201: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(a.c|def)(.{4})(?<=\\1)", "abcdabc", 0, 7);
@@ -15431,7 +17248,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1202: Match end does not match");
 //       assert_eq!(&"abcdabc"[ma.1..ma.2], ma.0, "1202: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a.c|de)(.{4})(?<=\\1)", "abcdabc", 0, 7);
@@ -15448,7 +17265,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1203: Match end does not match");
 //       assert_eq!(&"abcdabc"[ma.1..ma.2], ma.0, "1203: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a.c|def)(.{5})(?<=d\\1e)", "abcdabce", 0, 8);
@@ -15465,7 +17282,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1204: Match end does not match");
 //       assert_eq!(&"abcdabce"[ma.1..ma.2], ma.0, "1204: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a.c|.)d(?<=\\k<1>d)", "zzzzzabcdabc", 5, 9);
@@ -15482,7 +17299,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1205: Match end does not match");
 //       assert_eq!(&"zzzzzabcdabc"[ma.1..ma.2], ma.0, "1205: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=az*)abc", "azzzzzzzzzzabcdabcabc", 11, 14);
@@ -15499,7 +17316,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1206: Match end does not match");
 //       assert_eq!(&"azzzzzzzzzzabcdabcabc"[ma.1..ma.2], ma.0, "1206: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=ab|abc|abcd)ef", "abcdef", 4, 6);
@@ -15516,7 +17333,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1207: Match end does not match");
 //       assert_eq!(&"abcdef"[ma.1..ma.2], ma.0, "1207: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=ta+|tb+|tc+|td+)zz", "tcccccccccczz", 11, 13);
@@ -15533,7 +17350,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1208: Match end does not match");
 //       assert_eq!(&"tcccccccccczz"[ma.1..ma.2], ma.0, "1208: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=t.{7}|t.{5}|t.{2}|t.)zz", "tczz", 2, 4);
@@ -15550,7 +17367,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1209: Match end does not match");
 //       assert_eq!(&"tczz"[ma.1..ma.2], ma.0, "1209: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=t.{7}|t.{5}|t.{2})zz", "tczzzz", 3, 5);
@@ -15567,7 +17384,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1210: Match end does not match");
 //       assert_eq!(&"tczzzz"[ma.1..ma.2], ma.0, "1210: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=t.{7}|t.{5}|t.{3})zz", "tczzazzbzz", 8, 10);
@@ -15584,7 +17401,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1211: Match end does not match");
 //       assert_eq!(&"tczzazzbzz"[ma.1..ma.2], ma.0, "1211: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=t.{7}|t.{5}|t.{3})zz", "tczzazzbczz");
@@ -15596,7 +17413,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("tczzazzbczz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1212: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=(ab|abc|abcd))ef", "abcdef", 4, 6);
@@ -15613,7 +17430,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1213: Match end does not match");
 //       assert_eq!(&"abcdef"[ma.1..ma.2], ma.0, "1213: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=(ta+|tb+|tc+|td+))zz", "tcccccccccczz", 11, 13);
@@ -15630,7 +17447,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1214: Match end does not match");
 //       assert_eq!(&"tcccccccccczz"[ma.1..ma.2], ma.0, "1214: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=(t.{7}|t.{5}|t.{2}|t.))zz", "tczz", 2, 4);
@@ -15647,7 +17464,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1215: Match end does not match");
 //       assert_eq!(&"tczz"[ma.1..ma.2], ma.0, "1215: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=(t.{7}|t.{5}|t.{2}))zz", "tczzzz", 3, 5);
@@ -15664,7 +17481,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1216: Match end does not match");
 //       assert_eq!(&"tczzzz"[ma.1..ma.2], ma.0, "1216: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=(t.{7}|t.{5}|t.{3}))zz", "tczzazzbzz", 8, 10);
@@ -15681,7 +17498,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1217: Match end does not match");
 //       assert_eq!(&"tczzazzbzz"[ma.1..ma.2], ma.0, "1217: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=(t.{7}|t.{5}|t.{3}))zz", "tczzazzbczz");
@@ -15693,7 +17510,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("tczzazzbczz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1218: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(.{1,4})(.{1,4})(?<=\\2\\1)", "abaaba", 0, 6);
@@ -15710,7 +17527,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1219: Match end does not match");
 //       assert_eq!(&"abaaba"[ma.1..ma.2], ma.0, "1219: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(.{1,4})(.{1,4})(?<=\\2\\1)", "ababab", 0, 6);
@@ -15727,7 +17544,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1220: Match end does not match");
 //       assert_eq!(&"ababab"[ma.1..ma.2], ma.0, "1220: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(.{1,4})(.{1,4})(?<=\\2\\1)", "abcdabce");
@@ -15739,7 +17556,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdabce", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1221: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(.{1,4})(.{1,4})(?<=\\2\\1)", "abcdabceabce", 4, 12);
@@ -15756,7 +17573,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1222: Match end does not match");
 //       assert_eq!(&"abcdabceabce"[ma.1..ma.2], ma.0, "1222: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a)", "a", 1, 1);
@@ -15773,7 +17590,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1223: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "1223: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a.*\\w)z", "abbbz", 4, 5);
@@ -15790,7 +17607,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1224: Match end does not match");
 //       assert_eq!(&"abbbz"[ma.1..ma.2], ma.0, "1224: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=a.*\\w)z", "abb z");
@@ -15802,7 +17619,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abb z", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1225: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a.*\\W)z", "abb z", 4, 5);
@@ -15819,7 +17636,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1226: Match end does not match");
 //       assert_eq!(&"abb z"[ma.1..ma.2], ma.0, "1226: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a.*\\b)z", "abb z", 4, 5);
@@ -15836,7 +17653,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1227: Match end does not match");
 //       assert_eq!(&"abb z"[ma.1..ma.2], ma.0, "1227: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=(?>abc))", "abc", 3, 3);
@@ -15853,7 +17670,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1228: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1228: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a\\Xz)", "abz", 3, 3);
@@ -15870,7 +17687,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1229: Match end does not match");
 //       assert_eq!(&"abz"[ma.1..ma.2], ma.0, "1229: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=^a*)bc", "zabc");
@@ -15882,7 +17699,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("zabc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1230: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=a*\\b)b", "abc");
@@ -15894,7 +17711,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1231: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a+.*[efg])z", "abcdfz", 5, 6);
@@ -15911,7 +17728,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1232: Match end does not match");
 //       assert_eq!(&"abcdfz"[ma.1..ma.2], ma.0, "1232: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a+.*[efg])z", "abcdfgz", 6, 7);
@@ -15928,7 +17745,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1233: Match end does not match");
 //       assert_eq!(&"abcdfgz"[ma.1..ma.2], ma.0, "1233: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=a+.*[efg])z", "bcdfz");
@@ -15940,7 +17757,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("bcdfz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1234: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=a*.*[efg])z", "bcdfz", 4, 5);
@@ -15957,7 +17774,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1235: Match end does not match");
 //       assert_eq!(&"bcdfz"[ma.1..ma.2], ma.0, "1235: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=a+.*[efg])z", "abcdz");
@@ -15969,7 +17786,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1236: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=v|t|a+.*[efg])z", "abcdfz", 5, 6);
@@ -15986,7 +17803,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1237: Match end does not match");
 //       assert_eq!(&"abcdfz"[ma.1..ma.2], ma.0, "1237: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=v|t|^a+.*[efg])z", "abcdfz", 5, 6);
@@ -16003,7 +17820,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1238: Match end does not match");
 //       assert_eq!(&"abcdfz"[ma.1..ma.2], ma.0, "1238: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=^(?:v|t|a+.*[efg]))z", "abcdfz", 5, 6);
@@ -16020,7 +17837,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1239: Match end does not match");
 //       assert_eq!(&"abcdfz"[ma.1..ma.2], ma.0, "1239: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=v|^t|a+.*[efg])z", "uabcdfz", 6, 7);
@@ -16037,7 +17854,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1240: Match end does not match");
 //       assert_eq!(&"uabcdfz"[ma.1..ma.2], ma.0, "1240: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("^..(?<=(a{,2}))\\1z", "aaaaz"); // !!! look-behind is shortest priority
@@ -16049,7 +17866,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("aaaaz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1241: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("^..(?<=(a{,2}))\\1z", "aaz", 0, 3); // shortest priority
@@ -16066,7 +17883,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1242: Match end does not match");
 //       assert_eq!(&"aaz"[ma.1..ma.2], ma.0, "1242: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("(?<=(?~|zoo)a.*z)", "abcdefz", ONIGERR_INVALID_LOOK_BEHIND_PATTERN);
@@ -16104,7 +17921,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1246: Match end does not match");
 //       assert_eq!(&"abcde fg"[ma.1..ma.2], ma.0, "1246: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=D|)(?<=@!nnnnnnnnnIIIIn;{1}D?()|<x@x*xxxD|)(?<=@xxx|xxxxx\\g<1>;{1}x)", "(?<=D|)(?<=@!nnnnnnnnnIIIIn;{1}D?()|<x@x*xxxD|)(?<=@xxx|xxxxx\\g<1>;{1}x)", 55, 55); // #173
@@ -16121,7 +17938,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1247: Match end does not match");
 //       assert_eq!(&"(?<=D|)(?<=@!nnnnnnnnnIIIIn;{1}D?()|<x@x*xxxD|)(?<=@xxx|xxxxx\\g<1>;{1}x)"[ma.1..ma.2], ma.0, "1247: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=;()|)\\g<1>", "", 0, 0); // reduced #173
@@ -16133,7 +17950,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1248: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=;()|)\\k<1>", ";", 1, 1);
@@ -16150,7 +17967,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1249: Match end does not match");
 //       assert_eq!(&";"[ma.1..ma.2], ma.0, "1249: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(())\\g<3>{0}(?<=|())", "abc", 0, 0); // #175
@@ -16162,7 +17979,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1250: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=()|)\\1{0}", "abc", 0, 0);
@@ -16174,7 +17991,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1251: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("(?<!xxxxxxxxxxxxxxxxxxxxxxx{32774}{65521}xxxxxxxx{65521}xxxxxxxxxxxxxx{32774}xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx)", "", ONIGERR_INVALID_LOOK_BEHIND_PATTERN); // #177
@@ -16198,7 +18015,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1253: Match end does not match");
 //       assert_eq!(&"abcdef"[ma.1..ma.2], ma.0, "1253: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=ab(?<=.+b)c)def", "abcdef", 3, 6);
@@ -16215,7 +18032,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1254: Match end does not match");
 //       assert_eq!(&"abcdef"[ma.1..ma.2], ma.0, "1254: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=ab(?<=a+)c)def", "abcdef");
@@ -16227,7 +18044,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1255: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<=abc)(?<!abc)def", "abcdef");
@@ -16239,7 +18056,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1256: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!ab.)(?<=.bc)def", "abcdef");
@@ -16251,7 +18068,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1257: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!ab.)(?<=.bc)def", "abcdefcbcdef", 9, 12);
@@ -16268,7 +18085,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1258: Match end does not match");
 //       assert_eq!(&"abcdefcbcdef"[ma.1..ma.2], ma.0, "1258: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!abc)def", "abcdef");
@@ -16280,7 +18097,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1259: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!xxx|abc)def", "abcdef");
@@ -16292,7 +18109,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1260: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!xxxxx|abc)def", "abcdef");
@@ -16304,7 +18121,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1261: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!xxxxx|abc)def", "xxxxxxdef");
@@ -16316,7 +18133,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("xxxxxxdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1262: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!x+|abc)def", "abcdef");
@@ -16328,7 +18145,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1263: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!x+|abc)def", "xxxxxxxxxdef");
@@ -16340,7 +18157,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("xxxxxxxxxdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1264: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!x+|abc)def", "xxxxxxxxzdef", 9, 12);
@@ -16357,7 +18174,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1265: Match end does not match");
 //       assert_eq!(&"xxxxxxxxzdef"[ma.1..ma.2], ma.0, "1265: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a.*z|a)def", "axxxxxxxzdef");
@@ -16369,7 +18186,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("axxxxxxxzdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1266: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a.*z|a)def", "bxxxxxxxadef");
@@ -16381,7 +18198,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("bxxxxxxxadef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1267: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a.*z|a)def", "axxxxxxxzdefxxdef", 14, 17);
@@ -16398,7 +18215,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1268: Match end does not match");
 //       assert_eq!(&"axxxxxxxzdefxxdef"[ma.1..ma.2], ma.0, "1268: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a.*z|a)def", "bxxxxxxxadefxxdef", 14, 17);
@@ -16415,7 +18232,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1269: Match end does not match");
 //       assert_eq!(&"bxxxxxxxadefxxdef"[ma.1..ma.2], ma.0, "1269: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a.*z|a)def", "bxxxxxxxzdef", 9, 12);
@@ -16432,7 +18249,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1270: Match end does not match");
 //       assert_eq!(&"bxxxxxxxzdef"[ma.1..ma.2], ma.0, "1270: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!x+|y+)\\d+", "xxx572", 4, 6);
@@ -16449,7 +18266,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1271: Match end does not match");
 //       assert_eq!(&"xxx572"[ma.1..ma.2], ma.0, "1271: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!3+|4+)\\d+", "33334444", 0, 8);
@@ -16466,7 +18283,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1272: Match end does not match");
 //       assert_eq!(&"33334444"[ma.1..ma.2], ma.0, "1272: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n(".(?<!3+|4+)\\d+", "33334444");
@@ -16478,7 +18295,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("33334444", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1273: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(.{,3})..(?<!\\1)", "aaaaa");
@@ -16490,7 +18307,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("aaaaa", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1274: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(.{,3})..(?<!\\1)", "abcde", 0, 5);
@@ -16507,7 +18324,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1275: Match end does not match");
 //       assert_eq!(&"abcde"[ma.1..ma.2], ma.0, "1275: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(.{,3})...(?<!\\1)", "abcde", 0, 5);
@@ -16524,7 +18341,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1276: Match end does not match");
 //       assert_eq!(&"abcde"[ma.1..ma.2], ma.0, "1276: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a.c)(.{3,}?)(?<!\\1)", "abcabcd", 0, 7);
@@ -16541,7 +18358,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1277: Match end does not match");
 //       assert_eq!(&"abcabcd"[ma.1..ma.2], ma.0, "1277: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a*)(.{3,}?)(?<!\\1)", "abcabcd", 0, 5);
@@ -16558,7 +18375,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1278: Match end does not match");
 //       assert_eq!(&"abcabcd"[ma.1..ma.2], ma.0, "1278: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:(a.*b)|c.*d)(?<!(?(1))azzzb)", "azzzzb", 0, 6);
@@ -16575,7 +18392,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1279: Match end does not match");
 //       assert_eq!(&"azzzzb"[ma.1..ma.2], ma.0, "1279: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?:(a.*b)|c.*d)(?<!(?(1))azzzb)", "azzzb");
@@ -16587,7 +18404,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("azzzb", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1280: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("<(?<!NT{+}abcd)", "<(?<!NT{+}abcd)", 0, 1);
@@ -16604,7 +18421,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1281: Match end does not match");
 //       assert_eq!(&"<(?<!NT{+}abcd)"[ma.1..ma.2], ma.0, "1281: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a.*c)def", "abbbbdef", 5, 8);
@@ -16621,7 +18438,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1282: Match end does not match");
 //       assert_eq!(&"abbbbdef"[ma.1..ma.2], ma.0, "1282: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a.*c)def", "abbbcdef");
@@ -16633,7 +18450,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abbbcdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1283: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a.*X\\b)def", "abbbbbXdef", 7, 10);
@@ -16650,7 +18467,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1284: Match end does not match");
 //       assert_eq!(&"abbbbbXdef"[ma.1..ma.2], ma.0, "1284: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a.*X\\B)def", "abbbbbXdef");
@@ -16662,7 +18479,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abbbbbXdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1285: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a.*[uvw])def", "abbbbbXdef", 7, 10);
@@ -16679,7 +18496,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1286: Match end does not match");
 //       assert_eq!(&"abbbbbXdef"[ma.1..ma.2], ma.0, "1286: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!a.*[uvw])def", "abbbbbwdef");
@@ -16691,7 +18508,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abbbbbwdef", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1287: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!ab*\\S+)def", "abbbbb   def", 9, 12);
@@ -16708,7 +18525,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1288: Match end does not match");
 //       assert_eq!(&"abbbbb   def"[ma.1..ma.2], ma.0, "1288: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!a.*\\S)def", "abbbbb def", 7, 10);
@@ -16725,7 +18542,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1289: Match end does not match");
 //       assert_eq!(&"abbbbb def"[ma.1..ma.2], ma.0, "1289: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!ab*\\s+)def", "abbbbb   def");
@@ -16737,7 +18554,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abbbbb   def", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1290: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!ab*\\s+\\B)def", "abbbbb   def", 9, 12);
@@ -16754,7 +18571,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1291: Match end does not match");
 //       assert_eq!(&"abbbbb   def"[ma.1..ma.2], ma.0, "1291: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!v|t|a+.*[efg])z", "abcdfz");
@@ -16766,7 +18583,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdfz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1292: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!v|t|a+.*[efg])z", "abcdfzavzuz", 10, 11);
@@ -16783,7 +18600,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1293: Match end does not match");
 //       assert_eq!(&"abcdfzavzuz"[ma.1..ma.2], ma.0, "1293: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!v|t|^a+.*[efg])z", "abcdfz");
@@ -16795,7 +18612,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdfz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1294: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!^(?:v|t|a+.*[efg]))z", "abcdfz");
@@ -16807,7 +18624,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("abcdfz", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1295: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<!v|^t|^a+.*[efg])z", "uabcdfz", 6, 7);
@@ -16824,7 +18641,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1296: Match end does not match");
 //       assert_eq!(&"uabcdfz"[ma.1..ma.2], ma.0, "1296: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(\\k<2>)|(?<=(\\k<1>))", "");
@@ -16836,7 +18653,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1297: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a|\\k<2>)|(?<=(\\k<1>))", "a", 0, 1);
@@ -16853,7 +18670,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1298: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "1298: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(a|\\k<2>)|(?<=b(\\k<1>))", "ba", 1, 2);
@@ -16870,7 +18687,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1299: Match end does not match");
 //       assert_eq!(&"ba"[ma.1..ma.2], ma.0, "1299: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!RMA)X", "123RMAX");
@@ -16882,7 +18699,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("123RMAX", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1300: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=RMA)X", "123RMAX", 6, 7);
@@ -16899,7 +18716,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1301: Match end does not match");
 //       assert_eq!(&"123RMAX"[ma.1..ma.2], ma.0, "1301: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!RMA)$", "123RMA");
@@ -16911,7 +18728,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("123RMA", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1302: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=RMA)$", "123RMA", 6, 6);
@@ -16928,7 +18745,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1303: Match end does not match");
 //       assert_eq!(&"123RMA"[ma.1..ma.2], ma.0, "1303: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!RMA)\\Z", "123RMA");
@@ -16940,7 +18757,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("123RMA", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1304: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=RMA)\\Z", "123RMA", 6, 6);
@@ -16957,7 +18774,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1305: Match end does not match");
 //       assert_eq!(&"123RMA"[ma.1..ma.2], ma.0, "1305: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?<!RMA)\\z", "123RMA");
@@ -16969,7 +18786,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("123RMA", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1306: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?<=RMA)\\z", "123RMA", 6, 6);
@@ -16986,7 +18803,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1307: Match end does not match");
 //       assert_eq!(&"123RMA"[ma.1..ma.2], ma.0, "1307: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?(a)\\g<1>|b))", "aab", 0, 3);
@@ -17003,7 +18820,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1308: Match end does not match");
 //       assert_eq!(&"aab"[ma.1..ma.2], ma.0, "1308: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?(a)\\g<1>))", "aab", 0, 2);
@@ -17020,7 +18837,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1309: Match end does not match");
 //       assert_eq!(&"aab"[ma.1..ma.2], ma.0, "1309: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("((?(a)\\g<1>))", "", 0, 0);
@@ -17032,7 +18849,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1310: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(b(?(a)|\\g<1>))", "bba", 0, 3);
@@ -17049,7 +18866,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1311: Match end does not match");
 //       assert_eq!(&"bba"[ma.1..ma.2], ma.0, "1311: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("(()(?(2)\\g<1>))", "", ONIGERR_NEVER_ENDING_RECURSION);
@@ -17073,7 +18890,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1313: Match end does not match");
 //       assert_eq!(&"ac"[ma.1..ma.2], ma.0, "1313: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?(a)(?:b|c))", "", 0, 0);
@@ -17085,7 +18902,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1314: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?(a)b)", "", 0, 0);
@@ -17097,7 +18914,7 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1315: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("^(?(a)b|c)", "ac");
@@ -17109,48 +18926,70 @@ scanner! { S1201 { mode M { token r#"[a[xyz]-c]"# => 0; } } }
 //   let matches = scanner.find_matches("ac", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1316: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)a|b", "B", 0, 1);
 // td!(r#"(?i)a|b"#, "B", &[("B", 0, 1)], 1317),
 scanner! { S1317 { mode M { token r#"(?i)a|b"# => 0; } } }
-// #[test] fn test_match_1317() {
-//   use s1317::S1317 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("B", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("B", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1317: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1317: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1317: Match end does not match");
-//       assert_eq!(&"B"[ma.1..ma.2], ma.0, "1317: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1317() {
+    use s1317::S1317 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("B", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("B", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1317: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1317: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1317: Match end does not match");
+        assert_eq!(
+            &"B"[ma.1..ma.2],
+            ma.0,
+            "1317: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("((?i)a|b.)|c", "C");
 // td!(r#"((?i)a|b.)|c"#, "C", &[], 1318),
 scanner! { S1318 { mode M { token r#"((?i)a|b.)|c"# => 0; } } }
-// #[test] fn test_match_1318() {
-//   use s1318::S1318 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1318: Unexpected match count");
-//}
+#[test]
+fn test_match_1318() {
+    use s1318::S1318 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("C", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1318: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("c(?i)a.|b.", "Caz");
 // td!(r#"c(?i)a.|b."#, "Caz", &[], 1319),
 scanner! { S1319 { mode M { token r#"c(?i)a.|b."# => 0; } } }
-// #[test] fn test_match_1319() {
-//   use s1319::S1319 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("Caz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1319: Unexpected match count");
-//}
+#[test]
+fn test_match_1319() {
+    use s1319::S1319 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("Caz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1319: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("c(?i)a|b", "cB", 0, 2); /* == c(?i:a|b) */
@@ -17167,7 +19006,7 @@ scanner! { S1320 { mode M { token r#"c(?i)a|b"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1320: Match end does not match");
 //       assert_eq!(&"cB"[ma.1..ma.2], ma.0, "1320: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("c(?i)a.|b.", "cBb", 0, 3);
@@ -17184,58 +19023,94 @@ scanner! { S1321 { mode M { token r#"c(?i)a.|b."# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1321: Match end does not match");
 //       assert_eq!(&"cBb"[ma.1..ma.2], ma.0, "1321: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)st", "st", 0, 2);
 // td!(r#"(?i)st"#, "st", &[("st", 0, 2)], 1322),
 scanner! { S1322 { mode M { token r#"(?i)st"# => 0; } } }
-// #[test] fn test_match_1322() {
-//   use s1322::S1322 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("st", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("st", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1322: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1322: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1322: Match end does not match");
-//       assert_eq!(&"st"[ma.1..ma.2], ma.0, "1322: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1322() {
+    use s1322::S1322 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("st", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("st", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1322: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1322: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1322: Match end does not match");
+        assert_eq!(
+            &"st"[ma.1..ma.2],
+            ma.0,
+            "1322: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)st", "St", 0, 2);
 // td!(r#"(?i)st"#, "St", &[("St", 0, 2)], 1323),
 scanner! { S1323 { mode M { token r#"(?i)st"# => 0; } } }
-// #[test] fn test_match_1323() {
-//   use s1323::S1323 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("St", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("St", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1323: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1323: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1323: Match end does not match");
-//       assert_eq!(&"St"[ma.1..ma.2], ma.0, "1323: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1323() {
+    use s1323::S1323 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("St", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("St", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1323: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1323: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1323: Match end does not match");
+        assert_eq!(
+            &"St"[ma.1..ma.2],
+            ma.0,
+            "1323: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)st", "sT", 0, 2);
 // td!(r#"(?i)st"#, "sT", &[("sT", 0, 2)], 1324),
 scanner! { S1324 { mode M { token r#"(?i)st"# => 0; } } }
-// #[test] fn test_match_1324() {
-//   use s1324::S1324 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("sT", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("sT", 0, 2)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1324: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1324: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1324: Match end does not match");
-//       assert_eq!(&"sT"[ma.1..ma.2], ma.0, "1324: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1324() {
+    use s1324::S1324 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("sT", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("sT", 0, 2)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1324: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1324: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1324: Match end does not match");
+        assert_eq!(
+            &"sT"[ma.1..ma.2],
+            ma.0,
+            "1324: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)st", "\xC5\xBFt", 0, 3); // U+017F
@@ -17252,7 +19127,7 @@ scanner! { S1325 { mode M { token r#"(?i)st"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1325: Match end does not match");
 //       assert_eq!(&"\xC5\xBFt"[ma.1..ma.2], ma.0, "1325: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)st", "\xEF\xAC\x85", 0, 3); // U+FB05
@@ -17269,7 +19144,7 @@ scanner! { S1326 { mode M { token r#"(?i)st"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1326: Match end does not match");
 //       assert_eq!(&"\xEF\xAC\x85"[ma.1..ma.2], ma.0, "1326: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)st", "\xEF\xAC\x86", 0, 3); // U+FB06
@@ -17286,58 +19161,94 @@ scanner! { S1327 { mode M { token r#"(?i)st"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1327: Match end does not match");
 //       assert_eq!(&"\xEF\xAC\x86"[ma.1..ma.2], ma.0, "1327: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)ast", "Ast", 0, 3);
 // td!(r#"(?i)ast"#, "Ast", &[("Ast", 0, 3)], 1328),
 scanner! { S1328 { mode M { token r#"(?i)ast"# => 0; } } }
-// #[test] fn test_match_1328() {
-//   use s1328::S1328 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("Ast", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("Ast", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1328: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1328: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1328: Match end does not match");
-//       assert_eq!(&"Ast"[ma.1..ma.2], ma.0, "1328: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1328() {
+    use s1328::S1328 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("Ast", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("Ast", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1328: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1328: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1328: Match end does not match");
+        assert_eq!(
+            &"Ast"[ma.1..ma.2],
+            ma.0,
+            "1328: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)ast", "ASt", 0, 3);
 // td!(r#"(?i)ast"#, "ASt", &[("ASt", 0, 3)], 1329),
 scanner! { S1329 { mode M { token r#"(?i)ast"# => 0; } } }
-// #[test] fn test_match_1329() {
-//   use s1329::S1329 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("ASt", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("ASt", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1329: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1329: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1329: Match end does not match");
-//       assert_eq!(&"ASt"[ma.1..ma.2], ma.0, "1329: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1329() {
+    use s1329::S1329 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("ASt", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("ASt", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1329: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1329: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1329: Match end does not match");
+        assert_eq!(
+            &"ASt"[ma.1..ma.2],
+            ma.0,
+            "1329: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)ast", "AsT", 0, 3);
 // td!(r#"(?i)ast"#, "AsT", &[("AsT", 0, 3)], 1330),
 scanner! { S1330 { mode M { token r#"(?i)ast"# => 0; } } }
-// #[test] fn test_match_1330() {
-//   use s1330::S1330 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("AsT", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("AsT", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1330: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1330: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1330: Match end does not match");
-//       assert_eq!(&"AsT"[ma.1..ma.2], ma.0, "1330: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1330() {
+    use s1330::S1330 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("AsT", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("AsT", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1330: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1330: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1330: Match end does not match");
+        assert_eq!(
+            &"AsT"[ma.1..ma.2],
+            ma.0,
+            "1330: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)ast", "A\xC5\xBFt", 0, 4); // U+017F
@@ -17354,7 +19265,7 @@ scanner! { S1331 { mode M { token r#"(?i)ast"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1331: Match end does not match");
 //       assert_eq!(&"A\xC5\xBFt"[ma.1..ma.2], ma.0, "1331: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)ast", "A\xEF\xAC\x85", 0, 4); // U+FB05
@@ -17371,7 +19282,7 @@ scanner! { S1332 { mode M { token r#"(?i)ast"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1332: Match end does not match");
 //       assert_eq!(&"A\xEF\xAC\x85"[ma.1..ma.2], ma.0, "1332: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)ast", "A\xEF\xAC\x86", 0, 4); // U+FB06
@@ -17388,58 +19299,94 @@ scanner! { S1333 { mode M { token r#"(?i)ast"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1333: Match end does not match");
 //       assert_eq!(&"A\xEF\xAC\x86"[ma.1..ma.2], ma.0, "1333: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)stZ", "stz", 0, 3);
 // td!(r#"(?i)stZ"#, "stz", &[("stz", 0, 3)], 1334),
 scanner! { S1334 { mode M { token r#"(?i)stZ"# => 0; } } }
-// #[test] fn test_match_1334() {
-//   use s1334::S1334 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("stz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("stz", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1334: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1334: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1334: Match end does not match");
-//       assert_eq!(&"stz"[ma.1..ma.2], ma.0, "1334: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1334() {
+    use s1334::S1334 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("stz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("stz", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1334: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1334: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1334: Match end does not match");
+        assert_eq!(
+            &"stz"[ma.1..ma.2],
+            ma.0,
+            "1334: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)stZ", "Stz", 0, 3);
 // td!(r#"(?i)stZ"#, "Stz", &[("Stz", 0, 3)], 1335),
 scanner! { S1335 { mode M { token r#"(?i)stZ"# => 0; } } }
-// #[test] fn test_match_1335() {
-//   use s1335::S1335 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("Stz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("Stz", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1335: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1335: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1335: Match end does not match");
-//       assert_eq!(&"Stz"[ma.1..ma.2], ma.0, "1335: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1335() {
+    use s1335::S1335 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("Stz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("Stz", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1335: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1335: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1335: Match end does not match");
+        assert_eq!(
+            &"Stz"[ma.1..ma.2],
+            ma.0,
+            "1335: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)stZ", "sTz", 0, 3);
 // td!(r#"(?i)stZ"#, "sTz", &[("sTz", 0, 3)], 1336),
 scanner! { S1336 { mode M { token r#"(?i)stZ"# => 0; } } }
-// #[test] fn test_match_1336() {
-//   use s1336::S1336 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("sTz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("sTz", 0, 3)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1336: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1336: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1336: Match end does not match");
-//       assert_eq!(&"sTz"[ma.1..ma.2], ma.0, "1336: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1336() {
+    use s1336::S1336 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("sTz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("sTz", 0, 3)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1336: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1336: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1336: Match end does not match");
+        assert_eq!(
+            &"sTz"[ma.1..ma.2],
+            ma.0,
+            "1336: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)stZ", "\xC5\xBFtz", 0, 4); // U+017F
@@ -17456,7 +19403,7 @@ scanner! { S1337 { mode M { token r#"(?i)stZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1337: Match end does not match");
 //       assert_eq!(&"\xC5\xBFtz"[ma.1..ma.2], ma.0, "1337: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)stZ", "\xEF\xAC\x85z", 0, 4); // U+FB05
@@ -17473,7 +19420,7 @@ scanner! { S1338 { mode M { token r#"(?i)stZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1338: Match end does not match");
 //       assert_eq!(&"\xEF\xAC\x85z"[ma.1..ma.2], ma.0, "1338: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)stZ", "\xEF\xAC\x86z", 0, 4); // U+FB06
@@ -17490,58 +19437,94 @@ scanner! { S1339 { mode M { token r#"(?i)stZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1339: Match end does not match");
 //       assert_eq!(&"\xEF\xAC\x86z"[ma.1..ma.2], ma.0, "1339: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)BstZ", "bstz", 0, 4);
 // td!(r#"(?i)BstZ"#, "bstz", &[("bstz", 0, 4)], 1340),
 scanner! { S1340 { mode M { token r#"(?i)BstZ"# => 0; } } }
-// #[test] fn test_match_1340() {
-//   use s1340::S1340 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("bstz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("bstz", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1340: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1340: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1340: Match end does not match");
-//       assert_eq!(&"bstz"[ma.1..ma.2], ma.0, "1340: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1340() {
+    use s1340::S1340 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("bstz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("bstz", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1340: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1340: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1340: Match end does not match");
+        assert_eq!(
+            &"bstz"[ma.1..ma.2],
+            ma.0,
+            "1340: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)BstZ", "bStz", 0, 4);
 // td!(r#"(?i)BstZ"#, "bStz", &[("bStz", 0, 4)], 1341),
 scanner! { S1341 { mode M { token r#"(?i)BstZ"# => 0; } } }
-// #[test] fn test_match_1341() {
-//   use s1341::S1341 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("bStz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("bStz", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1341: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1341: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1341: Match end does not match");
-//       assert_eq!(&"bStz"[ma.1..ma.2], ma.0, "1341: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1341() {
+    use s1341::S1341 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("bStz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("bStz", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1341: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1341: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1341: Match end does not match");
+        assert_eq!(
+            &"bStz"[ma.1..ma.2],
+            ma.0,
+            "1341: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)BstZ", "bsTz", 0, 4);
 // td!(r#"(?i)BstZ"#, "bsTz", &[("bsTz", 0, 4)], 1342),
 scanner! { S1342 { mode M { token r#"(?i)BstZ"# => 0; } } }
-// #[test] fn test_match_1342() {
-//   use s1342::S1342 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("bsTz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("bsTz", 0, 4)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1342: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1342: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1342: Match end does not match");
-//       assert_eq!(&"bsTz"[ma.1..ma.2], ma.0, "1342: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1342() {
+    use s1342::S1342 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("bsTz", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("bsTz", 0, 4)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1342: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1342: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1342: Match end does not match");
+        assert_eq!(
+            &"bsTz"[ma.1..ma.2],
+            ma.0,
+            "1342: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)BstZ", "b\xC5\xBFtz", 0, 5); // U+017F
@@ -17558,7 +19541,7 @@ scanner! { S1343 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1343: Match end does not match");
 //       assert_eq!(&"b\xC5\xBFtz"[ma.1..ma.2], ma.0, "1343: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)BstZ", "b\xEF\xAC\x85z", 0, 5); // U+FB05
@@ -17575,7 +19558,7 @@ scanner! { S1344 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1344: Match end does not match");
 //       assert_eq!(&"b\xEF\xAC\x85z"[ma.1..ma.2], ma.0, "1344: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)BstZ", "b\xEF\xAC\x86z", 0, 5); // U+FB06
@@ -17592,7 +19575,7 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1345: Match end does not match");
 //       assert_eq!(&"b\xEF\xAC\x86z"[ma.1..ma.2], ma.0, "1345: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*st\\z", "tttssss\xC5\xBFt", 0, 10); // U+017F
@@ -17609,7 +19592,7 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1346: Match end does not match");
 //       assert_eq!(&"tttssss\xC5\xBFt"[ma.1..ma.2], ma.0, "1346: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*st\\z", "tttssss\xEF\xAC\x85", 0, 10); // U+FB05
@@ -17626,7 +19609,7 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1347: Match end does not match");
 //       assert_eq!(&"tttssss\xEF\xAC\x85"[ma.1..ma.2], ma.0, "1347: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*st\\z", "tttssss\xEF\xAC\x86", 0, 10); // U+FB06
@@ -17643,7 +19626,7 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1348: Match end does not match");
 //       assert_eq!(&"tttssss\xEF\xAC\x86"[ma.1..ma.2], ma.0, "1348: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*あstい\\z", "tttssssあ\xC5\xBFtい", 0, 16); // U+017F
@@ -17660,7 +19643,7 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1349: Match end does not match");
 //       assert_eq!(&"tttssssあ\xC5\xBFtい"[ma.1..ma.2], ma.0, "1349: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*あstい\\z", "tttssssあ\xEF\xAC\x85い", 0, 16); // U+FB05
@@ -17677,7 +19660,7 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1350: Match end does not match");
 //       assert_eq!(&"tttssssあ\xEF\xAC\x85い"[ma.1..ma.2], ma.0, "1350: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*あstい\\z", "tttssssあ\xEF\xAC\x86い", 0, 16); // U+FB06
@@ -17694,7 +19677,7 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1351: Match end does not match");
 //       assert_eq!(&"tttssssあ\xEF\xAC\x86い"[ma.1..ma.2], ma.0, "1351: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*\xC5\xBFt\\z", "tttssssst", 0, 9); // U+017F
@@ -17711,10 +19694,14 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1352: Match end does not match");
 //       assert_eq!(&"tttssssst"[ma.1..ma.2], ma.0, "1352: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i).*\xEF\xAC\x85\\z", "tttssssあst", 0, 12); // U+FB05 // 1353
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i).*\xEF\xAC\x86い\\z", "tttssssstい", 0, 12); // U+FB06 // 1354
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i).*\xEF\xAC\x85\\z", "tttssssあst", 0, 12); // U+FB05 // 1353
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i).*\xEF\xAC\x86い\\z", "tttssssstい", 0, 12); // U+FB06 // 1354
+
 // -------------------------------------------------------------------------
 // x2("(?i).*\xEF\xAC\x85\\z", "tttssssあ\xEF\xAC\x85", 0, 13);
 // tu!(r#"(?i).*\xEF\xAC\x85\z"#, "tttssssあ\xEF\xAC\x85", &[("tttssssあ\\xEF\\", 0, 13)], 1355), UnsupportedFeatureError("EndLine Look(End)")
@@ -17730,7 +19717,7 @@ scanner! { S1345 { mode M { token r#"(?i)BstZ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1355: Match end does not match");
 //       assert_eq!(&"tttssssあ\xEF\xAC\x85"[ma.1..ma.2], ma.0, "1355: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*ss", "abcdefghijklmnopqrstuvwxyz\xc3\x9f", 0, 28); // U+00DF
@@ -17747,7 +19734,7 @@ scanner! { S1356 { mode M { token r#"(?i).*ss"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1356: Match end does not match");
 //       assert_eq!(&"abcdefghijklmnopqrstuvwxyz\xc3\x9f"[ma.1..ma.2], ma.0, "1356: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*ss.*", "abcdefghijklmnopqrstuvwxyz\xc3\x9fxyz", 0, 31); // U+00DF
@@ -17764,7 +19751,7 @@ scanner! { S1357 { mode M { token r#"(?i).*ss.*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1357: Match end does not match");
 //       assert_eq!(&"abcdefghijklmnopqrstuvwxyz\xc3\x9fxyz"[ma.1..ma.2], ma.0, "1357: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*\xc3\x9f", "abcdefghijklmnopqrstuvwxyzss", 0, 28); // U+00DF
@@ -17781,24 +19768,38 @@ scanner! { S1358 { mode M { token r#"(?i).*\xc3\x9f"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1358: Match end does not match");
 //       assert_eq!(&"abcdefghijklmnopqrstuvwxyzss"[ma.1..ma.2], ma.0, "1358: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i).*ss.*", "abcdefghijklmnopqrstuvwxyzSSxyz", 0, 31);
 // td!(r#"(?i).*ss.*"#, "abcdefghijklmnopqrstuvwxyzSSxyz", &[("abcdefghijklmnopqrstuvwxyzSSxyz", 0, 31)], 1359),
 scanner! { S1359 { mode M { token r#"(?i).*ss.*"# => 0; } } }
-// #[test] fn test_match_1359() {
-//   use s1359::S1359 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abcdefghijklmnopqrstuvwxyzSSxyz", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("abcdefghijklmnopqrstuvwxyzSSxyz", 0, 31)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1359: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1359: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1359: Match end does not match");
-//       assert_eq!(&"abcdefghijklmnopqrstuvwxyzSSxyz"[ma.1..ma.2], ma.0, "1359: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1359() {
+    use s1359::S1359 as S;
+    let scanner = S::new();
+    let matches = scanner
+        .find_matches("abcdefghijklmnopqrstuvwxyzSSxyz", 0)
+        .collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("abcdefghijklmnopqrstuvwxyzSSxyz", 0, 31)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1359: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1359: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1359: Match end does not match");
+        assert_eq!(
+            &"abcdefghijklmnopqrstuvwxyzSSxyz"[ma.1..ma.2],
+            ma.0,
+            "1359: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("(?i)ssv", "\xc3\x9fv", 0, 3); // U+00DF
@@ -17815,7 +19816,7 @@ scanner! { S1360 { mode M { token r#"(?i)ssv"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1360: Match end does not match");
 //       assert_eq!(&"\xc3\x9fv"[ma.1..ma.2], ma.0, "1360: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)(?<=ss)v", "SSv", 2, 3);
@@ -17832,7 +19833,7 @@ scanner! { S1360 { mode M { token r#"(?i)ssv"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1361: Match end does not match");
 //       assert_eq!(&"SSv"[ma.1..ma.2], ma.0, "1361: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)(?<=\xc3\x9f)v", "\xc3\x9fv", 2, 3);
@@ -17849,11 +19850,17 @@ scanner! { S1360 { mode M { token r#"(?i)ssv"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1362: Match end does not match");
 //       assert_eq!(&"\xc3\x9fv"[ma.1..ma.2], ma.0, "1362: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i).+Isssǰ", ".+Isssǰ", 0, 8); // 1363
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2(".+Isssǰ", ".+Isssǰ", 0, 8); // 1364
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i)ǰ", "ǰ", 0, 2); // 1365
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i).+Isssǰ", ".+Isssǰ", 0, 8); // 1363
+
+// -------------------------------------------------------------------------
+// *** Index error: x2(".+Isssǰ", ".+Isssǰ", 0, 8); // 1364
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i)ǰ", "ǰ", 0, 2); // 1365
+
 // -------------------------------------------------------------------------
 // x2("(?i)ǰ", "j\xcc\x8c", 0, 3);
 // td!(r#"(?i)ǰ"#, "j\xcc\x8c", &[("j\\x", 0, 3)], 1366),
@@ -17869,10 +19876,14 @@ scanner! { S1366 { mode M { token r#"(?i)ǰ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1366: Match end does not match");
 //       assert_eq!(&"j\xcc\x8c"[ma.1..ma.2], ma.0, "1366: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i)j\xcc\x8c", "ǰ", 0, 2); // 1367
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i)5ǰ", "5ǰ", 0, 3); // 1368
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i)j\xcc\x8c", "ǰ", 0, 2); // 1367
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i)5ǰ", "5ǰ", 0, 3); // 1368
+
 // -------------------------------------------------------------------------
 // x2("(?i)5ǰ", "5j\xcc\x8c", 0, 4);
 // td!(r#"(?i)5ǰ"#, "5j\xcc\x8c", &[("5j\\x", 0, 4)], 1369),
@@ -17888,10 +19899,14 @@ scanner! { S1369 { mode M { token r#"(?i)5ǰ"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1369: Match end does not match");
 //       assert_eq!(&"5j\xcc\x8c"[ma.1..ma.2], ma.0, "1369: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i)5j\xcc\x8c", "5ǰ", 0, 3); // 1370
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i)ǰv", "ǰV", 0, 3); // 1371
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i)5j\xcc\x8c", "5ǰ", 0, 3); // 1370
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i)ǰv", "ǰV", 0, 3); // 1371
+
 // -------------------------------------------------------------------------
 // x2("(?i)ǰv", "j\xcc\x8cV", 0, 4);
 // td!(r#"(?i)ǰv"#, "j\xcc\x8cV", &[("j\\xc", 0, 4)], 1372),
@@ -17907,10 +19922,14 @@ scanner! { S1372 { mode M { token r#"(?i)ǰv"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1372: Match end does not match");
 //       assert_eq!(&"j\xcc\x8cV"[ma.1..ma.2], ma.0, "1372: Matched substring does not match expected");
 //   }
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i)j\xcc\x8cv", "ǰV", 0, 3); // 1373
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("(?i)[ǰ]", "ǰ", 0, 2); // 1374
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i)j\xcc\x8cv", "ǰV", 0, 3); // 1373
+
+// -------------------------------------------------------------------------
+// *** Index error: x2("(?i)[ǰ]", "ǰ", 0, 2); // 1374
+
 // -------------------------------------------------------------------------
 // x2("(?i)[ǰ]", "j\xcc\x8c", 0, 3);
 // td!(r#"(?i)[ǰ]"#, "j\xcc\x8c", &[("j\\x", 0, 3)], 1375),
@@ -17926,7 +19945,7 @@ scanner! { S1375 { mode M { token r#"(?i)[ǰ]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1375: Match end does not match");
 //       assert_eq!(&"j\xcc\x8c"[ma.1..ma.2], ma.0, "1375: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)\ufb00a", "ffa", 0, 3);
@@ -17943,7 +19962,7 @@ scanner! { S1376 { mode M { token r#"(?i)\ufb00a"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1376: Match end does not match");
 //       assert_eq!(&"ffa"[ma.1..ma.2], ma.0, "1376: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)ffz", "\xef\xac\x80z", 0, 4);
@@ -17960,7 +19979,7 @@ scanner! { S1377 { mode M { token r#"(?i)ffz"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1377: Match end does not match");
 //       assert_eq!(&"\xef\xac\x80z"[ma.1..ma.2], ma.0, "1377: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)\u2126", "\xcf\x89", 0, 2);
@@ -17977,7 +19996,7 @@ scanner! { S1378 { mode M { token r#"(?i)\u2126"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1378: Match end does not match");
 //       assert_eq!(&"\xcf\x89"[ma.1..ma.2], ma.0, "1378: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a(?i)\u2126", "a\xcf\x89", 0, 3);
@@ -17994,7 +20013,7 @@ scanner! { S1379 { mode M { token r#"a(?i)\u2126"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1379: Match end does not match");
 //       assert_eq!(&"a\xcf\x89"[ma.1..ma.2], ma.0, "1379: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)A\u2126", "a\xcf\x89", 0, 3);
@@ -18011,7 +20030,7 @@ scanner! { S1380 { mode M { token r#"(?i)A\u2126"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1380: Match end does not match");
 //       assert_eq!(&"a\xcf\x89"[ma.1..ma.2], ma.0, "1380: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)A\u2126=", "a\xcf\x89=", 0, 4);
@@ -18028,7 +20047,7 @@ scanner! { S1381 { mode M { token r#"(?i)A\u2126="# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1381: Match end does not match");
 //       assert_eq!(&"a\xcf\x89="[ma.1..ma.2], ma.0, "1381: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i:ss)=1234567890", "\xc5\xbf\xc5\xbf=1234567890", 0, 15);
@@ -18045,7 +20064,7 @@ scanner! { S1382 { mode M { token r#"(?i:ss)=1234567890"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1382: Match end does not match");
 //       assert_eq!(&"\xc5\xbf\xc5\xbf=1234567890"[ma.1..ma.2], ma.0, "1382: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\x{000A}", "\x0a", 0, 1);
@@ -18062,7 +20081,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1383: Match end does not match");
 //       assert_eq!(&"\x0a"[ma.1..ma.2], ma.0, "1383: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\x{000A 002f}", "\x0a\x2f", 0, 2);
@@ -18079,7 +20098,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1384: Match end does not match");
 //       assert_eq!(&"\x0a\x2f"[ma.1..ma.2], ma.0, "1384: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\x{000A 002f }", "\x0a\x2f", 0, 2);
@@ -18096,7 +20115,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1385: Match end does not match");
 //       assert_eq!(&"\x0a\x2f"[ma.1..ma.2], ma.0, "1385: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\x{007C     001b}", "\x7c\x1b", 0, 2);
@@ -18113,7 +20132,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1386: Match end does not match");
 //       assert_eq!(&"\x7c\x1b"[ma.1..ma.2], ma.0, "1386: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\x{1 2 3 4 5 6 7 8 9 a b c d e f}", "\x01\x02\x3\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f", 0, 15);
@@ -18130,7 +20149,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1387: Match end does not match");
 //       assert_eq!(&"\x01\x02\x3\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"[ma.1..ma.2], ma.0, "1387: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a\\x{000A 002f}@", "a\x0a\x2f@", 0, 4);
@@ -18147,7 +20166,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1388: Match end does not match");
 //       assert_eq!(&"a\x0a\x2f@"[ma.1..ma.2], ma.0, "1388: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("a\\x{0060\n0063}@", "a\x60\x63@", 0, 4);
@@ -18164,7 +20183,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1389: Match end does not match");
 //       assert_eq!(&"a\x60\x63@"[ma.1..ma.2], ma.0, "1389: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("\\x{00000001 000000012}", "", ONIGERR_TOO_LONG_WIDE_CHAR_VALUE);
@@ -18230,7 +20249,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1397: Match end does not match");
 //       assert_eq!(&"B"[ma.1..ma.2], ma.0, "1397: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\o{102 103}", "BC", 0, 2);
@@ -18247,7 +20266,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1398: Match end does not match");
 //       assert_eq!(&"BC"[ma.1..ma.2], ma.0, "1398: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\o{0160 0000161}", "pq", 0, 2);
@@ -18264,7 +20283,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1399: Match end does not match");
 //       assert_eq!(&"pq"[ma.1..ma.2], ma.0, "1399: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\o{1 2 3 4 5 6 7 10 11 12 13 14 15 16 17}", "\x01\x02\x3\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f", 0, 15);
@@ -18281,7 +20300,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1400: Match end does not match");
 //       assert_eq!(&"\x01\x02\x3\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f"[ma.1..ma.2], ma.0, "1400: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\o{0007 0010 }", "\x07\x08", 0, 2);
@@ -18298,7 +20317,7 @@ scanner! { S1383 { mode M { token r#"\x{000A}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1401: Match end does not match");
 //       assert_eq!(&"\x07\x08"[ma.1..ma.2], ma.0, "1401: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("\\o{0000 0015/", "", ONIGERR_INVALID_CODE_POINT_VALUE);
@@ -18350,7 +20369,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1407: Match end does not match");
 //       assert_eq!(&"\x0a"[ma.1..ma.2], ma.0, "1407: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x{000A 002f}]+", "\x0a\x2f\x2e", 0, 2);
@@ -18367,7 +20386,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1408: Match end does not match");
 //       assert_eq!(&"\x0a\x2f\x2e"[ma.1..ma.2], ma.0, "1408: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x{01 0F 1A 2c 4B}]+", "\x20\x01\x0f\x1a\x2c\x4b\x1b", 1, 6);
@@ -18384,7 +20403,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1409: Match end does not match");
 //       assert_eq!(&"\x20\x01\x0f\x1a\x2c\x4b\x1b"[ma.1..ma.2], ma.0, "1409: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x{0020 0024}-\\x{0026}]+", "\x25\x24\x26\x23", 0, 3);
@@ -18401,7 +20420,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1410: Match end does not match");
 //       assert_eq!(&"\x25\x24\x26\x23"[ma.1..ma.2], ma.0, "1410: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x{0030}-\\x{0033 005a}]+", "\x30\x31\x32\x33\x5a\34", 0, 5);
@@ -18418,7 +20437,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1411: Match end does not match");
 //       assert_eq!(&"\x30\x31\x32\x33\x5a\34"[ma.1..ma.2], ma.0, "1411: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("[\\x{000A]", "", ONIGERR_INVALID_CODE_POINT_VALUE);
@@ -18456,7 +20475,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1415: Match end does not match");
 //       assert_eq!(&"B"[ma.1..ma.2], ma.0, "1415: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\o{102 103}]*", "BC", 0, 2);
@@ -18473,7 +20492,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1416: Match end does not match");
 //       assert_eq!(&"BC"[ma.1..ma.2], ma.0, "1416: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("[a\\o{002  003]bcde|zzz", "", ONIGERR_INVALID_CODE_POINT_VALUE);
@@ -18497,7 +20516,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1418: Match end does not match");
 //       assert_eq!(&"abc0123456789def"[ma.1..ma.2], ma.0, "1418: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x{0030 - 0039 }]+", "abc0123456789def", 3, 13);
@@ -18514,7 +20533,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1419: Match end does not match");
 //       assert_eq!(&"abc0123456789def"[ma.1..ma.2], ma.0, "1419: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x{0030 - 0039 0063 0064}]+", "abc0123456789def", 2, 14);
@@ -18531,7 +20550,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1420: Match end does not match");
 //       assert_eq!(&"abc0123456789def"[ma.1..ma.2], ma.0, "1420: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x{0030 - 0039 0063-0065}]+", "acde019b", 1, 7);
@@ -18548,7 +20567,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1421: Match end does not match");
 //       assert_eq!(&"acde019b"[ma.1..ma.2], ma.0, "1421: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("[\\x{0030 - 0039-0063 0064}]+", "", ONIGERR_INVALID_CODE_POINT_VALUE);
@@ -18614,7 +20633,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1429: Match end does not match");
 //       assert_eq!(&"dabcqz"[ma.1..ma.2], ma.0, "1429: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[-\\x{0063-0065}]+", "ace-df", 1, 5);
@@ -18631,7 +20650,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1430: Match end does not match");
 //       assert_eq!(&"ace-df"[ma.1..ma.2], ma.0, "1430: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\x61-\\x{0063 0065}]+", "abced", 0, 4);
@@ -18648,7 +20667,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1431: Match end does not match");
 //       assert_eq!(&"abced"[ma.1..ma.2], ma.0, "1431: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("[\\x61-\\x{0063-0065}]+", "", ONIGERR_INVALID_CODE_POINT_VALUE);
@@ -18672,7 +20691,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1433: Match end does not match");
 //       assert_eq!(&"tcqb"[ma.1..ma.2], ma.0, "1433: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("[\\W\\x{0063 0071}]+", "*cqa", 0, 3);
@@ -18689,7 +20708,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1434: Match end does not match");
 //       assert_eq!(&"*cqa"[ma.1..ma.2], ma.0, "1434: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(\\O|(?=z\\g<2>*))(\\g<0>){0}", "a", 0, 1);
@@ -18706,7 +20725,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1435: Match end does not match");
 //       assert_eq!(&"a"[ma.1..ma.2], ma.0, "1435: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?Ii)abc", "abc", 0, 3);
@@ -18723,7 +20742,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1436: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1436: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?Ii)abc", "ABC", 0, 3);
@@ -18740,7 +20759,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1437: Match end does not match");
 //       assert_eq!(&"ABC"[ma.1..ma.2], ma.0, "1437: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?Ii:abc)", "abc", 0, 3);
@@ -18757,7 +20776,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1438: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1438: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?Ii)xyz|abc", "aBc", 0, 3);
@@ -18774,7 +20793,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1439: Match end does not match");
 //       assert_eq!(&"aBc"[ma.1..ma.2], ma.0, "1439: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?Ii:zz|abc|AZ)", "ABc", 0, 3);
@@ -18791,7 +20810,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1440: Match end does not match");
 //       assert_eq!(&"ABc"[ma.1..ma.2], ma.0, "1440: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("(?Ii:abc)d", "abc", ONIGERR_INVALID_GROUP_OPTION);
@@ -18822,7 +20841,7 @@ scanner! { S1407 { mode M { token r#"[\x{000A}]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1443: Match end does not match");
 //       assert_eq!(&"abc"[ma.1..ma.2], ma.0, "1443: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("(?i-I:abc)", "abc", ONIGERR_INVALID_GROUP_OPTION);
@@ -18846,7 +20865,7 @@ scanner! { S1445 { mode M { token r#"(?i)\xe2\x84\xaa"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1445: Match end does not match");
 //       assert_eq!(&"k"[ma.1..ma.2], ma.0, "1445: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?Ii)\xe2\x84\xaa", "k");
@@ -18858,7 +20877,7 @@ scanner! { S1445 { mode M { token r#"(?i)\xe2\x84\xaa"# => 0; } } }
 //   let matches = scanner.find_matches("k", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1446: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("((?Ii)abc)", "", ONIGERR_INVALID_GROUP_OPTION);
@@ -18882,7 +20901,7 @@ scanner! { S1445 { mode M { token r#"(?i)\xe2\x84\xaa"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1448: Match end does not match");
 //       assert_eq!(&"ABC"[ma.1..ma.2], ma.0, "1448: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?:(?:(?Ii)abc))", "ABC", 0, 3);
@@ -18899,7 +20918,7 @@ scanner! { S1445 { mode M { token r#"(?i)\xe2\x84\xaa"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1449: Match end does not match");
 //       assert_eq!(&"ABC"[ma.1..ma.2], ma.0, "1449: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("x(?Ii)", "", ONIGERR_INVALID_GROUP_OPTION);
@@ -18939,7 +20958,7 @@ scanner! { S1445 { mode M { token r#"(?i)\xe2\x84\xaa"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1454: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?Ii)|", "", 0, 0);
@@ -18951,7 +20970,7 @@ scanner! { S1445 { mode M { token r#"(?i)\xe2\x84\xaa"# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1455: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("(?Ii)|(?Ii)", "", ONIGERR_INVALID_GROUP_OPTION);
@@ -18975,7 +20994,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1457: Match end does not match");
 //       assert_eq!(&"aabcaaa"[ma.1..ma.2], ma.0, "1457: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?L)a*", "aabcaaa", 4, 7);
@@ -18992,7 +21011,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1458: Match end does not match");
 //       assert_eq!(&"aabcaaa"[ma.1..ma.2], ma.0, "1458: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?L)a{4}|a{3}|b*", "baaaaabbb", 1, 5);
@@ -19009,7 +21028,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1459: Match end does not match");
 //       assert_eq!(&"baaaaabbb"[ma.1..ma.2], ma.0, "1459: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?L)a{3}|a{4}|b*", "baaaaabbb", 1, 5);
@@ -19026,7 +21045,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1460: Match end does not match");
 //       assert_eq!(&"baaaaabbb"[ma.1..ma.2], ma.0, "1460: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("x(?L)xxxxx", "", ONIGERR_INVALID_GROUP_OPTION);
@@ -19057,7 +21076,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1463: Match end does not match");
 //       assert_eq!(&"abab"[ma.1..ma.2], ma.0, "1463: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("(?C)(..)\\1", "abab", ONIGERR_INVALID_BACKREF);
@@ -19095,7 +21114,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1467: Match end does not match");
 //       assert_eq!(&"aazaa"[ma.1..ma.2], ma.0, "1467: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?Li)z|a\\g<0>a", "aazAA", 0, 5);
@@ -19112,7 +21131,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1468: Match end does not match");
 //       assert_eq!(&"aazAA"[ma.1..ma.2], ma.0, "1468: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?Li:z|a\\g<0>a)", "aazAA", 0, 5);
@@ -19129,7 +21148,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1469: Match end does not match");
 //       assert_eq!(&"aazAA"[ma.1..ma.2], ma.0, "1469: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?L)z|a\\g<0>a", "aazaaaazaaaa", 3, 12);
@@ -19146,7 +21165,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1470: Match end does not match");
 //       assert_eq!(&"aazaaaazaaaa"[ma.1..ma.2], ma.0, "1470: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI)s", "\xc5\xbf");
@@ -19158,7 +21177,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1471: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI)[s]", "\xc5\xbf");    // FAIL
@@ -19170,7 +21189,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1472: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI:s)", "\xc5\xbf");
@@ -19182,7 +21201,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1473: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI:[s])", "\xc5\xbf");    // FAIL
@@ -19194,7 +21213,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1474: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iI)(?:[[:word:]])", "\xc5\xbf", 0, 2);
@@ -19211,7 +21230,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1475: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1475: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI)(?W:[[:word:]])", "\xc5\xbf");     // FAIL
@@ -19223,7 +21242,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1476: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI)(?W:\\w)", "\xc5\xbf");
@@ -19235,7 +21254,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1477: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI)(?W:[\\w])", "\xc5\xbf");     // FAIL
@@ -19247,7 +21266,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1478: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI)(?W:\\p{Word})", "\xc5\xbf");
@@ -19259,7 +21278,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1479: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iI)(?W:[\\p{Word}])", "\xc5\xbf");     // FAIL
@@ -19271,7 +21290,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1480: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[[:word:]])",  "\xc5\xbf", 0, 2);
@@ -19288,7 +21307,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1481: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1481: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[\\p{Word}])", "\xc5\xbf", 0, 2);
@@ -19305,7 +21324,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1482: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1482: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[\\w])",       "\xc5\xbf", 0, 2);
@@ -19322,7 +21341,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1483: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1483: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iW:\\p{Word})",    "\xc5\xbf");
@@ -19334,7 +21353,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1484: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iW:\\w)",          "\xc5\xbf");
@@ -19346,7 +21365,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1485: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)\\p{Word}",     "\xc5\xbf", 0, 2);
@@ -19363,7 +21382,7 @@ scanner! { S1457 { mode M { token r#"a*"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1486: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1486: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?i)\\w",           "\xc5\xbf", 0, 2);
@@ -19380,7 +21399,7 @@ scanner! { S1487 { mode M { token r#"(?i)\w"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1487: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1487: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[[:^word:]])",  "\xc5\xbf", 0, 2);
@@ -19397,7 +21416,7 @@ scanner! { S1487 { mode M { token r#"(?i)\w"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1488: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1488: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[\\P{Word}])",  "\xc5\xbf", 0, 2);
@@ -19414,7 +21433,7 @@ scanner! { S1487 { mode M { token r#"(?i)\w"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1489: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1489: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[\\W])",        "\xc5\xbf", 0, 2);
@@ -19431,7 +21450,7 @@ scanner! { S1487 { mode M { token r#"(?i)\w"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1490: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1490: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:\\P{Word})",    "\xc5\xbf", 0, 2);
@@ -19448,7 +21467,7 @@ scanner! { S1487 { mode M { token r#"(?i)\w"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1491: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1491: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:\\W)",          "\xc5\xbf", 0, 2);
@@ -19465,7 +21484,7 @@ scanner! { S1487 { mode M { token r#"(?i)\w"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1492: Match end does not match");
 //       assert_eq!(&"\xc5\xbf"[ma.1..ma.2], ma.0, "1492: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?i)\\P{Word}",      "\xc5\xbf");
@@ -19477,7 +21496,7 @@ scanner! { S1487 { mode M { token r#"(?i)\w"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1493: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?i)\\W",            "\xc5\xbf");
@@ -19489,7 +21508,7 @@ scanner! { S1494 { mode M { token r#"(?i)\W"# => 0; } } }
 //   let matches = scanner.find_matches("\xc5\xbf", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1494: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[[:^word:]])",  "s", 0, 1);
@@ -19506,7 +21525,7 @@ scanner! { S1494 { mode M { token r#"(?i)\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1495: Match end does not match");
 //       assert_eq!(&"s"[ma.1..ma.2], ma.0, "1495: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[\\P{Word}])",  "s", 0, 1);
@@ -19523,7 +21542,7 @@ scanner! { S1494 { mode M { token r#"(?i)\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1496: Match end does not match");
 //       assert_eq!(&"s"[ma.1..ma.2], ma.0, "1496: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("(?iW:[\\W])",        "s", 0, 1);
@@ -19540,7 +21559,7 @@ scanner! { S1494 { mode M { token r#"(?i)\W"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1497: Match end does not match");
 //       assert_eq!(&"s"[ma.1..ma.2], ma.0, "1497: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iW:\\P{Word})",     "s");
@@ -19552,7 +21571,7 @@ scanner! { S1494 { mode M { token r#"(?i)\W"# => 0; } } }
 //   let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1498: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?iW:\\W)",           "s");
@@ -19564,7 +21583,7 @@ scanner! { S1494 { mode M { token r#"(?i)\W"# => 0; } } }
 //   let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1499: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?i)\\P{Word}",       "s");
@@ -19576,96 +21595,149 @@ scanner! { S1494 { mode M { token r#"(?i)\W"# => 0; } } }
 //   let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1500: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("(?i)\\W",             "s");
 // td!(r#"(?i)\W"#, "s", &[], 1501),
 scanner! { S1501 { mode M { token r#"(?i)\W"# => 0; } } }
-// #[test] fn test_match_1501() {
-//   use s1501::S1501 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1501: Unexpected match count");
-//}
+#[test]
+fn test_match_1501() {
+    use s1501::S1501 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("s", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1501: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // x2("[[:punct:]]", ":", 0, 1);
 // td!(r#"[[:punct:]]"#, ":", &[(":", 0, 1)], 1502),
 scanner! { S1502 { mode M { token r#"[[:punct:]]"# => 0; } } }
-// #[test] fn test_match_1502() {
-//   use s1502::S1502 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches(":", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[(":", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1502: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1502: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1502: Match end does not match");
-//       assert_eq!(&":"[ma.1..ma.2], ma.0, "1502: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1502() {
+    use s1502::S1502 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches(":", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[(":", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1502: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1502: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1502: Match end does not match");
+        assert_eq!(
+            &":"[ma.1..ma.2],
+            ma.0,
+            "1502: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[[:punct:]]", "$", 0, 1);
 // td!(r#"[[:punct:]]"#, "$", &[("$", 0, 1)], 1503),
 scanner! { S1503 { mode M { token r#"[[:punct:]]"# => 0; } } }
-// #[test] fn test_match_1503() {
-//   use s1503::S1503 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("$", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("$", 0, 1)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1503: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1503: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1503: Match end does not match");
-//       assert_eq!(&"$"[ma.1..ma.2], ma.0, "1503: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1503() {
+    use s1503::S1503 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("$", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("$", 0, 1)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1503: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1503: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1503: Match end does not match");
+        assert_eq!(
+            &"$"[ma.1..ma.2],
+            ma.0,
+            "1503: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // x2("[[:punct:]]+", "$+<=>^`|~", 0, 9);
 // td!(r#"[[:punct:]]+"#, "$+<=>^`|~", &[("$+<=>^`|~", 0, 9)], 1504),
 scanner! { S1504 { mode M { token r#"[[:punct:]]+"# => 0; } } }
-// #[test] fn test_match_1504() {
-//   use s1504::S1504 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("$+<=>^`|~", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[("$+<=>^`|~", 0, 9)];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1504: Unexpected match count");
-//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-//       assert_eq!(matches[i].span.start, ma.1, "1504: Match start does not match");
-//       assert_eq!(matches[i].span.end, ma.2, "1504: Match end does not match");
-//       assert_eq!(&"$+<=>^`|~"[ma.1..ma.2], ma.0, "1504: Matched substring does not match expected");
-//   }
-//}
+#[test]
+fn test_match_1504() {
+    use s1504::S1504 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("$+<=>^`|~", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("$+<=>^`|~", 0, 9)];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1504: Unexpected match count"
+    );
+    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
+        assert_eq!(
+            matches[i].span.start, ma.1,
+            "1504: Match start does not match"
+        );
+        assert_eq!(matches[i].span.end, ma.2, "1504: Match end does not match");
+        assert_eq!(
+            &"$+<=>^`|~"[ma.1..ma.2],
+            ma.0,
+            "1504: Matched substring does not match expected"
+        );
+    }
+}
 
 // -------------------------------------------------------------------------
 // n("[[:punct:]]", "a");
 // td!(r#"[[:punct:]]"#, "a", &[], 1505),
 scanner! { S1505 { mode M { token r#"[[:punct:]]"# => 0; } } }
-// #[test] fn test_match_1505() {
-//   use s1505::S1505 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1505: Unexpected match count");
-//}
+#[test]
+fn test_match_1505() {
+    use s1505::S1505 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("a", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1505: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // n("[[:punct:]]", "7");
 // td!(r#"[[:punct:]]"#, "7", &[], 1506),
 scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
-// #[test] fn test_match_1506() {
-//   use s1506::S1506 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("7", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1506: Unexpected match count");
-//}
+#[test]
+fn test_match_1506() {
+    use s1506::S1506 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("7", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1506: Unexpected match count"
+    );
+}
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("\\p{PosixPunct}+", "$¦", 0, 3); // 1507
+// -------------------------------------------------------------------------
+// *** Index error: x2("\\p{PosixPunct}+", "$¦", 0, 3); // 1507
+
 // -------------------------------------------------------------------------
 // x2("\\A.*\\R", "\n", 0, 1);
 // tr!(r#"\A.*\R"#, "\n", &[("\\", 0, 1)], 1508), EscapeUnrecognized
@@ -19681,7 +21753,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1508: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1508: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A\\O*\\R", "\n", 0, 1);
@@ -19698,7 +21770,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1509: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1509: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A\\n*\\R", "\n", 0, 1);
@@ -19715,7 +21787,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1510: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1510: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A\\R*\\R", "\n", 0, 1);
@@ -19732,7 +21804,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1511: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1511: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\At*\\R", "\n", 0, 1);
@@ -19749,7 +21821,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1512: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1512: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A.{0,99}\\R", "\n", 0, 1);
@@ -19766,7 +21838,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1513: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1513: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A\\O{0,99}\\R", "\n", 0, 1);
@@ -19783,7 +21855,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1514: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1514: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A\\n{0,99}\\R", "\n", 0, 1);
@@ -19800,7 +21872,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1515: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1515: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A\\R{0,99}\\R", "\n", 0, 1);
@@ -19817,7 +21889,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1516: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1516: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\At{0,99}\\R", "\n", 0, 1);
@@ -19834,7 +21906,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1517: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1517: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A.*\\n", "\n", 0, 1);       //  \n
@@ -19851,7 +21923,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1518: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1518: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A.{0,99}\\n", "\n", 0, 1);
@@ -19868,7 +21940,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1519: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1519: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A.*\\O", "\n", 0, 1);       //  \O
@@ -19885,7 +21957,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1520: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1520: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A.{0,99}\\O", "\n", 0, 1);
@@ -19902,7 +21974,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1521: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1521: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A.*\\s", "\n", 0, 1);       //  \s
@@ -19919,7 +21991,7 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1522: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1522: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\A.{0,99}\\s", "\n", 0, 1);
@@ -19936,19 +22008,26 @@ scanner! { S1506 { mode M { token r#"[[:punct:]]"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1523: Match end does not match");
 //       assert_eq!(&"\n"[ma.1..ma.2], ma.0, "1523: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // n("a(b|)+d", "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcd"); /* https://www.haijin-boys.com/discussions/5079 */
 // td!(r#"a(b|)+d"#, "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcd", &[], 1524),
 scanner! { S1524 { mode M { token r#"a(b|)+d"# => 0; } } }
-// #[test] fn test_match_1524() {
-//   use s1524::S1524 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcd", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1524: Unexpected match count");
-//}
+#[test]
+fn test_match_1524() {
+    use s1524::S1524 as S;
+    let scanner = S::new();
+    let matches = scanner
+        .find_matches("abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcd", 0)
+        .collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1524: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // e("   \xfd", "", ONIGERR_INVALID_CODE_POINT_VALUE); /* https://bugs.php.net/bug.php?id=77370 */
@@ -20002,20 +22081,25 @@ scanner! { S1524 { mode M { token r#"a(b|)+d"# => 0; } } }
 //   let matches = scanner.find_matches("    while (i < len && f(array[i]))", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1531: Unexpected match count");
-//}
+// }
 
-// Exception: Exception calling "Substring" with "2" argument(s): "Index and length must refer to a location within the string. (Parameter 'length')" x2("aaaaaaaaaaaaaaaaaaaaaaaあb", "aaaaaaaaaaaaaaaaaaaaaaaあb", 0, 27); /* Issue #221 */ // 1532
+// -------------------------------------------------------------------------
+// *** Index error: x2("aaaaaaaaaaaaaaaaaaaaaaaあb", "aaaaaaaaaaaaaaaaaaaaaaaあb", 0, 27); /* Issue #221 */ // 1532
+
 // -------------------------------------------------------------------------
 // n("d{65538}+{61533} ", "d{65538}+{61533} ");
 // td!(r#"d{65538}+{61533} "#, "d{65538}+{61533} ", &[], 1533),
-scanner! { S1533 { mode M { token r#"d{65538}+{61533} "# => 0; } } }
+
+// PERFORMANCE!!! TODO: Check repetition count limits in the scanner.
+// scanner! { S1533 { mode M { token r#"d{65538}+{61533} "# => 0; } } }
+
 // #[test] fn test_match_1533() {
 //   use s1533::S1533 as S;
 //   let scanner = S::new();
 //   let matches = scanner.find_matches("d{65538}+{61533} ", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1533: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("x{55380}{77590}", "", ONIGERR_TOO_BIG_NUMBER_FOR_REPEAT_RANGE);
@@ -20048,7 +22132,7 @@ scanner! { S1533 { mode M { token r#"d{65538}+{61533} "# => 0; } } }
 //   let matches = scanner.find_matches("", 0).collect::<Vec<_>>();
 //   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
 //   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1537: Unexpected match count");
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\p{Common}", "\xe3\x8b\xbf", 0, 3);   /* U+32FF */
@@ -20065,7 +22149,7 @@ scanner! { S1538 { mode M { token r#"\p{Common}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1538: Match end does not match");
 //       assert_eq!(&"\xe3\x8b\xbf"[ma.1..ma.2], ma.0, "1538: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // x2("\\p{In_Enclosed_CJK_Letters_and_Months}", "\xe3\x8b\xbf", 0, 3); /* U+32FF */
@@ -20082,7 +22166,7 @@ scanner! { S1538 { mode M { token r#"\p{Common}"# => 0; } } }
 //       assert_eq!(matches[i].span.end, ma.2, "1539: Match end does not match");
 //       assert_eq!(&"\xe3\x8b\xbf"[ma.1..ma.2], ma.0, "1539: Matched substring does not match expected");
 //   }
-//}
+// }
 
 // -------------------------------------------------------------------------
 // e("\\x{7fffffff}", "", ONIGERR_INVALID_CODE_POINT_VALUE);
@@ -20165,13 +22249,18 @@ scanner! { S1538 { mode M { token r#"\p{Common}"# => 0; } } }
 // x2("(?:)*", "abc", 0, 0);
 // td!(r#"(?:)*"#, "abc", &[], 1551),
 scanner! { S1551 { mode M { token r#"(?:)*"# => 0; } } }
-// #[test] fn test_match_1551() {
-//   use s1551::S1551 as S;
-//   let scanner = S::new();
-//   let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
-//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  &[];
-//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), "1551: Unexpected match count");
-//}
+#[test]
+fn test_match_1551() {
+    use s1551::S1551 as S;
+    let scanner = S::new();
+    let matches = scanner.find_matches("abc", 0).collect::<Vec<_>>();
+    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[];
+    assert_eq!(
+        matches.len(),
+        EXPECTED_MATCHES.len(),
+        "1551: Unexpected match count"
+    );
+}
 
 // -------------------------------------------------------------------------
 // e("^*", "abc", ONIGERR_TARGET_OF_REPEAT_OPERATOR_INVALID);
