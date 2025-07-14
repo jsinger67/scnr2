@@ -186,7 +186,7 @@ impl CharacterClasses {
 
         // Step 2: Generate elementary intervals from the boundaries
         self.elementary_intervals = Vec::new();
-        for i in 0..boundaries.len() - 1 {
+        for i in 0..boundaries.len().saturating_sub(1) {
             let start = boundaries[i];
             if let Some(end) = char::from_u32(boundaries[i + 1] as u32 - 1) {
                 if start <= end {
@@ -283,11 +283,11 @@ impl CharacterClasses {
     /// Generates a function that checks if a character belongs to a specific character class.
     pub(crate) fn generate(&self, name: &str) -> proc_macro2::TokenStream {
         let name = syn::Ident::new(name, proc_macro2::Span::call_site());
-        if self.intervals.is_empty() {
-            panic!(
-                "No disjoint character classes found. Did you call `create_disjoint_character_classes`?"
-            );
-        }
+        // if self.intervals.is_empty() {
+        //     panic!(
+        //         "No disjoint character classes found. Did you call `create_disjoint_character_classes`?"
+        //     );
+        // }
         // Generate elementary intervals
         let intervals = self
             .elementary_intervals

@@ -28,10 +28,65 @@ param(
 #define n(p,s)          xn(p,s,   __LINE__)
 
 # Match with expected error
-# Since this wil not compile we will not extract it.
-# e("<pattern>", "<input>", <match_start>, <match_end>);
+# e("<pattern>", "<input>", <error_number>);
 #define e(p,s,en)       xe(p,s,en, __LINE__)
 
+function Write-Macro {
+    param(
+        [string] $Pattern,
+        [string] $InputString,
+        [string] $ExpectedMatch,
+        [string] $Line,
+        [int] $Count
+    )
+    $Line = $Line.Trim()
+    Write-Output "// -------------------------------------------------------------------------"
+    Write-Output "// $Line"
+    Write-Output "// td!(r`#`"$Pattern`"`#, `"$InputString`", $ExpectedMatch, $Count),"
+    Write-Output "// scanner! { S$Count { mode M { token r#`"$Pattern`"# => 0; } } }"
+    Write-Output "// #[test] fn test_match_$Count() {"
+    Write-Output "//   use s$Count::S$Count as S;"
+    Write-Output "//   let scanner = S::new();"
+    Write-Output "//   let matches = scanner.find_matches(`"$InputString`", 0).collect::<Vec<_>>();"
+    Write-Output "//   const EXPECTED_MATCHES: &[(&str, usize, usize)] =  $ExpectedMatch;"
+    Write-Output "//   assert_eq!(matches.len(), EXPECTED_MATCHES.len(), `"${Count}: Unexpected match count`");"
+    if ($ExpectedMatch -ne "&[]") {
+        Write-Output "//   for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {"
+        Write-Output "//       assert_eq!(matches[i].span.start, ma.1, `"${Count}: Match start does not match`");"
+        Write-Output "//       assert_eq!(matches[i].span.end, ma.2, `"${Count}: Match end does not match`");"
+        Write-Output "//       assert_eq!(&`"$InputString`"[ma.1..ma.2]`, ma.0, `"${Count}: Matched substring does not match expected`");"
+        Write-Output "//   }"
+    }
+    Write-Output "//}"
+    Write-Output ""
+}
+
+function Write-Error {
+    param(
+        [string] $Pattern,
+        [string] $InputString,
+        [string] $ErrorNumber,
+        [string] $Line,
+        [int] $Count
+    )
+    $Line = $Line.Trim()
+    Write-Output "// -------------------------------------------------------------------------"
+    Write-Output "// $Line"
+    Write-Output "// tr!(r`#`"$Pattern`"`#, `"$InputString`", `"$ErrorNumber`", $Count),"
+    Write-Output "// scanner! { S$Count { mode M { token r#`"$Pattern`"# => 0; } } }"
+    Write-Output "// #[test] fn test_error_$Count() {"
+    Write-Output "// }"
+    Write-Output ""
+}
+
+Write-Output "/// This file contains a hopefully increasing number of match tests to verify the correctness of the"
+Write-Output "/// scanner."
+Write-Output "///"
+Write-Output "/// Some tests are based on the https://github.com/kkos/oniguruma/blob/master/test/test_utf8.c file"
+Write-Output "/// from the Oniguruma project."
+Write-Output "/// Copyright (c) 2002-2019 K.Kosako kkosako0@gmail.com All rights reserved."
+Write-Output "use scnr2::scanner;"
+Write-Output ""
 
 Get-Content $Path |
 Where-Object { $_ -match "^\s*(x[23]|[ne])\("
@@ -44,7 +99,7 @@ ForEach-Object -Begin {
     $line = $_
     # x2("<pattern>", "<input>", <match_start>, <match_end>);
     # x3("<pattern>", "<input>", <match_start>, <match_end>, <match_group>);
-    $matched = $_ -match 'x[23]\("(?<pattern>.*)",\s*"(?<input_string>.*)",\s*(?<span_start>\d+),\s*(?<span_end>\d+)\s*(,\s*(?<span_end>\d+)\s*)?\);'
+    $matched = $_ -match 'x[23]\("(?<pattern>.*)",\s*"(?<input_string>.*)",\s*(?<span_start>\d+),\s*(?<span_end>\d+)\s*(,\s*(?<match_group>\d+)\s*)?\);'
     if ($matched) {
         # Write-Host "Matched: $_"
         $pattern = $matches['pattern']
@@ -60,25 +115,50 @@ ForEach-Object -Begin {
         $span_end = [int]$matches['span_end']
         try {
             $matched_substring = $input_string.Substring($span_start, $span_end - $span_start)
+            $matched_substring = $matched_substring -replace '\\', '\\'
             $expected_match = "(`"$matched_substring`", $span_start, $span_end)"
             if ($expected_match -eq '("", 0, 0)') {
                 # ("", 0, 0) is the value for no match
                 $expected_match = ""
             }
-            # Output the converted td! macro commented out, it has to be manually revised and
-            # uncommented to be used
-            Write-Output "// td!(r`#`"$pattern`"`#, `"$input_string`", &[$expected_match], $Count);"
+            Write-Macro -Pattern $pattern -InputString $input_string -ExpectedMatch "&[$expected_match]" -Count $Count -Line $line
         }
         catch {
             # Error handling: Output the original line commented out
             $line = $line.Trim()
+            Write-Output "// Exception: $_ $line // $Count"
+        }
+    } else {
+        $matched = $_ -match '(?<macro>[en])\("(?<pattern>.*)",\s*"(?<input_string>.*)"\s*(,\s*(?<error_number>.+?)\s*)?\);'
+        if ($matched) {
+            $macro = $matches['macro']
+            $pattern = $matches['pattern']
+            if ($pattern -eq $null) {
+                $pattern = ""
+            }
+            $pattern = $pattern -replace '\\\\', '\'
+            $input_string = $matches['input_string']
+            if ($input_string -eq $null) {
+                $input_string = ""
+            }
+            if ($macro -eq 'n') {
+                # n("<pattern>", "<input>");
+                Write-Macro -Pattern $pattern -InputString $input_string -ExpectedMatch "&[]" -Count $Count -Line $line
+            } elseif ($macro -eq 'e') {
+                # e("<pattern>", "<input>", <error_number>);
+                $error_number = $matches['error_number']
+                if ($error_number -eq $null) {
+                    $error_number = ""
+                }
+                Write-Error -Pattern $pattern -InputString $input_string -ErrorNumber $error_number -Count $Count -Line $line
+            }
+        } else {
+            # If the line does not match any of the expected patterns, output it as is
+            $line = $_.Trim()
             Write-Output "// $line // $Count"
         }
-        $Count += 1
-    } else {
-        $matched = $_ -match 'n\("(?<pattern>.*)",\s*"(?<input_string>.*)"\);'
-        Write-Output "// td!(r`#`"$pattern`"`#, `"$input_string`", $Count);"
     }
+    $Count += 1
 } -End {
-    Write-Output "Converted $Count macros."
+    Write-Host "Converted $Count macros."
 }
