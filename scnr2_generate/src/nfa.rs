@@ -335,7 +335,7 @@ impl Nfa {
                 to_state,
             ));
         } else {
-            panic!("State {} does not exist in the NFA.", from_state);
+            panic!("State {from_state} does not exist in the NFA.");
         }
     }
 
@@ -343,7 +343,7 @@ impl Nfa {
         if let Some(state) = self.states.get_mut(from_state.as_usize()) {
             state.add_transition(NfaTransition::new(None, to_state));
         } else {
-            panic!("State {} does not exist in the NFA.", from_state);
+            panic!("State {from_state} does not exist in the NFA.");
         }
     }
 
@@ -369,7 +369,7 @@ impl Nfa {
                 }
                 i += 1;
             } else {
-                panic!("State not found: {:?}", current_state);
+                panic!("State not found: {current_state:?}");
             }
         }
         closure.sort_unstable();
@@ -393,8 +393,7 @@ impl Nfa {
                         // If this panic occurs, it means that the NFA has not been converted to
                         // disjoint character classes yet.
                         panic!(
-                            "HirKind character classes are not supported in NFA transitions: {:?}",
-                            hir_kind
+                            "HirKind character classes are not supported in NFA transitions: {hir_kind:?}"
                         );
                     }
                     None => (),
@@ -456,10 +455,7 @@ impl Nfa {
                 } else if let CharacterClassType::Range(range) = symbol {
                     // When this assertion fails, it means that the transitions of this NFA have
                     // already been converted to disjoint character classes.
-                    panic!(
-                        "Ranges are not supported in collect_character_classes: {:?}",
-                        range
-                    );
+                    panic!("Ranges are not supported in collect_character_classes: {range:?}");
                 }
             }
             // If the state is an accepting state, collect the character classes from the
@@ -483,14 +479,13 @@ impl Nfa {
                                             // of this NFA have already been converted to disjoint
                                             // character classes.
                                             panic!(
-                                                "Ranges are not supported in collect_character_classes: {:?}",
-                                                range
+                                                "Ranges are not supported in collect_character_classes: {range:?}"
                                             );
                                         }
                                     }
                                 }
                             }
-                            _ => panic!("Lookahead is not an NFA: {:?}", lookahead_nfa),
+                            _ => panic!("Lookahead is not an NFA: {lookahead_nfa:?}"),
                         }
                     }
                     _ => (),
@@ -527,8 +522,7 @@ impl Nfa {
                                 .collect::<Vec<_>>()
                         } else {
                             panic!(
-                                "Character class ranges are not supported in NFA transitions: {:?}",
-                                symbol
+                                "Character class ranges are not supported in NFA transitions: {symbol:?}"
                             );
                         }
                     } else {
@@ -547,7 +541,7 @@ impl Nfa {
                                 lookahead_nfa
                                     .convert_to_disjoint_character_classes(character_classes);
                             }
-                            _ => panic!("Lookahead is not an NFA: {:?}", lookahead_nfa),
+                            _ => panic!("Lookahead is not an NFA: {lookahead_nfa:?}"),
                         }
                     }
                     _ => (),
@@ -874,7 +868,7 @@ mod tests {
         nfa.convert_to_disjoint_character_classes(&character_classes);
 
         eprintln!("==========================");
-        eprintln!("Character Class Registry:\n{:?}", character_classes);
+        eprintln!("Character Class Registry:\n{character_classes:?}");
 
         assert_eq!(character_classes.intervals, elementary_intervals);
     }

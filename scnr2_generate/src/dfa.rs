@@ -131,8 +131,7 @@ impl Dfa {
                             }
                             _ => {
                                 panic!(
-                                    "Unexpected lookahead type in DFA conversion: {:?}",
-                                    lookahead
+                                    "Unexpected lookahead type in DFA conversion: {lookahead:?}"
                                 );
                             }
                         }

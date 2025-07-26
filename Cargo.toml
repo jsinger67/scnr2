@@ -3,7 +3,7 @@ members = [ "scnr2", "scnr2_generate","scnr2_macro", "tests" ]
 resolver = "2"
 
 [workspace.package]
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 keywords = ["scanner", "lexer", "tokenizer"]

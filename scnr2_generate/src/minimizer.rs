@@ -54,11 +54,11 @@ impl Minimizer {
     /// The method takes a DFA and returns a minimized DFA.
     pub(crate) fn minimize(dfa: Dfa) -> Dfa {
         trace!("Minimize DFA ----------------------------");
-        trace!("Initial DFA:\n{:?}", dfa);
+        trace!("Initial DFA:\n{dfa:?}");
         // The transitions of the DFA in a convenient data structure.
         let transitions = Self::calculate_transitions(&dfa);
 
-        trace!("Transitions: {:?}", transitions);
+        trace!("Transitions: {transitions:?}");
 
         // The initial partition is created.
         let mut partition_old = Self::calculate_initial_partition(&dfa);
@@ -147,7 +147,7 @@ impl Minimizer {
         if group.len() == 1 {
             return vec![group.clone()];
         }
-        trace!("Split group {}: {:?}", group_index, group);
+        trace!("Split group {group_index}: {group:?}");
         let mut transition_map_to_states: BTreeMap<TransitionsToPartitionGroups, StateGroup> =
             BTreeMap::new();
         for state_id in group {
@@ -186,7 +186,7 @@ impl Minimizer {
             Self::trace_transitions_to_groups(state_id, &transitions_to_partition_groups);
             transitions_to_partition_groups
         } else {
-            trace!("** State {} has no transitions.", state_id);
+            trace!("** State {state_id} has no transitions.");
             TransitionsToPartitionGroups::new()
         }
     }
@@ -209,7 +209,7 @@ impl Minimizer {
         transitions: &TransitionMap,
     ) -> Dfa {
         trace!("Create DFA ------------------------------");
-        trace!("from partition {:?}", partition);
+        trace!("from partition {partition:?}");
         let Dfa { states, .. } = dfa;
         let mut dfa = Dfa {
             states: vec![DfaState::new(); partition.len()],
@@ -256,7 +256,7 @@ impl Minimizer {
         // Then renumber the states in the transitions.
         Self::update_transitions(&mut dfa, &partition, transitions);
 
-        trace!("Minimized DFA:\n{:?}", dfa);
+        trace!("Minimized DFA:\n{dfa:?}");
 
         dfa
     }
@@ -310,10 +310,7 @@ impl Minimizer {
             let state_id = state_id.as_usize();
             for (char_class, target_states) in transitions_of_state.iter() {
                 for target_state in target_states {
-                    trace!(
-                        "Add transition {} --{}--> {}",
-                        state_id, char_class, target_state
-                    );
+                    trace!("Add transition {state_id} --{char_class}--> {target_state}");
                     let new_transition = DfaTransition::new(*char_class, target_state.id().into());
                     if !dfa.states[state_id].transitions.contains(&new_transition) {
                         dfa.states[state_id].transitions.push(new_transition);
@@ -398,9 +395,9 @@ impl Minimizer {
     /// Trace out a partition of the DFA.
     #[allow(dead_code)]
     fn trace_partition(context: &str, partition: &[StateGroup]) {
-        trace!("Partition {}:", context);
+        trace!("Partition {context}:");
         for (i, group) in partition.iter().enumerate() {
-            trace!("Group {}: {:?}", i, group);
+            trace!("Group {i}: {group:?}");
         }
     }
 
@@ -411,7 +408,7 @@ impl Minimizer {
     ) {
         trace!("  Transitions of state {} to groups:", state_id.as_usize());
         for (char_class, group) in &transitions_to_groups.0 {
-            trace!("    cc# {} -> gr# {}", char_class, group);
+            trace!("    cc# {char_class} -> gr# {group}");
         }
     }
 

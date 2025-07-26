@@ -21,31 +21,28 @@ use crate::{
 /// use scnr_macro::scanner;
 ///
 /// scanner! {
-///     ExampleScanner {
+///     StringsInCommentsScanner {
 ///         mode INITIAL {
-///             token r"\r\n|\r|\n" => 1;
-///             token r"[\s--\r\n]+" => 2;
-///             token r"//.*(\r\n|\r|\n)?" => 3;
-///             token r"/\*([^*]|\*[^/])*\*/" => 4;
-///             token r#"""# => 8;
-///             token r"Hello" => 9;
-///             token r"World" => 10;
-///             token r"World" followed by r"!" => 11;
-///             token r"!" not followed by r"!" => 12;
-///             token r"[a-zA-Z_]\w*" => 13;
-///             token r"." => 14;
-///
-///             transition 8 => STRING;
+///             token r"\r\n|\r|\n" => 1; // "Newline"
+///             token r"[\s--\r\n]+" => 2; // "Whitespace other than newline"
+///             token r#"""# => 5; // "StringDelimiter"
+///             token r"/\*" => 6; // "CommentStart"
+///             token r"[a-zA-Z_][a-zA-Z0-9_]*" => 9; // "Identifier"
+///             on 5 push STRING;
+///             on 6 enter COMMENT;
 ///         }
 ///         mode STRING {
-///             token r#"\\[\"\\bfnt]"# => 5;
-///             token r"\\[\s--\n\r]*\r?\n" => 6;
-///             token r#"[^\"\]+"# => 7;
-///             token r#"""# => 8;
-///             token r"." => 14;
-///
-///             transition 8 => INITIAL;
-//          }
+///             token r#"""# => 5; // "StringDelimiter"
+///             token r#"([^"\\]|\\.)*"# => 10; // "StringContent"
+///             on 5 pop;
+///         }
+///         mode COMMENT {
+///             token r#"""# => 5; // "StringDelimiter"
+///             token r"\*/" => 7; // "CommentEnd"
+///             token r#"([^*"]|\*[^\/])*"# => 8; // "CommentText"
+///             on 5 push STRING;
+///             on 7 enter INITIAL;
+///         }
 ///     }
 /// }
 /// ```
@@ -53,12 +50,15 @@ use crate::{
 /// A `token` entry is a regex pattern followed by an arrow and a token type number.
 /// Optional `not` and `followed by` modifiers can be used to specify positive and negative
 /// lookaheads.
-/// Zero or more `transition` entries can exist.
-/// The `transition` entries are tuples of the token type numbers and the new scanner mode name.
+/// Zero or more transition entries can exist.
+/// The transition entries start with `on` followed by a token type number and an action.
+/// The action can be `enter` followed by a mode name, which indicates that the scanner
+/// will switch to the specified mode when the token is matched.
+/// The action can also be `push` or `pop`, which indicates that the scanner will push or pop
+/// the current mode when the token is matched.
 ///
 /// The generated code will include the scanner implementation.
-/// The generated scanner in this example will be a struct named `ExampleScanner` which implements
-/// the `ScannerTrait`.
+/// The generated scanner in this example will be a struct named `StringsInCommentsScanner`.
 pub fn generate(input: TokenStream) -> TokenStream {
     let scanner_data: ScannerData = parse2(input).expect("Failed to parse input");
     let scanner_modes: Vec<ScannerMode> = scanner_data
@@ -94,7 +94,7 @@ pub fn generate(input: TokenStream) -> TokenStream {
             let dfa = Dfa::try_from(&nfa).map_err(|e| {
                 syn::Error::new(
                     proc_macro2::Span::call_site(),
-                    format!("Failed to convert NFA to DFA: {}", e),
+                    format!("Failed to convert NFA to DFA: {e}"),
                 )
             })?;
             // Add the DFA to the accumulator
@@ -253,7 +253,7 @@ mod tests {
             .status()
             .map(|_| ())
             .map_err(|e| {
-                std::io::Error::new(e.kind(), format!("Failed to format file: {}", e)).into()
+                std::io::Error::new(e.kind(), format!("Failed to format file: {e}")).into()
             })
     }
 

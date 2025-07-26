@@ -131,14 +131,14 @@ impl ScannerModeWithNamedTransitions {
                     let new_mode_id = scanner_names
                         .iter()
                         .position(|name| name == new_mode)
-                        .unwrap_or_else(|| panic!("Scanner mode '{}' not found", new_mode));
+                        .unwrap_or_else(|| panic!("Scanner mode '{new_mode}' not found"));
                     transitions.push(TransitionToNumericMode::SetMode(*token_type, new_mode_id));
                 }
                 TransitionToNamedMode::PushMode(token_type, new_mode) => {
                     let new_mode_id = scanner_names
                         .iter()
                         .position(|name| name == new_mode)
-                        .unwrap_or_else(|| panic!("Scanner mode '{}' not found", new_mode));
+                        .unwrap_or_else(|| panic!("Scanner mode '{new_mode}' not found"));
                     transitions.push(TransitionToNumericMode::PushMode(*token_type, new_mode_id));
                 }
                 TransitionToNamedMode::PopMode(token_type) => {

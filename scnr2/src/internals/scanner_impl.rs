@@ -73,7 +73,7 @@ impl ScannerImpl {
         if let Some(transition) = self.transition_for_token_type(token_type) {
             match transition {
                 crate::Transition::SetMode(_, m) => {
-                    trace!("Setting mode to {}", m);
+                    trace!("Setting mode to {m}");
                     self.current_mode.set(*m);
                 }
                 crate::Transition::PushMode(_, m) => {

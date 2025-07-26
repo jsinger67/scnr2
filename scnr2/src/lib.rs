@@ -1,7 +1,7 @@
 //! A library for creating scanners in Rust.
 //! This library provides a macro to define scanners and their modes, tokens, and transitions.
 //! It also includes data structures for implementing a scanner runtime, including a
-//! scanner implementation, DFA (Deterministic Finite Automaton) states, and transitions.
+//! scanner implementation, DFA (Deterministic Finite Automaton) states and transitions.
 
 // Re-export the scanner macro
 pub use scnr2_macro::scanner;

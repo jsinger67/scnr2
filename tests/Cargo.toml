@@ -9,8 +9,8 @@ scnr2 = { path = "../scnr2" }
 scnr2_generate = { path = "../scnr2_generate" }
 
 [dev-dependencies]
-codspeed-criterion-compat = "2.7.0"
-criterion = "0.6"
+codspeed-criterion-compat = "3.0.4"
+criterion = "0.7.0"
 env_logger = "0.11.8"
 
 [package.metadata.release]

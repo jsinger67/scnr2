@@ -20,6 +20,7 @@ pub trait FindMatchesTrait {
     /// Handles the transition to a new mode based on the token type.
     fn handle_mode_transition(&self, token_type: usize);
 
+    /// Returns the next character without advancing the iterator.
     fn peek(&mut self) -> Option<CharItem>;
 
     /// Returns the character class for the given character.

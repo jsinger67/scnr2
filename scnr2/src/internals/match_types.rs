@@ -41,7 +41,7 @@ impl Display for Match {
             self.span.end,
             self.token_type,
             if let Some(pos) = self.positions.as_ref() {
-                format!(" at {}", pos)
+                format!(" at {pos}")
             } else {
                 String::new()
             }

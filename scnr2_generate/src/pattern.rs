@@ -55,7 +55,7 @@ impl Lookahead {
         // Convert the string pattern into an NFA.
         // The `usize::MAX` is used to indicate that the pattern has no associated terminal type.
         let nfa = Nfa::build(&Pattern::new(pattern, TerminalIDBase::MAX.into()))
-            .map_err(|e| format!("Failed to create NFA from regex pattern: {}", e))?;
+            .map_err(|e| format!("Failed to create NFA from regex pattern: {e}"))?;
         Ok(Lookahead::Positive(AutomatonType::Nfa(nfa)))
     }
 
@@ -67,7 +67,7 @@ impl Lookahead {
         // Convert the string pattern into an NFA.
         // The `usize::MAX` is used to indicate that the pattern has no associated terminal type.
         let nfa = Nfa::build(&Pattern::new(pattern, TerminalIDBase::MAX.into()))
-            .map_err(|e| format!("Failed to create NFA from regex pattern: {}", e))?;
+            .map_err(|e| format!("Failed to create NFA from regex pattern: {e}"))?;
         Ok(Lookahead::Negative(AutomatonType::Nfa(nfa)))
     }
 }
@@ -115,14 +115,14 @@ impl syn::parse::Parse for Lookahead {
             Lookahead::positive(pattern).map_err(|e| {
                 syn::Error::new(
                     input.span(),
-                    format!("Failed to create positive lookahead: {}", e),
+                    format!("Failed to create positive lookahead: {e}"),
                 )
             })?
         } else {
             Lookahead::negative(pattern).map_err(|e| {
                 syn::Error::new(
                     input.span(),
-                    format!("Failed to create negative lookahead: {}", e),
+                    format!("Failed to create negative lookahead: {e}"),
                 )
             })?
         })
@@ -162,7 +162,7 @@ impl ToTokens for LookaheadWithNumberOfCharacterClasses {
                     DfaWithNumberOfCharacterClasses::new(dfa, self.character_classes);
                 quote! { Lookahead::Negative(#dfa_with_classes) }
             }
-            _ => panic!("Unexpected lookahead type in Lookahead: {:?}", self),
+            _ => panic!("Unexpected lookahead type in Lookahead: {self:?}"),
         };
         tokens.extend(lookahead_tokens);
     }

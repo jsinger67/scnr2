@@ -6,23 +6,22 @@
 
 <!-- markdownlint-enable first-line-h1 -->
 
-# Attention
-***This project is still in its early phases and not ready for use***
-
 # About `scnr2`
 
-This crate provides a scanner/lexer with sufficient regex support and minimal compile time.
-The scanners support multiple scanner modes out of the box.
+This crate provides a scanner/lexer with sufficient regex support and ahead of time compilation.
 
-It is intended as the successor of [scnr](https://github.com/jsinger67/scnr).
+The generated scanners support multiple scanner modes out of the box.
 
-The successor to scnr places greater emphasis on simplicity and speed. It relies on compile-time
-code generation using Rust macros. The macro syntax used offers the possibility of defining
-transitions between scanner modes in various ways. Specifically, there are three types of
-transitions: set, push, and pop. Furthermore, as with scnr, you can define a positive or negative
-lookahead for each terminal.
+`scnr2` places greater emphasis on simplicity and speed. It relies on compile-time code generation
+using Rust macros. The macro syntax used offers the possibility of defining **transitions** between
+scanner *modes* (aka scanner *states*) in various ways. Specifically, there are three types of
+transitions:
 
-Additionally, scnr2 offers more support for regex features such as case insensitivity.
+`set`, `push` and `pop`.
+
+Furthermore, you can define a positive or negative lookahead for each terminal.
+
+Additionally, `scnr2` offers broad support for regex features such as case insensitivity.
 
 ## How to use it
 
@@ -33,7 +32,7 @@ scanner! {
     StringsInCommentsScanner {
         mode INITIAL {
             token r"\r\n|\r|\n" => 1; // "Newline"
-            token r"[\s--\r\n]+" => 2; // "Whitespace"
+            token r"[\s--\r\n]+" => 2; // "Whitespace other than newline"
             token r#"""# => 5; // "StringDelimiter"
             token r"/\*" => 6; // "CommentStart"
             token r"[a-zA-Z_][a-zA-Z0-9_]*" => 9; // "Identifier"
@@ -99,7 +98,7 @@ Tokens found: 17
 ```
 
 The scanner definition above shows a rather complex scenario in which a string is accepted in both
-the INITIAL and COMMENT states, i.e., strings are accepted both outside and inside comments.
+the INITIAL and COMMENT modes, i.e., strings are accepted both outside and inside comments.
 This is achieved by switching between different scanner modes on certain terminal types.
 
 ### Define lookahead conditions on tokens
