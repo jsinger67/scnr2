@@ -110,6 +110,7 @@ pub struct CharIterWithPosition<'a> {
     char_indices: CharIndices<'a>,
     line: usize,
     column: usize,
+    last_char: char,
     saved_state: Option<SavedCharIterWithPositionState<'a>>, // To save the state of line and column
 }
 
@@ -125,6 +126,7 @@ impl<'a> CharIterWithPosition<'a> {
             char_indices,
             line: 1,
             column: 0,
+            last_char: '\0',
             saved_state: None,
         }
     }
@@ -138,7 +140,8 @@ impl<'a> CharIterWithPosition<'a> {
     pub(crate) fn peek(&mut self) -> Option<CharItem> {
         if let Some((byte_index, ch)) = self.char_indices.clone().next() {
             let (line, column) = if ch == '\n' {
-                (self.line + 1, 0)
+                // Switching to the next line is done in the next call to `next()`
+                (self.line, self.column)
             } else {
                 (self.line, self.column + 1)
             };
@@ -174,10 +177,15 @@ impl Iterator for CharIterWithPosition<'_> {
     fn next(&mut self) -> Option<Self::Item> {
         if let Some((byte_index, ch)) = self.char_indices.next() {
             let (line, column) = if ch == '\n' {
-                (self.line + 1, 0)
+                (self.line, self.column) // Do not increment line and column here
+            } else if self.last_char == '\n' {
+                // If the last character was a newline, reset column to 1
+                (self.line + 1, 1)
             } else {
+                // Otherwise, increment the column
                 (self.line, self.column + 1)
             };
+            self.last_char = ch;
             self.line = line;
             self.column = column;
             Some(CharItem::new(byte_index, ch).with_position(Position::new(line, column)))
@@ -218,7 +226,7 @@ mod tests {
         );
         assert_eq!(
             iter.next(),
-            Some(CharItem::new(5, '\n').with_position(Position::new(2, 0)))
+            Some(CharItem::new(5, '\n').with_position(Position::new(1, 5)))
         );
         assert_eq!(
             iter.next(),
