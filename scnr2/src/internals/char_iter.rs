@@ -141,7 +141,7 @@ impl<'a> CharIterWithPosition<'a> {
         if let Some((byte_index, ch)) = self.char_indices.clone().next() {
             let (line, column) = if ch == '\n' {
                 // Switching to the next line is done in the next call to `next()`
-                (self.line, self.column)
+                (self.line, self.column + 1)
             } else {
                 (self.line, self.column + 1)
             };
@@ -177,9 +177,9 @@ impl Iterator for CharIterWithPosition<'_> {
     fn next(&mut self) -> Option<Self::Item> {
         if let Some((byte_index, ch)) = self.char_indices.next() {
             let (line, column) = if ch == '\n' {
-                (self.line, self.column) // Do not increment line and column here
+                (self.line, self.column + 1) // Do not increment line here
             } else if self.last_char == '\n' {
-                // If the last character was a newline, reset column to 1
+                // If the last character was a newline, reset column to 1 and increment line
                 (self.line + 1, 1)
             } else {
                 // Otherwise, increment the column
@@ -226,7 +226,7 @@ mod tests {
         );
         assert_eq!(
             iter.next(),
-            Some(CharItem::new(5, '\n').with_position(Position::new(1, 5)))
+            Some(CharItem::new(5, '\n').with_position(Position::new(1, 6)))
         );
         assert_eq!(
             iter.next(),
