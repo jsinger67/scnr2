@@ -17,7 +17,7 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-# 0.3.1 - Not released yet
+# 0.3.1 - 2025-08-01
 
 * Fix issue [#735](https://github.com/jsinger67/parol/issues/735) of parol.
 
