@@ -139,9 +139,9 @@ impl<'a> CharIterWithPosition<'a> {
     /// Returns the next character without advancing the iterator.
     pub(crate) fn peek(&mut self) -> Option<CharItem> {
         if let Some((byte_index, ch)) = self.char_indices.clone().next() {
-            let (line, column) = if ch == '\n' {
-                // Switching to the next line is done in the next call to `next()`
-                (self.line, self.column + 1)
+            let (line, column) = if self.last_char == '\n' {
+                // If the last character was a newline, reset column to 1 and increment line
+                (self.line + 1, 1)
             } else {
                 (self.line, self.column + 1)
             };
@@ -176,9 +176,7 @@ impl Iterator for CharIterWithPosition<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if let Some((byte_index, ch)) = self.char_indices.next() {
-            let (line, column) = if ch == '\n' {
-                (self.line, self.column + 1) // Do not increment line here
-            } else if self.last_char == '\n' {
+            let (line, column) = if self.last_char == '\n' {
                 // If the last character was a newline, reset column to 1 and increment line
                 (self.line + 1, 1)
             } else {
@@ -201,7 +199,7 @@ mod tests {
 
     #[test]
     fn test_char_iter() {
-        let input = "Hello\nWorld";
+        let input = "Hello\n\nWorld";
         let mut iter = CharIterWithPosition::new(input, 0);
 
         assert_eq!(
@@ -230,23 +228,27 @@ mod tests {
         );
         assert_eq!(
             iter.next(),
-            Some(CharItem::new(6, 'W').with_position(Position::new(2, 1)))
+            Some(CharItem::new(6, '\n').with_position(Position::new(2, 1)))
         );
         assert_eq!(
             iter.next(),
-            Some(CharItem::new(7, 'o').with_position(Position::new(2, 2)))
+            Some(CharItem::new(7, 'W').with_position(Position::new(3, 1)))
         );
         assert_eq!(
             iter.next(),
-            Some(CharItem::new(8, 'r').with_position(Position::new(2, 3)))
+            Some(CharItem::new(8, 'o').with_position(Position::new(3, 2)))
         );
         assert_eq!(
             iter.next(),
-            Some(CharItem::new(9, 'l').with_position(Position::new(2, 4)))
+            Some(CharItem::new(9, 'r').with_position(Position::new(3, 3)))
         );
         assert_eq!(
             iter.next(),
-            Some(CharItem::new(10, 'd').with_position(Position::new(2, 5)))
+            Some(CharItem::new(10, 'l').with_position(Position::new(3, 4)))
+        );
+        assert_eq!(
+            iter.next(),
+            Some(CharItem::new(11, 'd').with_position(Position::new(3, 5)))
         );
         assert_eq!(iter.next(), None);
     }
