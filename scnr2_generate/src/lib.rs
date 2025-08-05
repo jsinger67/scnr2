@@ -1,3 +1,23 @@
+//! # SCNR2 Code Generation Library
+//!
+//! This crate provides compile-time code generation for creating efficient
+//! lexical scanners. It converts regex patterns into optimized DFA-based
+//! scanners that can be used at runtime.
+//!
+//! ## Example Usage
+//! ```ignore
+//! use scnr2_macro::scanner;
+//!
+//! scanner! {
+//!     MyScanner {
+//!         mode INITIAL {
+//!             token r"\d+" => NUMBER;
+//!             token r"[a-zA-Z_]\w*" => IDENTIFIER;
+//!         }
+//!     }
+//! }
+//! ```
+
 #[cfg(test)]
 #[macro_use]
 extern crate rstest;
