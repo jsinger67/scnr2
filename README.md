@@ -118,3 +118,85 @@ scanner! {
 
 Note the `followed by` and `not followed by` constraints.
 
+
+---
+
+## Quickstart
+
+Minimal example for your own scanner:
+
+```rust
+use scnr2::scanner;
+
+scanner! {
+    MyScanner {
+        mode INITIAL {
+            token r"\d+" => 1; // Numbers
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 2; // Identifier
+        }
+    }
+}
+
+fn main() {
+    use my_scanner::MyScanner;
+    let scanner = MyScanner::new();
+    let input = "abc 123";
+    for m in scanner.find_matches(input, 0) {
+        println!("{}: '{}'", m.token_type, &input[m.span]);
+    }
+}
+```
+
+---
+
+## Writing your own scanner – Step by Step
+
+1. **Import the macro:**
+   `use scnr2::scanner;`
+
+2. **Define scanner with modes and tokens:**
+   See example above. Each mode can have its own tokens and transitions.
+
+3. **Instantiate the scanner:**
+   `let scanner = MyScanner::new();`
+
+4. **Scan text:**
+   `scanner.find_matches(input, 0)` returns an iterator over all matches.
+
+5. **With position information:**
+   `scanner.find_matches_with_position(input, 0)` additionally provides line/column info.
+
+---
+
+## Advanced Features
+
+- **Mode switching:**
+  With `on <token> push <MODE>;`, `on <token> enter <MODE>;`, `on <token> pop;` you can build complex scanners with nested states.
+
+- **Lookahead:**
+  With `followed by` and `not followed by` you can make tokens context-sensitive.
+
+- **Unicode:**
+  Regex and scanner fully support Unicode.
+
+- **Performance:**
+  Scanners are generated at compile time and are extremely fast.
+
+---
+
+## FAQ
+
+**How can I skip whitespaces?**
+Define a token for whitespaces and ignore it in your evaluation.
+Or, even simpler, don't define a token for whitespaces. Unmatched text is always skipped. This
+approach is used in the simple example above.
+
+**How can I use multiple scanner modes?**
+Define multiple `mode` blocks and use `on <token> push/enter/pop`.
+
+**How can I implement custom error handling?**
+Check if a match was found, otherwise handle the error case in your code.
+
+---
+
+For more examples see the [API documentation on docs.rs](https://docs.rs/scnr2).

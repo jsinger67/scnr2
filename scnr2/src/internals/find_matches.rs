@@ -41,6 +41,25 @@ pub trait FindMatchesTrait {
 
 /// A structure that represents an iterator over character matches in a string slice.
 #[derive(Clone)]
+/**
+ * Iterator over token matches in the input text.
+ *
+ * # Example
+ * ```rust
+ * use scnr2::{scanner, Match};
+ * scanner! {
+ *     SimpleScanner {
+ *         mode INITIAL {
+ *             token r"\d+" => 1;
+ *         }
+ *     }
+ * }
+ * let input = "123 456";
+ * let scanner = simple_scanner::SimpleScanner::new();
+ * let matches: Vec<Match> = scanner.find_matches(input, 0).collect();
+ * assert_eq!(matches.len(), 2);
+ * ```
+ */
 pub struct FindMatches<'a, F>
 where
     F: Fn(char) -> Option<usize> + 'static + Clone,
@@ -157,6 +176,25 @@ where
 /// It uses the `FindMatches` struct for implementation, but includes additional position
 /// information for each match.
 #[derive(Clone)]
+/**
+ * Iterator over token matches with position information (line/column).
+ *
+ * # Example
+ * ```rust
+ * use scnr2::{scanner, Match};
+ * scanner! {
+ *     SimpleScanner {
+ *         mode INITIAL {
+ *             token r"\d+" => 1;
+ *         }
+ *     }
+ * }
+ * let input = "123\n456";
+ * let scanner = simple_scanner::SimpleScanner::new();
+ * let matches: Vec<Match> = scanner.find_matches_with_position(input, 0).collect();
+ * assert_eq!(matches[0].positions.is_some(), true);
+ * ```
+ */
 pub struct FindMatchesWithPosition<'a, F>
 where
     F: Fn(char) -> Option<usize> + 'static + Clone,

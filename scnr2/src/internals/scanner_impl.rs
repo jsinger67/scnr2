@@ -13,6 +13,19 @@ use crate::{
     internals::find_matches::{FindMatches, FindMatchesWithPosition},
 };
 
+/**
+ * Internal implementation of a scanner with mode management.
+ *
+ * # Example
+ * ```rust
+ * use scnr2::{ScannerImpl, ScannerMode, Transition, Dfa, DfaState, DfaTransition, AcceptData, Lookahead};
+ * // Simple DFA with a single state that always accepts.
+ * const DFA: Dfa = Dfa { states: &[DfaState { transitions: &[None], accept_data: Some(AcceptData { token_type: 1, priority: 0, lookahead: Lookahead::None }) }] };
+ * const MODES: &[ScannerMode] = &[ScannerMode { name: "INITIAL", transitions: &[Transition::SetMode(1, 0)], dfa: DFA }];
+ * let scanner_impl = ScannerImpl::new(MODES);
+ * assert_eq!(scanner_impl.current_mode_name(), "INITIAL");
+ * ```
+ */
 pub struct ScannerImpl {
     /// The current mode index, wrapped in a `RefCell` for interior mutability.
     pub(crate) current_mode: Cell<usize>,

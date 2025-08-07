@@ -5,6 +5,19 @@ use crate::{Position, Span, internals::position::Positions};
 
 /// A match in the input.
 #[derive(Debug, Clone)]
+/**
+ * Represents a single token match in the input text.
+ *
+ * # Example
+ * ```rust
+ * use scnr2::{Match, Span};
+ * let m = Match::new(3..7, 2);
+ * assert_eq!(m.span, 3..7);
+ * assert_eq!(m.token_type, 2);
+ * ```
+ *
+ * The structure also optionally contains position information (line and column).
+ */
 pub struct Match {
     /// The position of the match in the input.
     pub span: Span,
