@@ -187,15 +187,22 @@ fn main() {
 ## FAQ
 
 **How can I skip whitespaces?**
+
 Define a token for whitespaces and ignore it in your evaluation.
 Or, even simpler, don't define a token for whitespaces. Unmatched text is always skipped. This
 approach is used in the simple example above.
 
 **How can I use multiple scanner modes?**
+
 Define multiple `mode` blocks and use `on <token> push/enter/pop`.
 
-**How can I implement custom error handling?**
-Check if a match was found, otherwise handle the error case in your code.
+**How can I check for unmatched input?**
+
+To catch any input that doesn't match your defined tokens, add a terminal at the end of your mode's token list that matches any character (e.g., `r"."`). Assign this an error token type. When this token is matched, you can handle it as an error case, allowing you to detect and process unexpected or invalid input.
+
+```rust
+token r"." => 100; // ERROR
+```
 
 ---
 
