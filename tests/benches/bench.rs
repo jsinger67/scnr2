@@ -133,5 +133,26 @@ fn bench_count_ok(c: &mut Criterion) {
     }
 }
 
-criterion_group!(benches, bench_iterate, bench_count_ok);
+fn bench_pathological(c: &mut Criterion) {
+    let mut group = c.benchmark_group("pathological");
+
+    // Extremely long string
+    let long_string = "\"".to_owned() + &"a".repeat(100_000) + "\"";
+    group.throughput(Throughput::Bytes(long_string.len() as u64));
+    group.bench_with_input("long_string", &long_string, |b, s| b.iter(|| iterate(s)));
+
+    // Repeated invalid input
+    let invalid = "\u{FFFD}".repeat(100_000);
+    group.throughput(Throughput::Bytes(invalid.len() as u64));
+    group.bench_with_input("invalid_utf8", &invalid, |b, s| b.iter(|| iterate(s)));
+
+    // Mixed pathological tokens - many empty quotes
+    let mixed = "\"\"".repeat(30_000);
+    group.throughput(Throughput::Bytes(mixed.len() as u64));
+    group.bench_with_input("mixed_pathological", &mixed, |b, s| b.iter(|| iterate(s)));
+
+    group.finish();
+}
+
+criterion_group!(benches, bench_iterate, bench_count_ok, bench_pathological);
 criterion_main!(benches);

@@ -39,6 +39,13 @@ pub struct ScannerImpl {
 
 impl ScannerImpl {
     /// Creates a new scanner implementation with the given modes.
+    /// Creates a new `ScannerImpl` with the provided scanner modes.
+    ///
+    /// # Arguments
+    /// * `modes` - A static slice of scanner modes.
+    ///
+    /// # Returns
+    /// A new instance of `ScannerImpl`.
     pub fn new(modes: &'static [crate::ScannerMode]) -> Self {
         ScannerImpl {
             current_mode: Cell::new(0),
@@ -50,11 +57,25 @@ impl ScannerImpl {
 
     /// Returns a reference to the modes of this scanner implementation.
     #[inline(always)]
+    /// Returns a reference to the scanner modes available in this implementation.
+    ///
+    /// # Returns
+    /// A static slice of `ScannerMode`.
     pub fn modes(&self) -> &'static [crate::ScannerMode] {
         self.modes
     }
 
     /// Creates a new `FindMatches` iterator for the given input and offset.
+    /// Creates a new `FindMatches` iterator for the given input and offset.
+    ///
+    /// # Arguments
+    /// * `scanner_impl` - Reference-counted pointer to the scanner implementation.
+    /// * `input` - The input string slice to scan.
+    /// * `offset` - The starting offset in the input.
+    /// * `match_function` - Function to determine character class.
+    ///
+    /// # Returns
+    /// A `FindMatches` iterator.
     pub fn find_matches<'a, F>(
         scanner_impl: Rc<RefCell<Self>>,
         input: &'a str,
@@ -68,6 +89,16 @@ impl ScannerImpl {
     }
 
     /// Creates a new `FindMatchesWithPosition` iterator for the given input and offset.
+    /// Creates a new `FindMatchesWithPosition` iterator for the given input and offset.
+    ///
+    /// # Arguments
+    /// * `scanner_impl` - Reference-counted pointer to the scanner implementation.
+    /// * `input` - The input string slice to scan.
+    /// * `offset` - The starting offset in the input.
+    /// * `match_function` - Function to determine character class.
+    ///
+    /// # Returns
+    /// A `FindMatchesWithPosition` iterator.
     pub fn find_matches_with_position<'h, F>(
         scanner_impl: Rc<RefCell<Self>>,
         input: &'h str,
@@ -81,6 +112,10 @@ impl ScannerImpl {
     }
 
     #[inline(always)]
+    /// Handles a mode transition based on the provided token type.
+    ///
+    /// # Arguments
+    /// * `token_type` - The token type that triggers the mode transition.
     pub fn handle_mode_transition(&self, token_type: usize) {
         let mode_index = self.current_mode.get();
         if let Some(transition) = self.transition_for_token_type(token_type) {
@@ -143,12 +178,23 @@ impl ScannerImpl {
 
     /// Returns the current mode index.
     #[inline]
+    /// Returns the index of the current scanner mode.
+    ///
+    /// # Returns
+    /// The index of the current mode.
     pub fn current_mode_index(&self) -> usize {
         self.current_mode.get()
     }
 
     /// Returns the name of the given mode, or "Unknown" if the index is out of bounds.
     #[inline]
+    /// Returns the name of the scanner mode at the given index, or "Unknown" if out of bounds.
+    ///
+    /// # Arguments
+    /// * `index` - The mode index.
+    ///
+    /// # Returns
+    /// The name of the mode as a static string slice, or "Unknown" if the index is invalid.
     pub fn mode_name(&self, index: usize) -> Option<&'static str> {
         Some(
             self.modes
@@ -159,6 +205,10 @@ impl ScannerImpl {
 
     /// Returns the name of the current mode.
     #[inline]
+    /// Returns the name of the current scanner mode.
+    ///
+    /// # Returns
+    /// The name of the current mode as a static string slice.
     pub fn current_mode_name(&self) -> &'static str {
         self.mode_name(self.current_mode_index())
             .unwrap_or("Unknown")

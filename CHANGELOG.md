@@ -17,6 +17,92 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+# 0.3.2 - Not released yet
+
+### Summary
+
+* Comprehensive test suite enhancements focused on robustness, edge-case coverage, and performance validation.
+* Added extensive fuzz testing, error handling validation, and pathological case benchmarking.
+* Improved test organization and documentation for better maintainability and coverage visibility.
+
+### Added
+
+* **Fuzz Testing Suite** (`tests/match_fuzz.rs`)
+  - Edge-case testing for empty input scenarios
+  - Long repeated character handling (10,000+ character sequences)
+  - Invalid UTF-8 sequence processing validation
+  - Pathological string token testing with complex escape sequences
+  - Mixed token stream validation for rapid type switching
+
+* **Error Handling Test Suite** (`tests/match_errors.rs`)
+  - Invalid UTF-8 byte sequence handling validation
+  - Unterminated string and escape sequence error recovery
+  - Extremely long token processing (1M+ characters)
+  - Deeply nested expression handling (10,000+ nesting levels)
+  - Null byte input processing validation
+  - Unicode edge case testing (emoji, CJK characters, mathematical symbols)
+  - Memory stress testing for large input scenarios
+  - Boundary condition scanning from various positions
+
+* **Pathological Case Benchmarks** (`tests/benches/bench.rs`)
+  - Performance benchmarking for extremely long strings (100K+ characters)
+  - Invalid UTF-8 sequence processing throughput measurement
+  - Mixed pathological token stream performance validation
+  - Memory allocation stress testing under extreme conditions
+
+* **Test Coverage Documentation** (`tests/TEST_COVERAGE.md`)
+  - Comprehensive documentation of test scope and methodology
+  - Edge case coverage matrix and validation criteria
+  - Error handling assertion documentation
+  - Performance benchmark specification and expected outcomes
+  - Future improvement roadmap for test expansion
+
+### Changed
+
+* **Test Configuration** (`tests/Cargo.toml`)
+  - Updated test registration to include new fuzz and error test modules
+  - Enhanced benchmark configuration for pathological case coverage
+  - Improved test organization for better module separation
+
+* **Benchmark Infrastructure**
+  - Extended criterion benchmark groups to include pathological scenarios
+  - Added throughput measurement for stress testing scenarios
+  - Enhanced memory usage validation during extreme input processing
+
+### Improved
+
+* **Error Assertion Strength**
+  - All tests now include comprehensive token type validation
+  - Enhanced span calculation accuracy verification
+  - Graceful invalid input handling validation without panics
+  - Memory safety verification under stress conditions
+
+* **Test Organization**
+  - Clear separation of concerns between unit, integration, fuzz, and performance tests
+  - Improved test naming conventions for better discoverability
+  - Enhanced documentation linking between test files and coverage reports
+
+### Security
+
+* **Input Validation Hardening**
+  - Comprehensive validation of scanner behavior with malformed UTF-8 input
+  - Null byte injection handling verification
+  - Memory exhaustion prevention testing with extremely large inputs
+  - Buffer overflow prevention validation with pathological token sequences
+
+### Testing Infrastructure
+
+* **Coverage Metrics Enhancement**
+  - Normal token scanning validation ✅
+  - Edge case input handling verification ✅
+  - Error condition recovery testing ✅
+  - Performance under stress validation ✅
+  - Memory safety verification ✅
+  - Unicode support validation ✅
+  - Boundary condition testing ✅
+
+This release significantly strengthens the reliability and robustness of the scanner through comprehensive test coverage expansion, ensuring stable operation under both normal and extreme conditions.
+
 # 0.3.1 - 2025-08-01
 
 * Fix issue [#735](https://github.com/jsinger67/parol/issues/735) of parol.

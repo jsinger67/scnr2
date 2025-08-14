@@ -455,14 +455,17 @@ mod tests {
             .iter()
             .filter(|s| s.accept_data.is_some())
             .count();
-        assert_eq!(accepting_states, 1); // Example: 1 accepting state
+        const EXPECTED_ACCEPTING_STATES: usize = 1;
+        assert_eq!(accepting_states, EXPECTED_ACCEPTING_STATES);
 
         let mut character_classes = CharacterClasses::new();
         nfa.collect_character_classes(&mut character_classes);
-        assert_eq!(character_classes.classes.len(), 4); // Example: 4 character classes
+        const EXPECTED_CHARACTER_CLASSES: usize = 4;
+        assert_eq!(character_classes.classes.len(), EXPECTED_CHARACTER_CLASSES);
 
         character_classes.create_disjoint_character_classes();
-        assert_eq!(character_classes.intervals.len(), 4); // Example: 4 disjoint classes
+        const EXPECTED_DISJOINT_CLASSES: usize = 4;
+        assert_eq!(character_classes.intervals.len(), EXPECTED_DISJOINT_CLASSES);
 
         // eprintln!("Nfa: {:#?}", nfa);
 
@@ -476,20 +479,24 @@ mod tests {
             .iter()
             .map(|s| s.transitions.len())
             .sum::<usize>();
-        assert_eq!(transition_count, 15); // Example: 15 transitions
+        const EXPECTED_TRANSITIONS: usize = 15;
+        assert_eq!(transition_count, EXPECTED_TRANSITIONS);
 
         let dfa = Dfa::try_from_nfa_not_minimized(&nfa).unwrap();
-        assert_eq!(dfa.states.len(), 6); // Example: 5 states in the DFA
+        const EXPECTED_DFA_STATES: usize = 6;
+        assert_eq!(dfa.states.len(), EXPECTED_DFA_STATES);
         let accepting_states = dfa
             .states
             .iter()
             .filter(|s| s.accept_data.is_some())
             .count();
-        assert_eq!(accepting_states, 1); // Example: 1 accepting state
+        const EXPECTED_DFA_ACCEPTING: usize = 1;
+        assert_eq!(accepting_states, EXPECTED_DFA_ACCEPTING);
 
         let partition = Minimizer::calculate_initial_partition(&dfa);
         // eprintln!("Initial partition: {:#?}", partition);
-        assert_eq!(partition.len(), 2);
+        const EXPECTED_PARTITION_LEN: usize = 2;
+        assert_eq!(partition.len(), EXPECTED_PARTITION_LEN);
     }
 
     #[test]

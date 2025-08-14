@@ -24,3 +24,11 @@ name = "bench"
 name = "match_test"
 path = "match_test.rs"
 
+[[test]]
+name = "match_fuzz"
+path = "match_fuzz.rs"
+
+[[test]]
+name = "match_errors"
+path = "match_errors.rs"
+

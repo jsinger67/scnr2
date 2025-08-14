@@ -684,8 +684,10 @@ mod tests {
         let nfa: Nfa = Nfa::try_from_hir(hir).unwrap();
         // assert_eq!(nfa.pattern, r"\d");
         assert_eq!(nfa.states.len(), 2);
-        assert_eq!(nfa.start_state, 0.into());
-        assert_eq!(nfa.end_state, 1.into());
+        const EXPECTED_START_STATE: u32 = 0;
+        const EXPECTED_END_STATE: u32 = 1;
+        assert_eq!(nfa.start_state, EXPECTED_START_STATE.into());
+        assert_eq!(nfa.end_state, EXPECTED_END_STATE.into());
         assert!(!nfa.is_empty());
     }
 
@@ -700,7 +702,8 @@ mod tests {
         assert!(!nfa.is_empty());
         assert_eq!(nfa.start_state, 0.into());
         assert_eq!(nfa.end_state, 19.into());
-        assert_eq!(nfa.states.len(), 20);
+        const EXPECTED_NFA_STATES: usize = 20;
+        assert_eq!(nfa.states.len(), EXPECTED_NFA_STATES);
     }
 
     #[test]

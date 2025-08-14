@@ -189,10 +189,11 @@ impl Pattern {
     /// * `pattern` - The pattern string.
     /// * `terminal_type` - The terminal type associated with the pattern.
     pub fn new(pattern: String, terminal_type: TerminalID) -> Self {
+        const DEFAULT_PRIORITY: usize = 0;
         Self {
             pattern,
             terminal_type,
-            priority: 0, // Default priority is 0.
+            priority: DEFAULT_PRIORITY,
             lookahead: Lookahead::None,
         }
     }

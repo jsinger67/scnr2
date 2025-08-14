@@ -9,7 +9,7 @@ pub use scnr2_macro::scanner;
 // Expose only some necessary types and functions from the internals module
 pub mod internals;
 pub use crate::internals::{
-    char_iter::CharIterWithPosition,
+    char_iter::iter_with_position::CharIterWithPosition,
     find_matches::{FindMatches, FindMatchesWithPosition},
     match_types::Match,
     position::{Position, Positions},

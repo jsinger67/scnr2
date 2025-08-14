@@ -5,7 +5,9 @@ use std::{cell::RefCell, rc::Rc};
 use crate::{
     Dfa, Lookahead, ScannerImpl,
     internals::{
-        char_iter::{CharItem, CharIter, CharIterWithPosition},
+        char_iter::item::CharItem,
+        char_iter::iter::CharIter,
+        char_iter::iter_with_position::CharIterWithPosition,
         match_types::{Match, MatchEnd, MatchStart},
         position::{Position, Positions},
     },
