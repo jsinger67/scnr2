@@ -1,29 +1,55 @@
-<!-- markdownlint-disable first-line-h1 -->
+# scnr2
 
 [![Rust](https://github.com/jsinger67/scnr2/actions/workflows/rust.yml/badge.svg)](https://github.com/jsinger67/scnr2/actions/workflows/rust.yml)
 [![Docs.rs](https://docs.rs/scnr2/badge.svg)](https://docs.rs/scnr2)
 [![Crates.io](https://img.shields.io/crates/v/scnr2.svg)](https://crates.io/crates/scnr2)
 
-<!-- markdownlint-enable first-line-h1 -->
+## Purpose & Overview
 
-# About `scnr2`
+**scnr2** is a high-performance Rust crate for building custom scanners and lexers with advanced regular expression support, multi-mode state management, and compile-time code generation. Designed for simplicity, speed, and flexibility, scnr2 empowers developers to create robust tokenizers for complex parsing tasks with minimal runtime overhead.
 
-This crate provides a scanner/lexer with sufficient regex support and ahead of time compilation.
+## Key Advantages
 
-The generated scanners support multiple scanner modes out of the box.
+- **Blazing Fast:** All scanner logic is generated at compile time using Rust macros, resulting in zero-cost abstractions and exceptional runtime performance.
+- **Ergonomic Macro Syntax:** Define scanners, modes, tokens, and transitions with concise, readable macros—no boilerplate required.
+- **Multi-Mode State Machines:** Effortlessly model complex lexing scenarios with built-in support for multiple scanner modes and seamless transitions (`set`, `push`, `pop`).
+- **Context-Sensitive Tokenization:** Specify positive/negative lookahead conditions for tokens, enabling powerful context-aware parsing.
+- **Full Unicode & Regex Support:** Broad compatibility with Unicode and advanced regex features, including case insensitivity.
+- **Extensible & Contributor-Friendly:** Modular design and clear API make it easy to extend, customize, and contribute new features.
 
-`scnr2` places greater emphasis on simplicity and speed. It relies on compile-time code generation
-using Rust macros. The macro syntax used offers the possibility of defining **transitions** between
-scanner *modes* (aka scanner *states*) in various ways. Specifically, there are three types of
-transitions:
+## Unique Value Propositions
 
-`set`, `push` and `pop`.
+- **Compile-Time Safety:** Catch errors early and eliminate runtime surprises.
+- **Minimal Dependencies:** Lightweight footprint for easy integration into any Rust project.
+- **Production-Ready:** Proven reliability, actively maintained, and well-documented.
 
-Furthermore, you can define a positive or negative lookahead for each terminal.
+## Quickstart Example
 
-Additionally, `scnr2` offers broad support for regex features such as case insensitivity.
+```rust
+use scnr2::scanner;
 
-## How to use it
+scanner! {
+    MyScanner {
+        mode INITIAL {
+            token r"\d+" => 1; // Numbers
+            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 2; // Identifiers
+        }
+    }
+}
+
+fn main() {
+    use my_scanner::MyScanner;
+    let scanner = MyScanner::new();
+    let input = "abc 123";
+    for m in scanner.find_matches(input, 0) {
+        println!("{}: '{}'", m.token_type, &input[m.span]);
+    }
+}
+```
+
+## Advanced Example: Multi-Mode Scanner
+
+This example demonstrates a scanner with multiple modes and transitions, handling strings both inside and outside comments.
 
 ```rust
 use scnr2::scanner;
@@ -75,8 +101,9 @@ fn main() {
     }
 }
 ```
-This yields the following output:
-```txt
+
+Sample output:
+```
 Tokens found: 17
 [0..2] tok 9 at 1:1-1:3: 'Id'
 [2..3] tok 1 at 2:0-2:1: '\n'
@@ -97,113 +124,34 @@ Tokens found: 17
 [79..81] tok 7 at 3:51-3:53: '*/'
 ```
 
-The scanner definition above shows a rather complex scenario in which a string is accepted in both
-the INITIAL and COMMENT modes, i.e., strings are accepted both outside and inside comments.
-This is achieved by switching between different scanner modes on certain terminal types.
-
-### Define lookahead conditions on tokens
-
-To specify lookahead conditions on tokens you can use the following macro syntax.
-
-```rust
-scanner! {
-    TestScanner {
-        mode INITIAL {
-            token r"[a-zA-Z_][a-zA-Z0-9_]*" followed by r"\(" => 1; // Function call
-            token r">:" not followed by ":" => 2; // Operator x
-        }
-    }
-}
-```
-
-Note the `followed by` and `not followed by` constraints.
-
-
----
-
-## Quickstart
-
-Minimal example for your own scanner:
-
-```rust
-use scnr2::scanner;
-
-scanner! {
-    MyScanner {
-        mode INITIAL {
-            token r"\d+" => 1; // Numbers
-            token r"[a-zA-Z_][a-zA-Z0-9_]*" => 2; // Identifier
-        }
-    }
-}
-
-fn main() {
-    use my_scanner::MyScanner;
-    let scanner = MyScanner::new();
-    let input = "abc 123";
-    for m in scanner.find_matches(input, 0) {
-        println!("{}: '{}'", m.token_type, &input[m.span]);
-    }
-}
-```
-
----
-
-## Writing your own scanner – Step by Step
-
-1. **Import the macro:**
-   `use scnr2::scanner;`
-
-2. **Define scanner with modes and tokens:**
-   See example above. Each mode can have its own tokens and transitions.
-
-3. **Instantiate the scanner:**
-   `let scanner = MyScanner::new();`
-
-4. **Scan text:**
-   `scanner.find_matches(input, 0)` returns an iterator over all matches.
-
-5. **With position information:**
-   `scanner.find_matches_with_position(input, 0)` additionally provides line/column info.
-
----
-
 ## Advanced Features
 
-- **Mode switching:**
-  With `on <token> push <MODE>;`, `on <token> enter <MODE>;`, `on <token> pop;` you can build complex scanners with nested states.
+- **Mode Switching:** Build nested, stateful scanners with `push`, `enter`, and `pop` transitions.
+- **Lookahead:** Use `followed by` and `not followed by` for context-sensitive tokens.
+- **Unicode:** Full Unicode support for internationalization.
+- **Performance:** Compile-time generation ensures optimal speed.
 
-- **Lookahead:**
-  With `followed by` and `not followed by` you can make tokens context-sensitive.
+## Getting Started
 
-- **Unicode:**
-  Regex and scanner fully support Unicode.
-
-- **Performance:**
-  Scanners are generated at compile time and are extremely fast.
-
----
+1. **Import the macro:** `use scnr2::scanner;`
+2. **Define scanner modes and tokens:** Use macro syntax to specify modes, tokens, and transitions.
+3. **Instantiate your scanner:** `let scanner = MyScanner::new();`
+4. **Scan text:** `scanner.find_matches(input, 0)` yields an iterator of matches.
+5. **Get position info:** `scanner.find_matches_with_position(input, 0)` provides line/column data.
 
 ## FAQ
 
-**How can I skip whitespaces?**
+**How do I skip whitespaces?**  
+Define a token for whitespaces and ignore it, or simply omit a whitespace token—unmatched text is skipped.
 
-Define a token for whitespaces and ignore it in your evaluation.
-Or, even simpler, don't define a token for whitespaces. Unmatched text is always skipped. This
-approach is used in the simple example above.
+**How do I use multiple scanner modes?**  
+Define multiple `mode` blocks and use `push`, `enter`, or `pop` transitions.
 
-**How can I use multiple scanner modes?**
+**How do I detect unmatched input?**  
+Add a catch-all token at the end of your mode's token list (e.g., `r"."`) and handle it as an error.
 
-Define multiple `mode` blocks and use `on <token> push/enter/pop`.
+## Contributing
 
-**How can I check for unmatched input?**
+We welcome contributions! Whether you want to add features, improve documentation, or report issues, your input helps make scnr2 better for everyone.
 
-To catch any input that doesn't match your defined tokens, add a terminal at the end of your mode's token list that matches any character (e.g., `r"."`). Assign this an error token type. When this token is matched, you can handle it as an error case, allowing you to detect and process unexpected or invalid input.
-
-```rust
-token r"." => 100; // ERROR
-```
-
----
-
-For more examples see the [API documentation on docs.rs](https://docs.rs/scnr2).
+For more examples and API details, see the [docs.rs documentation](https://docs.rs/scnr2).
