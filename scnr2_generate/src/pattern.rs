@@ -236,9 +236,12 @@ impl Pattern {
 /// pattern.
 impl syn::parse::Parse for Pattern {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-        let pattern: syn::LitStr = input
-            .parse()
-            .map_err(|e| syn::Error::new(e.span(), "expected a string literal for the pattern"))?;
+        let pattern: syn::LitStr = input.parse().map_err(|e| {
+            syn::Error::new(
+                e.span(),
+                format!("expected a string literal for the pattern: {input:?}"),
+            )
+        })?;
         let pattern = pattern.value();
         let mut lookahead: Option<Lookahead> = None;
         // Check if there is a lookahead and parse it.

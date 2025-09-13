@@ -17,6 +17,10 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+# 0.3.3 - Not release yet
+
+* Enhance error message for pattern parsing to include input context
+
 # 0.3.2 - 2025-08-14
 
 ### Summary
