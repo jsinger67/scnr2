@@ -330,31 +330,7 @@ scan_test!(case_47, s47, S47, r#"[^a]"#, "\n", &[("\n", 0, 1)], 47);
 
 // -------------------------------------------------------------------------
 // x2("[]]", "]", 0, 1); // Test 48
-scanner! { S48 { mode M { token r#"[]]"# => 0; } } }
-#[test]
-fn case_48() {
-    use s48::S48 as S;
-    let scanner = S::new();
-    let matches = scanner.find_matches("]", 0).collect::<Vec<_>>();
-    const EXPECTED_MATCHES: &[(&str, usize, usize)] = &[("]", 0, 1)];
-    assert_eq!(
-        matches.len(),
-        EXPECTED_MATCHES.len(),
-        "48: Unexpected match count"
-    );
-    for (i, ma) in EXPECTED_MATCHES.iter().enumerate() {
-        assert_eq!(
-            matches[i].span.start, ma.1,
-            "48: Match start does not match"
-        );
-        assert_eq!(matches[i].span.end, ma.2, "48: Match end does not match");
-        assert_eq!(
-            &"]"[ma.1..ma.2],
-            ma.0,
-            "48: Matched substring does not match expected"
-        );
-    }
-}
+scan_test!(case_48, s48, S48, r#"[]]"#, "]", &[("]", 0, 1)], 48);
 
 // -------------------------------------------------------------------------
 // n("[^]]", "]"); // Test 49
