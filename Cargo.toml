@@ -1,6 +1,7 @@
 [workspace]
 members = [ "scnr2", "scnr2_generate","scnr2_macro", "tests" ]
 resolver = "2"
+readme="README.md"
 
 [workspace.package]
 version = "0.3.3"
