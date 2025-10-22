@@ -1,7 +1,6 @@
 [workspace]
 members = [ "scnr2", "scnr2_generate","scnr2_macro", "tests" ]
 resolver = "2"
-readme="README.md"
 
 [workspace.package]
 version = "0.3.3"
@@ -10,6 +9,7 @@ authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 keywords = ["scanner", "lexer", "tokenizer"]
 categories = ["algorithms", "parsing"]
 license = "MIT/Apache-2.0"
+readme="README.md"
 
 [profile.release]
 opt-level = 3
