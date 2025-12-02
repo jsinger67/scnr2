@@ -10,7 +10,7 @@ scnr2_generate = { path = "../scnr2_generate" }
 
 [dev-dependencies]
 codspeed-criterion-compat = "4.1.0"
-criterion = "0.7.0"
+criterion = "0.8.0"
 env_logger = "0.11.8"
 
 [package.metadata.release]
