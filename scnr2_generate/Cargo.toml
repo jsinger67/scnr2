@@ -11,7 +11,7 @@ description = "Scanner/Lexer with regex patterns and multiple modes"
 repository = "https://github.com/jsinger67/scnr2"
 
 [dependencies]
-log = "0.4.25"
+log = "0.4.29"
 proc-macro2 = "1.0.103"
 quote = "1.0.42"
 regex-syntax = "0.8.5"
