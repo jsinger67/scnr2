@@ -246,6 +246,13 @@ mod tests {
 
     use std::process::Command;
 
+    /// Check if snapshots should be updated based on environment variable
+    fn should_update_snapshots() -> bool {
+        std::env::var("SCNR2_UPDATE_SNAPSHOTS")
+            .map(|v| v == "1" || v.to_lowercase() == "true")
+            .unwrap_or(false)
+    }
+
     /// Tries to format the source code of a given file.
     fn try_format(path_to_file: &Path) -> Result<()> {
         Command::new("rustfmt")
@@ -308,6 +315,12 @@ mod tests {
         let formatted_code = std::fs::read_to_string(temp_file.path())
             .expect("Failed to read the formatted temporary file")
             .replace("\r\n", "\n");
+
+        if should_update_snapshots() {
+            // Update the expected code file
+            std::fs::write("data/expected_generated_code.rs", &formatted_code)
+                .expect("Failed to write the expected code file");
+        }
 
         let expected_code = std::fs::read_to_string("data/expected_generated_code.rs")
             .expect("Failed to read the expected code file")
