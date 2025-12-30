@@ -12,7 +12,7 @@ repository = "https://github.com/jsinger67/scnr2"
 
 [dependencies]
 log = "0.4.29"
-proc-macro2 = "1.0.103"
+proc-macro2 = "1.0.104"
 quote = "1.0.42"
 regex-syntax = "0.8.5"
 rustc-hash = "2.1.1"
