@@ -1,9 +1,15 @@
 [workspace]
-members = [ "scnr2", "scnr2_generate","scnr2_macro", "tests", "scnr2-python" ]
+members = [
+    "scnr2",
+    "scnr2_generate",
+    "scnr2_macro",
+    "tests",
+    "scnr2-python",
+]
 resolver = "2"
 
 [workspace.package]
-version = "0.3.3"
+version = "0.4.0"
 edition = "2024"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 keywords = ["scanner", "lexer", "tokenizer"]
