@@ -42,7 +42,6 @@ pub trait FindMatchesTrait {
 }
 
 /// A structure that represents an iterator over character matches in a string slice.
-#[derive(Clone)]
 /**
  * Iterator over token matches in the input text.
  *
@@ -64,7 +63,7 @@ pub trait FindMatchesTrait {
  */
 pub struct FindMatches<'a, F>
 where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
 {
     /// An iterator over characters in the input string slice, starting from the given offset.
     char_iter: CharIter<'a>,
@@ -74,9 +73,22 @@ where
     match_function: &'static F,
 }
 
+impl<'a, F> Clone for FindMatches<'a, F>
+where
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
+{
+    fn clone(&self) -> Self {
+        Self {
+            char_iter: self.char_iter.clone(),
+            scanner_impl: self.scanner_impl.clone(),
+            match_function: self.match_function,
+        }
+    }
+}
+
 impl<'a, F> FindMatches<'a, F>
 where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
 {
     /// Creates a new `FindMatches` from the given string slice and start position.
     pub(crate) fn new(
@@ -114,7 +126,7 @@ where
 
 impl<F> Iterator for FindMatches<'_, F>
 where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
 {
     type Item = Match;
 
@@ -125,7 +137,7 @@ where
 
 impl<F> FindMatchesTrait for FindMatches<'_, F>
 where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
 {
     /// Returns the current DFA.
     /// This method returns a reference to the DFA that is currently being used for matching.
@@ -177,7 +189,6 @@ where
 /// A structure that represents an iterator over character matches with positions in a string slice.
 /// It uses the `FindMatches` struct for implementation, but includes additional position
 /// information for each match.
-#[derive(Clone)]
 /**
  * Iterator over token matches with position information (line/column).
  *
@@ -199,7 +210,7 @@ where
  */
 pub struct FindMatchesWithPosition<'a, F>
 where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
 {
     /// An iterator over characters in the input string slice, starting from the given offset.
     char_iter: CharIterWithPosition<'a>,
@@ -209,9 +220,22 @@ where
     match_function: &'static F,
 }
 
+impl<'a, F> Clone for FindMatchesWithPosition<'a, F>
+where
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
+{
+    fn clone(&self) -> Self {
+        Self {
+            char_iter: self.char_iter.clone(),
+            scanner_impl: self.scanner_impl.clone(),
+            match_function: self.match_function,
+        }
+    }
+}
+
 impl<'a, F> FindMatchesWithPosition<'a, F>
 where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
 {
     /// Creates a new `FindMatchesWithPosition` from the given string slice and start position.
     pub(crate) fn new(
@@ -250,7 +274,7 @@ where
 
 impl<F> Iterator for FindMatchesWithPosition<'_, F>
 where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
 {
     type Item = Match;
 
@@ -261,7 +285,7 @@ where
 
 impl<F> FindMatchesTrait for FindMatchesWithPosition<'_, F>
 where
-    F: Fn(char) -> Option<usize> + 'static + Clone,
+    F: Fn(char) -> Option<usize> + 'static + ?Sized,
 {
     /// Returns the current DFA.
     /// This method returns a reference to the DFA that is currently being used for matching.
@@ -423,11 +447,13 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
                 if update {
                     match_end =
                         MatchEnd::new(new_byte_index, accept_data.token_type, accept_data.priority)
-                            .with_position(
-                                char_item
-                                    .position
-                                    .map(|p| Position::new(p.line, p.column + 1)),
-                            );
+                            .with_position(char_item.position.map(|p| {
+                                if char_item.ch == '\n' {
+                                    Position::new(p.line + 1, 1)
+                                } else {
+                                    Position::new(p.line, p.column + 1)
+                                }
+                            }));
                     end_set = true;
                     find_matches.save_char_iter();
                 }

@@ -1,5 +1,5 @@
 [workspace]
-members = [ "scnr2", "scnr2_generate","scnr2_macro", "tests" ]
+members = [ "scnr2", "scnr2_generate","scnr2_macro", "tests", "scnr2-python" ]
 resolver = "2"
 
 [workspace.package]
