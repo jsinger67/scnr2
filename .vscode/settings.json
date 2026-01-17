@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "bfnt",
+    "cdylib",
     "codegen",
     "codspeed",
     "Eschaton",
@@ -12,12 +13,18 @@
     "Kosako",
     "lookaheads",
     "Maciej",
+    "maturin",
     "nfas",
     "osive",
     "peekable",
     "println",
+    "pyclass",
+    "pymethods",
+    "pymodule",
     "rstest",
-    "scnr"
+    "scnr",
+    "unsendable",
+    "venv"
   ],
   "cSpell.ignoreRegExpList": ["\\u\\{[0-9a-f]+\\}"],
   "cSpell.ignorePaths": ["tests/match_test.rs"]
