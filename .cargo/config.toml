@@ -1,2 +1,2 @@
 [env]
-PYO3_PYTHON = { value = "scnr2-python/.venv/Scripts/python.exe", relative = true }
+PYO3_PYTHON = { value = "scnr2-python/.venv/Scripts/python", relative = true }
