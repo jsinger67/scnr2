@@ -13,8 +13,17 @@ authors = [
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Compilers",
 ]
+
+[project.urls]
+Homepage = "https://github.com/jsinger67/scnr2"
+Repository = "https://github.com/jsinger67/scnr2.git"
+"Bug Tracker" = "https://github.com/jsinger67/scnr2/issues"
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
 module-name = "scnr2"
+include = ["scnr2.pyi", "py.typed"]

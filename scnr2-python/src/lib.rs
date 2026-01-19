@@ -8,6 +8,17 @@ use std::cell::RefCell;
 use std::ops::RangeInclusive;
 use std::rc::Rc;
 
+/// Represents a single token match.
+///
+/// Properties:
+/// - token_type (int): The numeric type of the matched token.
+/// - start (int): Starting byte offset in the input string.
+/// - end (int): Ending byte offset in the input string.
+/// - text (str): The actual matched text.
+/// - start_line (Optional[int]): Starting line number (if tracked).
+/// - start_column (Optional[int]): Starting column number (if tracked).
+/// - end_line (Optional[int]): Ending line number (if tracked).
+/// - end_column (Optional[int]): Ending column number (if tracked).
 #[pyclass]
 #[derive(Clone)]
 pub struct TokenMatch {
@@ -29,6 +40,9 @@ pub struct TokenMatch {
     pub end_column: Option<usize>,
 }
 
+/// A scanner engine built from a scnr2 definition.
+///
+/// Use `Scanner(definition)` to create a new instance.
 #[pyclass(unsendable)]
 pub struct Scanner {
     scanner_impl: Rc<RefCell<::scnr2::ScannerImpl>>,
@@ -81,6 +95,13 @@ fn convert_dfa(gen_dfa: &GenDfa, num_classes: usize) -> ::scnr2::Dfa {
 
 #[pymethods]
 impl Scanner {
+    /// Create a new scanner from a scnr2 definition string.
+    ///
+    /// Args:
+    ///     definition (str): The scanner configuration string.
+    ///
+    /// Raises:
+    ///     ValueError: If the definition is invalid.
     #[new]
     pub fn new(definition: &str) -> PyResult<Self> {
         let scanner_data: ScannerData = syn::parse_str(definition).map_err(|e| {
@@ -192,6 +213,13 @@ impl Scanner {
         })
     }
 
+    /// Finds all matches in the input string.
+    ///
+    /// Args:
+    ///     input (str): The text to scan.
+    ///
+    /// Returns:
+    ///     List[TokenMatch]: A list of matched tokens.
     pub fn find_matches(&self, input: String) -> Vec<TokenMatch> {
         let sc = self.scanner_impl.clone();
         let it = ::scnr2::ScannerImpl::find_matches(sc, &input, 0, self.match_function);
@@ -208,6 +236,13 @@ impl Scanner {
         .collect()
     }
 
+    /// Finds all matches in the input string, including line and column information.
+    ///
+    /// Args:
+    ///     input (str): The text to scan.
+    ///
+    /// Returns:
+    ///     List[TokenMatch]: A list of matched tokens with line/column data.
     pub fn find_matches_with_position(&self, input: String) -> Vec<TokenMatch> {
         let sc = self.scanner_impl.clone();
         let it =
