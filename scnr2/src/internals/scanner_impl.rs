@@ -83,7 +83,7 @@ impl ScannerImpl {
         match_function: &'static F,
     ) -> FindMatches<'a, F>
     where
-        F: Fn(char) -> Option<usize> + 'static + Clone,
+        F: Fn(char) -> Option<usize> + 'static + ?Sized,
     {
         FindMatches::new(input, offset, scanner_impl, match_function)
     }
@@ -106,7 +106,7 @@ impl ScannerImpl {
         match_function: &'static F,
     ) -> FindMatchesWithPosition<'h, F>
     where
-        F: Fn(char) -> Option<usize> + 'static + Clone,
+        F: Fn(char) -> Option<usize> + 'static + ?Sized,
     {
         FindMatchesWithPosition::new(input, offset, scanner_impl, match_function)
     }

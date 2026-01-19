@@ -17,6 +17,11 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+# 0.4.0 - Not yet released
+
+* Add Python bindings for the scnr2 scanner library.
+  See new workspace member `scnr2-python`.
+
 # 0.3.3 - 2025-09-19
 
 * Enhance error message for pattern parsing to include input context

@@ -16,6 +16,7 @@
 - **Context-Sensitive Tokenization:** Specify positive/negative lookahead conditions for tokens, enabling powerful context-aware parsing.
 - **Full Unicode & Regex Support:** Broad compatibility with Unicode and advanced regex features, including case insensitivity.
 - **Extensible & Contributor-Friendly:** Modular design and clear API make it easy to extend, customize, and contribute new features.
+- **Python Support:** Official Python bindings are available via `scnr2-python`, allowing you to use `scnr2`'s powerful scanning engine in your Python projects.
 
 ## Unique Value Propositions
 
@@ -155,3 +156,5 @@ Add a catch-all token at the end of your mode's token list (e.g., `r"."`) and ha
 We welcome contributions! Whether you want to add features, improve documentation, or report issues, your input helps make scnr2 better for everyone.
 
 For more examples and API details, see the [docs.rs documentation](https://docs.rs/scnr2).
+
+Check out the [scnr2-python](file:///d:/Source/scnr2/scnr2-python/README.md) directory for details on using scnr2 from Python.

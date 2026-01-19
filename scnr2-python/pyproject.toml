@@ -1,0 +1,29 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "scnr2"
+version = "0.3.3"
+description = "Python bindings for scnr2"
+requires-python = ">=3.8"
+authors = [
+    { name = "Jörg Singer", email = "singer.joerg@gmx.de" },
+]
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Compilers",
+]
+
+[project.urls]
+Homepage = "https://github.com/jsinger67/scnr2"
+Repository = "https://github.com/jsinger67/scnr2.git"
+"Bug Tracker" = "https://github.com/jsinger67/scnr2/issues"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "scnr2"
+include = ["scnr2.pyi", "py.typed"]
