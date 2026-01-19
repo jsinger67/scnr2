@@ -16,7 +16,7 @@
 - **Context-Sensitive Tokenization:** Specify positive/negative lookahead conditions for tokens, enabling powerful context-aware parsing.
 - **Full Unicode & Regex Support:** Broad compatibility with Unicode and advanced regex features, including case insensitivity.
 - **Extensible & Contributor-Friendly:** Modular design and clear API make it easy to extend, customize, and contribute new features.
-- **Python Support:** Official Python bindings are available via `scnr2-python`, allowing you to use `scnr2`'s powerful scanning engine in your Python projects.
+- **Python Support:** Official Python bindings are available via the [scnr2](https://pypi.org/project/scnr2/) package on PyPI (`pip install scnr2`). See `scnr2-python` for details.
 
 ## Unique Value Propositions
 

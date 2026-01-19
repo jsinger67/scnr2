@@ -4,7 +4,15 @@ Python bindings for the `scnr2` high-performance scanner generator crate, powere
 
 ## Installation
 
-This package is currently available as a Rust workspace member. To build and install it in your local environment, use `maturin`:
+You can install `scnr2` directly from PyPI:
+
+```bash
+pip install scnr2
+```
+
+### Local Development
+
+To build and install it from source in your local environment, use `maturin`:
 
 ```bash
 cd scnr2-python
