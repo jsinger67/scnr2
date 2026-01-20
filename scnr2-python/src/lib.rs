@@ -65,23 +65,29 @@ fn convert_dfa(gen_dfa: &GenDfa, num_classes: usize) -> ::scnr2::Dfa {
             let transitions: &'static [Option<::scnr2::DfaTransition>] =
                 Box::leak(transition_opts.into_boxed_slice());
 
-            let accept_data = s.accept_data.as_ref().map(|ad| {
-                let lookahead = match &ad.lookahead {
-                    scnr2_generate::pattern::Lookahead::None => ::scnr2::Lookahead::None,
-                    scnr2_generate::pattern::Lookahead::Positive(
-                        scnr2_generate::pattern::AutomatonType::Dfa(d),
-                    ) => ::scnr2::Lookahead::Positive(convert_dfa(d, num_classes)),
-                    scnr2_generate::pattern::Lookahead::Negative(
-                        scnr2_generate::pattern::AutomatonType::Dfa(d),
-                    ) => ::scnr2::Lookahead::Negative(convert_dfa(d, num_classes)),
-                    _ => ::scnr2::Lookahead::None,
-                };
-                ::scnr2::AcceptData {
-                    token_type: ad.terminal_type.as_usize(),
-                    priority: ad.priority,
-                    lookahead,
-                }
-            });
+            let accept_data: Vec<::scnr2::AcceptData> = s
+                .accept_data
+                .iter()
+                .map(|ad| {
+                    let lookahead = match &ad.lookahead {
+                        scnr2_generate::pattern::Lookahead::None => ::scnr2::Lookahead::None,
+                        scnr2_generate::pattern::Lookahead::Positive(
+                            scnr2_generate::pattern::AutomatonType::Dfa(d),
+                        ) => ::scnr2::Lookahead::Positive(convert_dfa(d, num_classes)),
+                        scnr2_generate::pattern::Lookahead::Negative(
+                            scnr2_generate::pattern::AutomatonType::Dfa(d),
+                        ) => ::scnr2::Lookahead::Negative(convert_dfa(d, num_classes)),
+                        _ => ::scnr2::Lookahead::None,
+                    };
+                    ::scnr2::AcceptData {
+                        token_type: ad.terminal_type.as_usize(),
+                        priority: ad.priority,
+                        lookahead,
+                    }
+                })
+                .collect();
+            let accept_data: &'static [::scnr2::AcceptData] =
+                Box::leak(accept_data.into_boxed_slice());
 
             ::scnr2::DfaState {
                 transitions,

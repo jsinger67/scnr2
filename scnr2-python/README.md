@@ -30,9 +30,9 @@ import scnr2
 definition = """
 MyScanner {
     mode INITIAL {
-        token r"\d+" => 1;           # Match digits (Token Type 1)
-        token r"[a-zA-Z_]\w*" => 2;  # Match identifiers (Token Type 2)
-        token r"\s+" => 3;           # Match whitespace (Token Type 3)
+        token r"\d+" => 1;           // Match digits (Token Type 1)
+        token r"[a-zA-Z_]\w*" => 2;  // Match identifiers (Token Type 2)
+        token r"\s+" => 3;           // Match whitespace (Token Type 3)
     }
 }
 """
@@ -64,10 +64,10 @@ import scnr2
 definition = """
 AdvancedScanner {
     mode INITIAL {
-        # Match 'a' only if followed by 'b'
+        // Match 'a' only if followed by 'b'
         token r"a" followed by r"b" => 1;
         
-        # Match 'b' only if NOT followed by 'c'
+        // Match 'b' only if NOT followed by 'c'
         token r"b" not followed by r"c" => 2;
         
         token r"a" => 3;

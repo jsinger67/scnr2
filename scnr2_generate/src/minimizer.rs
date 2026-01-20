@@ -85,32 +85,27 @@ impl Minimizer {
     ///
     /// The partitions are stored in a vector of vectors.
     fn calculate_initial_partition(dfa: &Dfa) -> Partition {
-        let mut accepted_terminals = dfa
-            .states
-            .iter()
-            .filter_map(|state| {
-                state.accept_data.as_ref().map(|s| {
-                    // We take only the first accepting pattern of a state.
-                    s.terminal_type
-                })
-            })
-            .collect::<Vec<_>>();
-        accepted_terminals.sort();
-        accepted_terminals.dedup();
-        let number_of_end_states = accepted_terminals.len();
-        let mut initial_partition = vec![StateGroup::new(); number_of_end_states + 1];
+        let mut acceptance_groups: BTreeMap<Vec<usize>, StateGroup> = BTreeMap::new();
+        let mut non_accepting_group = StateGroup::new();
 
-        for state in 0..dfa.states.len() {
-            let state: DfaStateID = (state as StateIDBase).into();
-            if let Some(pattern) = &dfa.states[state].accept_data {
-                let index = accepted_terminals
-                    .iter()
-                    .position(|id| *id == pattern.terminal_type)
-                    .unwrap();
-                initial_partition[index + 1].insert(state);
+        for (id, state) in dfa.states.iter().enumerate() {
+            let state_id = (id as StateIDBase).into();
+            if state.accept_data.is_empty() {
+                non_accepting_group.insert(state_id);
             } else {
-                initial_partition[0].insert(state);
+                let key: Vec<usize> = state
+                    .accept_data
+                    .iter()
+                    .map(|ad| ad.terminal_type.as_usize())
+                    .collect();
+                acceptance_groups.entry(key).or_default().insert(state_id);
             }
+        }
+
+        let mut initial_partition = Vec::new();
+        initial_partition.push(non_accepting_group);
+        for group in acceptance_groups.into_values() {
+            initial_partition.push(group);
         }
         initial_partition
     }
@@ -218,11 +213,10 @@ impl Minimizer {
         let end_states = states
             .iter()
             .map(|state| {
-                if let Some(pattern) = state.accept_data.as_ref() {
-                    (true, pattern.clone())
-                } else {
-                    (false, Pattern::default())
-                }
+                (
+                    state.accept_data.is_empty() == false,
+                    state.accept_data.clone(),
+                )
             })
             .collect::<Vec<_>>();
 
@@ -269,7 +263,7 @@ impl Minimizer {
         dfa: &mut Dfa,
         group_id: StateGroupID,
         group: &BTreeSet<DfaStateID>,
-        end_states: &[(bool, Pattern)],
+        end_states: &[(bool, Vec<Pattern>)],
     ) -> DfaStateID {
         let state_id = DfaStateID::new(group_id.id() as StateIDBase);
         let state = DfaState::new();
@@ -288,7 +282,9 @@ impl Minimizer {
         // an accepting state.
         for state_in_group in group.iter() {
             if end_states[*state_in_group].0 {
-                dfa.states[state_id].set_accept_data(end_states[*state_in_group].1.clone());
+                for pattern in &end_states[*state_in_group].1 {
+                    dfa.states[state_id].add_accept_data(pattern.clone());
+                }
             }
         }
 
@@ -488,7 +484,7 @@ mod tests {
         let accepting_states = dfa
             .states
             .iter()
-            .filter(|s| s.accept_data.is_some())
+            .filter(|s| !s.accept_data.is_empty())
             .count();
         const EXPECTED_DFA_ACCEPTING: usize = 1;
         assert_eq!(accepting_states, EXPECTED_DFA_ACCEPTING);
@@ -547,10 +543,10 @@ mod tests {
         let accepting_states = minimized_dfa
             .states
             .iter()
-            .filter(|s| s.accept_data.is_some())
+            .filter(|s| !s.accept_data.is_empty())
             .count();
         assert_eq!(accepting_states, 1); // Example: 1 accepting state
 
-        assert!(minimized_dfa.states[4].accept_data.is_some());
+        assert!(!minimized_dfa.states[4].accept_data.is_empty());
     }
 }

@@ -1,5 +1,5 @@
 use proc_macro2::TokenStream;
-use quote::{ToTokens, quote};
+use quote::{quote, ToTokens};
 use std::{
     collections::{BTreeSet, VecDeque},
     vec,
@@ -8,11 +8,11 @@ use std::{
 use rustc_hash::{FxHashMap, FxHashSet};
 
 use crate::{
-    Result,
     ids::{DfaStateID, DisjointCharClassID, NfaStateID, StateIDBase},
     minimizer::Minimizer,
     nfa::Nfa,
     pattern::{AutomatonType, Lookahead, Pattern, PatternWithNumberOfCharacterClasses},
+    Result,
 };
 
 /// Represents a Deterministic Finite Automaton (DFA) used for pattern matching.
@@ -99,45 +99,29 @@ impl Dfa {
             for nfa_state in nfa_states {
                 if let Some(accept_data) = nfa.states[*nfa_state].accept_data.as_ref() {
                     let dfa_state = &mut states[*dfa_id];
-                    // Only set the accept data if there isn't one already
-                    // or if this one has higher priority (lower priority value)
-                    let should_replace = match &dfa_state.accept_data {
-                        None => true,
-                        Some(existing) => {
-                            accept_data.priority < existing.priority
-                                || (accept_data.priority == existing.priority
-                                    && accept_data.terminal_type < existing.terminal_type)
+                    let mut accept_data = accept_data.clone();
+                    // Convert the Nfa of the pattern's lookahead to a Dfa too.
+                    let lookahead = std::mem::take(&mut accept_data.lookahead);
+                    match lookahead {
+                        Lookahead::None => {}
+                        Lookahead::Positive(AutomatonType::Nfa(nfa)) => {
+                            // Convert the NFA in the lookahead to a DFA.
+                            let dfa_lookahead = Dfa::try_from(&nfa)?;
+                            accept_data.lookahead =
+                                Lookahead::Positive(AutomatonType::Dfa(dfa_lookahead));
                         }
-                    };
-
-                    if should_replace {
-                        // If the NFA state is accepting, add the accept data to the DFA state.
-                        let mut accept_data = accept_data.clone();
-                        // Convert the Nfa of the pattern's lookahead to a Dfa too.
-                        let lookahead = std::mem::take(&mut accept_data.lookahead);
-                        match lookahead {
-                            Lookahead::None => {}
-                            Lookahead::Positive(AutomatonType::Nfa(nfa)) => {
-                                // Convert the NFA in the lookahead to a DFA.
-                                let dfa_lookahead = Dfa::try_from(&nfa)?;
-                                accept_data.lookahead =
-                                    Lookahead::Positive(AutomatonType::Dfa(dfa_lookahead));
-                            }
-                            Lookahead::Negative(AutomatonType::Nfa(nfa)) => {
-                                // Convert the NFA in the lookahead to a DFA.
-                                let dfa_lookahead = Dfa::try_from(&nfa)?;
-                                accept_data.lookahead =
-                                    Lookahead::Negative(AutomatonType::Dfa(dfa_lookahead));
-                            }
-                            _ => {
-                                panic!(
-                                    "Unexpected lookahead type in DFA conversion: {lookahead:?}"
-                                );
-                            }
+                        Lookahead::Negative(AutomatonType::Nfa(nfa)) => {
+                            // Convert the NFA in the lookahead to a DFA.
+                            let dfa_lookahead = Dfa::try_from(&nfa)?;
+                            accept_data.lookahead =
+                                Lookahead::Negative(AutomatonType::Dfa(dfa_lookahead));
                         }
-                        // Add the accept data to the accepting states.
-                        dfa_state.set_accept_data(accept_data);
+                        _ => {
+                            panic!("Unexpected lookahead type in DFA conversion: {lookahead:?}");
+                        }
                     }
+                    // Add the accept data to the accepting states.
+                    dfa_state.add_accept_data(accept_data);
                 }
             }
         }
@@ -202,7 +186,7 @@ pub struct DfaState {
     /// The set of transitions from this state.
     pub transitions: Vec<DfaTransition>,
     /// The terminal types, the priorities and patterns if it is an accepting state.
-    pub accept_data: Option<Pattern>,
+    pub accept_data: Vec<Pattern>,
 }
 
 impl DfaState {
@@ -211,12 +195,20 @@ impl DfaState {
         Default::default()
     }
 
-    /// Set the accept data for this state.
+    /// Add accept data to this state.
     ///
     /// # Arguments
     /// * `accept_data` - The pattern that represents the accept data for this state.
-    pub fn set_accept_data(&mut self, accept_data: Pattern) {
-        self.accept_data = Some(accept_data);
+    pub fn add_accept_data(&mut self, accept_data: Pattern) {
+        if !self.accept_data.contains(&accept_data) {
+            self.accept_data.push(accept_data);
+            self.accept_data.sort_by(|a, b| {
+                a.priority
+                    .cmp(&b.priority)
+                    .then_with(|| a.terminal_type.cmp(&b.terminal_type))
+            });
+            self.accept_data.dedup();
+        }
     }
 }
 
@@ -265,18 +257,15 @@ impl ToTokens for DfaStateWithNumberOfCharacterClasses<'_> {
             Some(transition) => quote! { Some(#transition) },
             None => quote! { None },
         });
-        let accept_data = accept_data.as_ref().map_or_else(
-            || quote! { None },
-            |ad| {
-                let pattern_with_number_of_character_classes =
-                    PatternWithNumberOfCharacterClasses::new(ad, *character_classes);
-                quote! { Some(#pattern_with_number_of_character_classes) }
-            },
-        );
+        let accept_data = accept_data.iter().map(|ad| {
+            let pattern_with_number_of_character_classes =
+                PatternWithNumberOfCharacterClasses::new(ad, *character_classes);
+            quote! { #pattern_with_number_of_character_classes }
+        });
         tokens.extend(quote! {
             DfaState {
                 transitions: &[#(#transitions),*],
-                accept_data: #accept_data,
+                accept_data: &[#(#accept_data),*],
             }
         });
     }
@@ -353,7 +342,7 @@ mod tests {
         let mut terminals = dfa
             .states
             .iter()
-            .filter_map(|s| s.accept_data.as_ref().map(|ad| ad.terminal_type))
+            .flat_map(|s| s.accept_data.iter().map(|ad| ad.terminal_type))
             .collect::<Vec<_>>();
         terminals.sort();
         terminals.dedup();

@@ -75,10 +75,10 @@ pub struct Dfa {
 #[derive(Debug, Clone)]
 pub struct DfaState {
     /// The transitions for this state indexed by character class index.
-    /// Each transition is an `Option<DfaTransition>`, where `None` indicates no
+    ///Each transition is an `Option<DfaTransition>`, where `None` indicates no
     /// transition for that character class.
     pub transitions: &'static [Option<DfaTransition>],
-    pub accept_data: std::option::Option<AcceptData>,
+    pub accept_data: &'static [AcceptData],
 }
 
 /// Data associated with an accepting state in the DFA, including the type of token and lookahead

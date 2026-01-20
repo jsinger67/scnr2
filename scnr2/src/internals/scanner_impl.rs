@@ -9,8 +9,8 @@ use std::{
 use log::trace;
 
 use crate::{
-    Transition,
     internals::find_matches::{FindMatches, FindMatchesWithPosition},
+    Transition,
 };
 
 /**
@@ -20,7 +20,7 @@ use crate::{
  * ```rust
  * use scnr2::{ScannerImpl, ScannerMode, Transition, Dfa, DfaState, DfaTransition, AcceptData, Lookahead};
  * // Simple DFA with a single state that always accepts.
- * const DFA: Dfa = Dfa { states: &[DfaState { transitions: &[None], accept_data: Some(AcceptData { token_type: 1, priority: 0, lookahead: Lookahead::None }) }] };
+ * const DFA: Dfa = Dfa { states: &[DfaState { transitions: &[None], accept_data: &[AcceptData { token_type: 1, priority: 0, lookahead: Lookahead::None }] }] };
  * const MODES: &[ScannerMode] = &[ScannerMode { name: "INITIAL", transitions: &[Transition::SetMode(1, 0)], dfa: DFA }];
  * let scanner_impl = ScannerImpl::new(MODES);
  * assert_eq!(scanner_impl.current_mode_name(), "INITIAL");
