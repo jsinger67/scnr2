@@ -208,12 +208,7 @@ impl Minimizer {
         // Calculate the end states of the DFA.
         let end_states = states
             .iter()
-            .map(|state| {
-                (
-                    state.accept_data.is_empty() == false,
-                    state.accept_data.clone(),
-                )
-            })
+            .map(|state| (!state.accept_data.is_empty(), state.accept_data.clone()))
             .collect::<Vec<_>>();
 
         // Reorder the groups so that the start state is in the first group (0).
