@@ -3,6 +3,7 @@
 use std::{cell::RefCell, rc::Rc};
 
 use crate::{
+    Dfa, Lookahead, ScannerImpl,
     internals::{
         char_iter::item::CharItem,
         char_iter::iter::CharIter,
@@ -10,7 +11,6 @@ use crate::{
         match_types::{Match, MatchEnd, MatchStart},
         position::{Position, Positions},
     },
-    Dfa, Lookahead, ScannerImpl,
 };
 
 /// A trait that defines the behavior of finding matches in a string slice using a DFA (Deterministic
@@ -429,42 +429,37 @@ fn find_next<F: FindMatchesTrait + Clone>(find_matches: &mut F, dfa: &Dfa) -> Op
             start_set = true;
         }
 
-        if !state_data.accept_data.is_empty() {
-            for accept_data in state_data.accept_data {
-                let (lookahead_satisfied, _lookahead_len) =
-                    if !matches!(accept_data.lookahead, Lookahead::None) {
-                        evaluate_lookahead(find_matches.clone(), accept_data)
-                    } else {
-                        (true, 0)
-                    };
-                if lookahead_satisfied {
-                    let new_byte_index = char_item.byte_index + char_item.ch.len_utf8();
-                    let new_len = new_byte_index - match_start.byte_index;
-                    let update = !end_set || {
-                        let old_len = match_end.byte_index - match_start.byte_index;
-                        new_len > old_len
-                            || (new_len == old_len && accept_data.priority < match_end.priority)
-                    };
-                    if update {
-                        match_end = MatchEnd::new(
-                            new_byte_index,
-                            accept_data.token_type,
-                            accept_data.priority,
-                        )
-                        .with_position(char_item.position.map(|p| {
-                            if char_item.ch == '\n' {
-                                Position::new(p.line + 1, 1)
-                            } else {
-                                Position::new(p.line, p.column + 1)
-                            }
-                        }));
-                        end_set = true;
-                        find_matches.save_char_iter();
-                    }
-                    // We found a satisfied lookahead for this state.
-                    // Since the accept_data is sorted by priority, we can stop here for this munch.
-                    break;
+        for accept_data in state_data.accept_data {
+            let (lookahead_satisfied, _lookahead_len) =
+                if !matches!(accept_data.lookahead, Lookahead::None) {
+                    evaluate_lookahead(find_matches.clone(), accept_data)
+                } else {
+                    (true, 0)
+                };
+            if lookahead_satisfied {
+                let new_byte_index = char_item.byte_index + char_item.ch.len_utf8();
+                let new_len = new_byte_index - match_start.byte_index;
+                let update = !end_set || {
+                    let old_len = match_end.byte_index - match_start.byte_index;
+                    new_len > old_len
+                        || (new_len == old_len && accept_data.priority < match_end.priority)
+                };
+                if update {
+                    match_end =
+                        MatchEnd::new(new_byte_index, accept_data.token_type, accept_data.priority)
+                            .with_position(char_item.position.map(|p| {
+                                if char_item.ch == '\n' {
+                                    Position::new(p.line + 1, 1)
+                                } else {
+                                    Position::new(p.line, p.column + 1)
+                                }
+                            }));
+                    end_set = true;
+                    find_matches.save_char_iter();
                 }
+                // We found a satisfied lookahead for this state.
+                // Since the accept_data is sorted by priority, we can stop here for this munch.
+                break;
             }
         }
     }

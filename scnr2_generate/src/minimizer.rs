@@ -85,7 +85,7 @@ impl Minimizer {
     ///
     /// The partitions are stored in a vector of vectors.
     fn calculate_initial_partition(dfa: &Dfa) -> Partition {
-        let mut acceptance_groups: BTreeMap<Vec<usize>, StateGroup> = BTreeMap::new();
+        let mut acceptance_groups: BTreeMap<String, StateGroup> = BTreeMap::new();
         let mut non_accepting_group = StateGroup::new();
 
         for (id, state) in dfa.states.iter().enumerate() {
@@ -93,11 +93,7 @@ impl Minimizer {
             if state.accept_data.is_empty() {
                 non_accepting_group.insert(state_id);
             } else {
-                let key: Vec<usize> = state
-                    .accept_data
-                    .iter()
-                    .map(|ad| ad.terminal_type.as_usize())
-                    .collect();
+                let key = format!("{:?}", state.accept_data);
                 acceptance_groups.entry(key).or_default().insert(state_id);
             }
         }

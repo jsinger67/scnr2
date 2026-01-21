@@ -1,5 +1,5 @@
 use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
+use quote::{ToTokens, quote};
 use std::{
     collections::{BTreeSet, VecDeque},
     vec,
@@ -8,11 +8,11 @@ use std::{
 use rustc_hash::{FxHashMap, FxHashSet};
 
 use crate::{
+    Result,
     ids::{DfaStateID, DisjointCharClassID, NfaStateID, StateIDBase},
     minimizer::Minimizer,
     nfa::Nfa,
     pattern::{AutomatonType, Lookahead, Pattern, PatternWithNumberOfCharacterClasses},
-    Result,
 };
 
 /// Represents a Deterministic Finite Automaton (DFA) used for pattern matching.
@@ -208,6 +208,15 @@ impl DfaState {
                     .then_with(|| a.terminal_type.cmp(&b.terminal_type))
             });
             self.accept_data.dedup();
+
+            // Optimization: Truncate after the first Lookahead::None
+            if let Some(none_index) = self
+                .accept_data
+                .iter()
+                .position(|ad| matches!(ad.lookahead, Lookahead::None))
+            {
+                self.accept_data.truncate(none_index + 1);
+            }
         }
     }
 }
