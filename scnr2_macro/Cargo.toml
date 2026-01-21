@@ -1,12 +1,12 @@
 [package]
 name = "scnr2_macro"
-version.workspace = true
-edition.workspace = true
-authors.workspace = true
-keywords.workspace = true
-categories.workspace = true
-license.workspace = true
-readme.workspace = true
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+keywords = { workspace = true }
+categories = { workspace = true }
+license = { workspace = true }
+readme = { workspace = true }
 description = "Scanner/Lexer with regex patterns and multiple modes"
 repository = "https://github.com/jsinger67/scnr2"
 
