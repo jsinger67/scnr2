@@ -75,9 +75,16 @@ pub struct Dfa {
 #[derive(Debug, Clone)]
 pub struct DfaState {
     /// The transitions for this state indexed by character class index.
-    ///Each transition is an `Option<DfaTransition>`, where `None` indicates no
+    /// Each transition is an `Option<DfaTransition>`, where `None` indicates no
     /// transition for that character class.
     pub transitions: &'static [Option<DfaTransition>],
+    /// The accept data for this state.
+    /// There can be multiple accept data entries if there are multiple tokens that can be accepted
+    /// at this state. If a token is not accepted because of a failing lookahead, another token
+    /// could be possibly accepted instead. The tokens are ordered by priority, so the first
+    /// token in the list is the highest priority token. If during acceptance analysis an entry
+    /// in the accept data is reached that has no lookahead, it is accepted immediately.
+    /// Thus, the accept data array will never contain two entries with no lookahead.
     pub accept_data: &'static [AcceptData],
 }
 
