@@ -17,13 +17,13 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-# 0.5.0 - Not yet released
+# 0.5.0 - 2026-01-25
 
 * AcceptData on DfaState is now an Array instead of an Option.
 
-  The accept_data array in DfaState is truncated after the first entry with Lookahead::None.
-  This optimization is safe because the scanner runtime stops processing as soon as it finds a
-  matching entry, and a None lookahead is always satisfied if the state is reached.
+  There can be multiple accept data entries if there are multiple tokens that can be accepted
+  at this state. If a token is not accepted because of a failing lookahead, another token could be
+  possibly accepted instead.
 
 # 0.4.0 - 2026-01-19
 
