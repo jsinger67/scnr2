@@ -11,7 +11,7 @@ name = "scnr2"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.28.0", features = ["extension-module"] }
+pyo3 = { version = "0.28.1", features = ["extension-module"] }
 scnr2 = { path = "../scnr2" }
 scnr2_generate = { path = "../scnr2_generate" }
 syn = { version = "2.0", features = ["full", "extra-traits"] }
