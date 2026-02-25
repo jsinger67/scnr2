@@ -20,4 +20,4 @@ syn = "2.0.117"
 
 [dev-dependencies]
 rstest = "0.26.1"
-tempfile = "3.25.0"
+tempfile = "3.26.0"
