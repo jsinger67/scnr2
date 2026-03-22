@@ -23,8 +23,9 @@ jobs:
         with:
           python-version: '3.10'
       - name: Build wheels
-        uses: PyO3/maturin-action@v1
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad # v1
         with:
+          maturin-version: v1.12.6
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter --manifest-path scnr2-python/Cargo.toml
           sccache: 'true'
@@ -47,8 +48,9 @@ jobs:
           python-version: '3.10'
           architecture: ${{ matrix.target }}
       - name: Build wheels
-        uses: PyO3/maturin-action@v1
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad # v1
         with:
+          maturin-version: v1.12.6
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter --manifest-path scnr2-python/Cargo.toml
           sccache: 'true'
@@ -69,10 +71,11 @@ jobs:
         with:
           python-version: '3.10'
       - name: Build wheels
-        uses: PyO3/maturin-action@v1
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad # v1
         env:
           GITHUB_TOKEN: ''
         with:
+          maturin-version: v1.12.6
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter --manifest-path scnr2-python/Cargo.toml
           sccache: 'true'
@@ -87,8 +90,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build sdist
-        uses: PyO3/maturin-action@v1
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad # v1
         with:
+          maturin-version: v1.12.6
           command: sdist
           args: --out dist --manifest-path scnr2-python/Cargo.toml
       - name: Upload sdist
