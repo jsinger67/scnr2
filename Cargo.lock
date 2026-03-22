@@ -942,7 +942,7 @@ dependencies = [
 
 [[package]]
 name = "scnr2"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "log",
  "scnr2_macro",
@@ -950,7 +950,7 @@ dependencies = [
 
 [[package]]
 name = "scnr2-python"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "proc-macro2",
  "pyo3",
@@ -962,7 +962,7 @@ dependencies = [
 
 [[package]]
 name = "scnr2_generate"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "log",
  "proc-macro2",
@@ -976,7 +976,7 @@ dependencies = [
 
 [[package]]
 name = "scnr2_macro"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "scnr2_generate",
 ]

@@ -17,6 +17,16 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+# 0.5.1 - 2026-03-22
+
+* Fix and harden the python-release workflow.
+  * Add a macOS-specific CI workaround to avoid intermittent maturin download 404 failures.
+  * Pin `PyO3/maturin-action` to a fixed commit SHA.
+  * Pin `maturin-version` to `v1.12.6` for deterministic builds.
+* Merge PR [#43](https://github.com/jsinger67/scnr2/pull/43) from [ryo33](https://github.com/ryo33). Thank you!
+  * Fix Unicode and multibyte literal handling in character class generation.
+  * Update scanner expectations for multibyte matching behavior.
+
 # 0.5.0 - 2026-01-25
 
 * AcceptData on DfaState is now an Array instead of an Option.
