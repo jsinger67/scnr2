@@ -19,7 +19,7 @@ use std::rc::Rc;
 /// - start_column (Optional[int]): Starting column number (if tracked).
 /// - end_line (Optional[int]): Ending line number (if tracked).
 /// - end_column (Optional[int]): Ending column number (if tracked).
-#[pyclass]
+#[pyclass(skip_from_py_object)]
 #[derive(Clone)]
 pub struct TokenMatch {
     #[pyo3(get)]
