@@ -70,6 +70,8 @@ jobs:
           python-version: '3.10'
       - name: Build wheels
         uses: PyO3/maturin-action@v1
+        env:
+          GITHUB_TOKEN: ''
         with:
           target: ${{ matrix.target }}
           args: --release --out dist --find-interpreter --manifest-path scnr2-python/Cargo.toml
