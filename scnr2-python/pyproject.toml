@@ -4,8 +4,9 @@ build-backend = "maturin"
 
 [project]
 name = "scnr2"
-version = "0.5.1"
+version = "0.5.2"
 description = "Python bindings for scnr2"
+readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.8"
 authors = [
     { name = "Jörg Singer", email = "singer.joerg@gmx.de" },
