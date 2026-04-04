@@ -17,6 +17,16 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+# 0.5.2 - 2026-04-04
+
+* Packaging metadata improvements for Python release:
+  * Update package version metadata to `0.5.2`.
+  * Ensure PyPI long description is sourced from `README.md`.
+* Dependency updates:
+  * Bump `pyo3` from `0.28.2` to `0.28.3`.
+  * Bump `rustc-hash` from `2.1.1` to `2.1.2`.
+  * Bump `env_logger` from `0.11.9` to `0.11.10`.
+
 # 0.5.1 - 2026-03-22
 
 * Fix and harden the python-release workflow.
