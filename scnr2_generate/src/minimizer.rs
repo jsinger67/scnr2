@@ -11,14 +11,14 @@ use crate::{
     pattern::Pattern,
 };
 
-// The type definitions for the subset construction algorithm.
+// Type definitions used by DFA minimization via partition refinement.
 
 // A state group is a sorted set of states that are in the same partition group.
 type StateGroup = BTreeSet<DfaStateID>;
 // A partition is a vector of state groups.
 type Partition = Vec<StateGroup>;
 
-// A transition map is a map of state ids to a map of character class ids to state set ids.
+// A transition map is a map of state ids to character-class keyed target state ids.
 type TransitionMap = BTreeMap<DfaStateID, BTreeMap<DisjointCharClassID, Vec<DfaStateID>>>;
 
 // A data type that is calculated from the transitions of a DFA state so that for each character
@@ -50,7 +50,7 @@ pub(crate) struct Minimizer;
 
 impl Minimizer {
     /// Minimize the DFA.
-    /// The minimization is done using the subset construction algorithm.
+    /// The minimization is done by iterative partition refinement.
     /// The method takes a DFA and returns a minimized DFA.
     pub(crate) fn minimize(dfa: Dfa) -> Dfa {
         trace!("Minimize DFA ----------------------------");
@@ -75,13 +75,12 @@ impl Minimizer {
         Self::create_from_partition(dfa, &partition_new, &transitions)
     }
 
-    /// The start partition is created as follows:
-    /// 1. The accepting states are put each in a separate group with group id set to terminal
-    ///    id + 1.
-    ///    This follows from the constraint of the DFA that multiple patterns can match.
-    ///    If a state has multiple accepting patterns, it is put in the group of the first
-    ///    accepting pattern.
-    /// 2. The non-accepting states are put together in one group with the id 0.
+    /// The initial partition is created as follows:
+    /// 1. All non-accepting states are put into one group.
+    /// 2. Accepting states are grouped by identical `accept_data`.
+    ///
+    /// This preserves semantic differences between accepting states when multiple patterns can
+    /// match.
     ///
     /// The partitions are stored in a vector of vectors.
     fn calculate_initial_partition(dfa: &Dfa) -> Partition {
@@ -158,8 +157,8 @@ impl Minimizer {
     /// partition group.
     /// The partition group is the index of the group in the partition.
     /// The modified transition data structure is returned.
-    /// The modified transition data structure is used to determine if two states are distinguish
-    /// based on the transitions of the DFA.
+    /// The modified transition data structure is used to determine if two states are
+    /// distinguishable based on the transitions of the DFA.
     fn build_transitions_to_partition_group(
         state_id: DfaStateID,
         partition: &[StateGroup],
