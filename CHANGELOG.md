@@ -17,6 +17,36 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+# 0.5.3 - Not yet released
+
+* Summary
+  * Maintenance-focused release with CI reliability improvements and dependency updates.
+  * No known public API changes in scanner behavior.
+
+* Changed
+  * Python release workflow updates:
+    * Add explicit Rust toolchain setup in the wheel build job.
+    * Build wheels against explicit interpreter targets from Python 3.8 through 3.14.
+
+* Fixed
+  * Improve Windows CI stability for Cargo network access:
+    * Disable HTTP/2 multiplexing in Cargo config to avoid Schannel SSL close-notify failures.
+    * Add network retry configuration.
+
+* Documentation
+  * Correct minimizer module comments to describe DFA minimization via partition refinement
+    instead of subset construction.
+
+* Dependencies
+  * Update workspace dependencies, including:
+    * pyo3 to 0.29.0 in scnr2-python.
+    * syn to 3.x in generator/python crates.
+    * regex-syntax to 0.8.11.
+    * rustc-hash to 2.1.3.
+    * log to newer 0.4.x patch levels.
+    * codspeed-criterion-compat to 5.x in tests.
+    * env_logger to 0.11.11.
+
 # 0.5.2 - 2026-04-04
 
 * Packaging metadata improvements for Python release:
