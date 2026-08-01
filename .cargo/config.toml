@@ -1,2 +1,10 @@
 [env]
 
+[http]
+# Disable HTTP/2 multiplexing to avoid Windows Schannel SSL failures
+# (schannel: server closed abruptly (missing close_notify))
+multiplexing = false
+
+[net]
+retry = 3
+

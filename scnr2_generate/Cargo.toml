@@ -16,7 +16,7 @@ proc-macro2 = "1.0.106"
 quote = "1.0.45"
 regex-syntax = "0.8.11"
 rustc-hash = "2.1.2"
-syn = "2.0.117"
+syn = "3.0.2"
 
 [dev-dependencies]
 rstest = "0.26.1"
