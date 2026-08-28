@@ -39,12 +39,12 @@ new minor version numbers. Please note that this is no version handling covered 
 
 * Dependencies
   * Update workspace dependencies, including:
-    * pyo3 to 0.29.0 in scnr2-python.
-    * syn to 3.x in generator/python crates.
+    * pyo3 to 0.29.2 in scnr2-python.
+    * syn to 3.0.4 in generator/python crates.
     * regex-syntax to 0.8.11.
     * rustc-hash to 2.1.3.
-    * log to newer 0.4.x patch levels.
-    * codspeed-criterion-compat to 5.x in tests.
+    * log to newer 0.4.34 patch levels.
+    * codspeed-criterion-compat to 5.0.1 in tests.
     * env_logger to 0.11.11.
 
 # 0.5.2 - 2026-04-04
