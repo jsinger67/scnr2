@@ -12,7 +12,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = { version = "0.29.0", features = ["extension-module"] }
-scnr2 = { path = "../scnr2" }
+scnr2 = { path = "../scnr2", version = "0.5.3" }
 scnr2_generate = { path = "../scnr2_generate" }
 syn = { version = "3.0", features = ["full", "extra-traits"] }
 proc-macro2 = "1.0"
