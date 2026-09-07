@@ -5,8 +5,8 @@ publish = false
 version = "0.1.0"
 
 [dependencies]
-scnr2 = { path = "../scnr2" }
-scnr2_generate = { path = "../scnr2_generate" }
+scnr2 = { path = "../scnr2", version = "0.5.3" }
+scnr2_generate = { path = "../scnr2_generate", version = "0.5.3" }
 
 [dev-dependencies]
 codspeed-criterion-compat = "5.0.0"
