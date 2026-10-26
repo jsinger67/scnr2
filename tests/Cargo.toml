@@ -9,7 +9,7 @@ scnr2 = { path = "../scnr2", version = "0.5.3" }
 scnr2_generate = { path = "../scnr2_generate", version = "0.5.3" }
 
 [dev-dependencies]
-codspeed-criterion-compat = "5.0.0"
+codspeed-criterion-compat = "6.0.0"
 criterion = "0.8.2"
 env_logger = "0.11.10"
 
